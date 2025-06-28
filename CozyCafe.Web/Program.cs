@@ -1,4 +1,6 @@
+using CozyCafe.Application.Interfaces;
 using CozyCafe.Infrastructure.Data;
+using CozyCafe.Infrastructure.Repositories;
 using CozyCafe.Models.Domain;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +12,11 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
+
+builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+
+
+
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
