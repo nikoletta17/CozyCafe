@@ -19,5 +19,6 @@ namespace CozyCafe.Models.DTO
         [Required]
         [Range(1, 100)]
         public int Quantity { get; set; }
+        public List<int> SelectedOptionIds { get; set; } = new();
     }
 }

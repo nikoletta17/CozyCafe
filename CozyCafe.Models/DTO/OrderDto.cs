@@ -15,8 +15,9 @@ namespace CozyCafe.Models.DTO
 
     public class OrderItemDto
     {
-        public string MenuItemName { get; set; }
+        public string? MenuItemName { get; set; }
         public int Quantity { get; set; }
         public decimal Price { get; set; }
+        public List<OrderItemOptionDto> SelectedOptions { get; set; } = new();
     }
 }
