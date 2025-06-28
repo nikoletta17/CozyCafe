@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\CozyCafe.Application\CozyCafe.Application.csproj" />
     <ProjectReference Include="..\CozyCafe.Models\CozyCafe.Models.csproj" />
   </ItemGroup>
 
