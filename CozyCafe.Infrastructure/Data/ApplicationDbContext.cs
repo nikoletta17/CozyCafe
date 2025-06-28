@@ -26,6 +26,10 @@ namespace CozyCafe.Infrastructure.Data
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<Review> Reviews { get; set; }
         public DbSet<Discount> Discounts { get; set; }
+        public DbSet<MenuItemOptionGroup> MenuItemOptionGroups { get; set; }
+        public DbSet<MenuItemOption> MenuItemOptions { get; set; }
+        public DbSet<OrderItemOption> OrderItemOptions { get; set; }
+
 
 
         //Add relationships between entities
@@ -34,21 +38,21 @@ namespace CozyCafe.Infrastructure.Data
         {
             base.OnModelCreating(builder);
 
-            // 🔁 Category: Self-reference
+            // Category
             builder.Entity<Category>()
                 .HasOne(c => c.ParentCategory)
                 .WithMany(c => c.SubCategories)
                 .HasForeignKey(c => c.ParentCategoryId)
-                .OnDelete(DeleteBehavior.Restrict); // ⛔ без каскаду
+                .OnDelete(DeleteBehavior.Restrict); 
 
-            // 🔄 Cart 1:1 ApplicationUser
+            // Cart 
             builder.Entity<Cart>()
                 .HasOne(c => c.User)
                 .WithOne(u => u.Cart)
                 .HasForeignKey<Cart>(c => c.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // 🔄 Review
+            // Review
             builder.Entity<Review>()
                 .HasOne(r => r.User)
                 .WithMany(u => u.Reviews)
@@ -61,21 +65,21 @@ namespace CozyCafe.Infrastructure.Data
                 .HasForeignKey(r => r.MenuItemId)
                 .OnDelete(DeleteBehavior.Cascade);
 
-            // 🔄 Order & Discount
+            // Order 
             builder.Entity<Order>()
                 .HasOne(o => o.Discount)
                 .WithMany(d => d.Orders)
                 .HasForeignKey(o => o.DiscountId)
-                .OnDelete(DeleteBehavior.SetNull); // Залишає null якщо скидка видалена
+                .OnDelete(DeleteBehavior.SetNull); 
 
-            // 🔄 MenuItem → Category
+            // MenuItem 
             builder.Entity<MenuItem>()
                 .HasOne(m => m.Category)
                 .WithMany(c => c.MenuItems)
                 .HasForeignKey(m => m.CategoryId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // 🔄 CartItem
+            // CartItem
             builder.Entity<CartItem>()
                 .HasOne(ci => ci.Cart)
                 .WithMany(c => c.Items)
@@ -88,7 +92,7 @@ namespace CozyCafe.Infrastructure.Data
                 .HasForeignKey(ci => ci.MenuItemId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            // 🔄 OrderItem
+            // OrderItem
             builder.Entity<OrderItem>()
                 .HasOne(oi => oi.Order)
                 .WithMany(o => o.Items)
@@ -100,6 +104,34 @@ namespace CozyCafe.Infrastructure.Data
                 .WithMany(m => m.OrderItems)
                 .HasForeignKey(oi => oi.MenuItemId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            //MenuItemOptionGroup
+            builder.Entity<MenuItemOptionGroup>()
+                .HasOne(g => g.MenuItem)
+                .WithMany(m => m.OptionGroups)
+                .HasForeignKey(g => g.MenuItemId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            //MenuItemOption
+            builder.Entity<MenuItemOption>()
+                .HasOne(o => o.OptionGroup)
+                .WithMany(g => g.Options)
+                .HasForeignKey(o => o.OptionGroupId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            //OrderItemOption
+            builder.Entity<OrderItemOption>()
+                .HasOne(oio => oio.OrderItem)
+                .WithMany(oi => oi.SelectedOptions)
+                .HasForeignKey(oio => oio.OrderItemId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<OrderItemOption>()
+                .HasOne(oio => oio.MenuItemOption)
+                .WithMany(opt => opt.OrderItemOptions)
+                .HasForeignKey(oio => oio.MenuItemOptionId)
+                .OnDelete(DeleteBehavior.Cascade);
+
         }
     }
 }

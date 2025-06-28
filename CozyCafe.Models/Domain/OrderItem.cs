@@ -21,5 +21,7 @@ namespace CozyCafe.Models.Domain
         [Required]
         [Range(0.01, 9999.99)]
         public decimal Price { get; set; }
+        public ICollection<OrderItemOption> SelectedOptions { get; set; } = new List<OrderItemOption>();
+
     }
 }
