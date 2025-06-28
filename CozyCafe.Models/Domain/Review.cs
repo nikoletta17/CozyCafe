@@ -17,12 +17,13 @@ namespace CozyCafe.Models.Domain
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         [Required]
-        public string UserId { get; set; }
-        public ApplicationUser User { get; set; }
+        public required string UserId { get; set; }
+        
+        public ApplicationUser? User { get; set; }
 
-        [Required]
+       
         public int MenuItemId { get; set; }
-        public MenuItem MenuItem { get; set; }
+        public MenuItem? MenuItem { get; set; }
     }
 }
 

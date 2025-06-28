@@ -12,7 +12,7 @@ namespace CozyCafe.Models.Domain
 
         [Required]
         public int MenuItemId { get; set; }
-        public MenuItem MenuItem { get; set; }
+        public MenuItem? MenuItem { get; set; }
 
         public ICollection<MenuItemOption> Options { get; set; } = new List<MenuItemOption>();
     }

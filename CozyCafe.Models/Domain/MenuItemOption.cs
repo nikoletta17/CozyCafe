@@ -14,7 +14,7 @@ namespace CozyCafe.Models.Domain
 
         [Required]
         public int OptionGroupId { get; set; }
-        public MenuItemOptionGroup OptionGroup { get; set; }
+        public MenuItemOptionGroup? OptionGroup { get; set; }
 
         public ICollection<OrderItemOption> OrderItemOptions { get; set; } = new List<OrderItemOption>();
     }

@@ -11,8 +11,9 @@ namespace CozyCafe.Models.Domain
         public DateTime OrderedAt { get; set; } = DateTime.UtcNow;
 
         [Required]
-        public string UserId { get; set; }
-        public ApplicationUser User { get; set; }
+        public required string UserId { get; set; }
+
+        public ApplicationUser? User { get; set; }
 
         public int? DiscountId { get; set; }
         public Discount? Discount { get; set; }

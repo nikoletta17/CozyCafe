@@ -24,5 +24,60 @@ namespace CozyCafe.Infrastructure.Repositories
                 .FirstOrDefaultAsync(c => c.UserId == userId);
         }
 
+        public async Task AddOrUpdateCartItemAsync(string userId, CartItem newItem)
+        {
+            var cart = await _dbSet
+                .Include(c => c.Items)
+                .FirstOrDefaultAsync(c => c.UserId == userId);
+
+            if (cart == null)
+            {
+                cart = new Cart { UserId = userId, Items = new List<CartItem>() };
+                await _dbSet.AddAsync(cart);
+            }
+
+            var existingItem = cart.Items.FirstOrDefault(i => i.MenuItemId == newItem.MenuItemId);
+            if (existingItem != null)
+            {
+                existingItem.Quantity += newItem.Quantity;
+            }
+            else
+            {
+                cart.Items.Add(newItem);
+            }
+
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task RemoveCartItemAsync(string userId, int menuItemId)
+        {
+            var cart = await _dbSet
+                .Include(c => c.Items)
+                .FirstOrDefaultAsync(c => c.UserId == userId);
+
+            if (cart == null) return;
+
+            var item = cart.Items.FirstOrDefault(i => i.MenuItemId == menuItemId);
+            if (item != null)
+            {
+                cart.Items.Remove(item);
+                await _context.SaveChangesAsync();
+            }
+        }
+
+        public async Task ClearCartAsync(string userId)
+        {
+            var cart = await _dbSet
+                .Include(c => c.Items)
+                .FirstOrDefaultAsync(c => c.UserId == userId);
+
+            if (cart == null) return;
+
+            cart.Items.Clear();
+            await _context.SaveChangesAsync();
+        }
+
+
     }
+
 }

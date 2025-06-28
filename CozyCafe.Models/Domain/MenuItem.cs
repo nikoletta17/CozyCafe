@@ -22,7 +22,7 @@ namespace CozyCafe.Models.Domain
 
         [Required]
         public int CategoryId { get; set; }
-        public Category Category { get; set; }
+        public Category? Category { get; set; }
 
         public ICollection<Review> Reviews { get; set; } = new List<Review>();
         public ICollection<CartItem> CartItems { get; set; } = new List<CartItem>();

@@ -8,11 +8,11 @@ namespace CozyCafe.Models.Domain
 
         [Required]
         public int CartId { get; set; }
-        public Cart Cart { get; set; }
+        public Cart? Cart { get; set; }
 
         [Required]
         public int MenuItemId { get; set; }
-        public MenuItem MenuItem { get; set; }
+        public MenuItem? MenuItem { get; set; }
 
         [Required]
         [Range(1, 100)]
