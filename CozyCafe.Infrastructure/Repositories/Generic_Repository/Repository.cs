@@ -1,10 +1,10 @@
-﻿using CozyCafe.Application.Interfaces;
+﻿using CozyCafe.Application.Interfaces.Generic_Interfaces;
 using CozyCafe.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace CozyCafe.Infrastructure.Repositories
+namespace CozyCafe.Infrastructure.Repositories.Generic_Repository
 {
     public class Repository<T> : IRepository<T> where T : class
     {

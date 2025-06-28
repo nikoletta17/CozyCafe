@@ -1,5 +1,6 @@
-﻿using CozyCafe.Application.Interfaces;
+﻿using CozyCafe.Application.Interfaces.ForRerository;
 using CozyCafe.Infrastructure.Data;
+using CozyCafe.Infrastructure.Repositories.Generic_Repository;
 using CozyCafe.Models.Domain;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;

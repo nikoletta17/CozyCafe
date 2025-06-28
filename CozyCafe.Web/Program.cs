@@ -1,6 +1,8 @@
-using CozyCafe.Application.Interfaces;
+using CozyCafe.Application.Interfaces.ForRerository;
+using CozyCafe.Application.Interfaces.Generic_Interfaces;
 using CozyCafe.Infrastructure.Data;
 using CozyCafe.Infrastructure.Repositories;
+using CozyCafe.Infrastructure.Repositories.Generic_Repository;
 using CozyCafe.Models.Domain;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;

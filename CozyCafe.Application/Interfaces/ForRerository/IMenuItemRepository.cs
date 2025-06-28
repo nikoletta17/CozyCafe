@@ -1,8 +1,9 @@
-﻿using CozyCafe.Models.Domain;
+﻿using CozyCafe.Application.Interfaces.Generic_Interfaces;
+using CozyCafe.Models.Domain;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace CozyCafe.Application.Interfaces
+namespace CozyCafe.Application.Interfaces.ForRerository
 {
     public interface IMenuItemRepository : IRepository<MenuItem>
     {
