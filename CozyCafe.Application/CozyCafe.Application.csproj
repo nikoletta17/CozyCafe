@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Interfaces\ForServices\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\CozyCafe.Models\CozyCafe.Models.csproj" />
   </ItemGroup>
 

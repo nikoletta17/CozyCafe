@@ -6,12 +6,11 @@ using System.Threading.Tasks;
 using CozyCafe.Application.Interfaces.Generic_Interfaces;
 using CozyCafe.Models.Domain;
 
-namespace CozyCafe.Application.Interfaces.ForRerository
+namespace CozyCafe.Application.Interfaces.ForServices
 {
-    public interface IMenuItemOptionGroupRepository : IRepository<MenuItemOptionGroup>
+    public interface IMenuItemOptionGroupService: IService<MenuItemOptionGroup>
     {
         Task<IEnumerable<MenuItemOptionGroup>> GetAllWithOptionsAsync();
-        Task<IEnumerable<MenuItemOptionGroup>> GetByMenuItemIdAsync(int menuItemId); 
+        Task<IEnumerable<MenuItemOptionGroup>> GetByMenuItemIdAsync(int menuItemId);
     }
-
 }

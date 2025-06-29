@@ -6,12 +6,10 @@ using System.Threading.Tasks;
 using CozyCafe.Application.Interfaces.Generic_Interfaces;
 using CozyCafe.Models.Domain;
 
-namespace CozyCafe.Application.Interfaces.ForRerository
+namespace CozyCafe.Application.Interfaces.ForServices
 {
-    public interface ICategoryRepository: IRepository<Category>
+    public interface IMenuItemOptionService: IService<MenuItemOption>
     {
-        Task<IEnumerable<Category>> GetByParentCategoryIdAsync(int? parentCategoryId);
+        Task<IEnumerable<MenuItemOption>> GetByGroupIdAsync(int groupId);
     }
 }
-
-

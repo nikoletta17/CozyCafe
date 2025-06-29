@@ -8,7 +8,7 @@ namespace CozyCafe.Models.Domain
 
         [Required]
         [MaxLength(100)]
-        public string Name { get; set; } // Наприклад: "Сиропи", "Інгредієнти", "Соуси"
+        public required string Name { get; set; } // Наприклад: "Сиропи", "Інгредієнти", "Соуси"
 
         [Required]
         public int MenuItemId { get; set; }

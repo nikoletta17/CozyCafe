@@ -15,6 +15,7 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 
+#region Repository DI
 //Connection repository registration to program file
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<ICartRepository, CartRepository>();
@@ -25,6 +26,12 @@ builder.Services.AddScoped<IMenuItemOptionRepository, MenuItemOptionRepository>(
 builder.Services.AddScoped<IMenuItemRepository, MenuItemRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
+#endregion
+
+
+#region Service DI
+
+#endregion
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
