@@ -11,8 +11,5 @@ namespace CozyCafe.Application.Interfaces.ForRerository
     public interface ICartRepository: IRepository<Cart>
     {
         Task<Cart?> GetByUserIdAsync(string userId);
-        Task AddOrUpdateCartItemAsync(string userId, CartItem newItem);
-        Task RemoveCartItemAsync(string userId, int menuItemId);
-        Task ClearCartAsync(string userId);
     }
 }
