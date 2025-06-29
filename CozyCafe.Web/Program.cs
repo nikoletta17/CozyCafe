@@ -9,6 +9,7 @@ using CozyCafe.Infrastructure.Repositories.Generic_Repository;
 using CozyCafe.Models.Domain;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using CozyCafe.Application.Mapping;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -43,6 +44,10 @@ builder.Services.AddScoped<IMenuItemOptionService, MenuItemOptionService>();
 builder.Services.AddScoped<IMenuItemService, MenuItemService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IReviewService, ReviewService>();
+#endregion
+
+#region AutoMapper
+builder.Services.AddAutoMapper(typeof(MappingProfile));
 #endregion
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
