@@ -8,7 +8,7 @@ namespace CozyCafe.Models.DTO
         public string? DiscountCode { get; set; }
 
         [Required]
-        public List<CreateOrderItemDto> Items { get; set; }
+        public List<CreateOrderItemDto> Items { get; set; } = new();
     }
 
     public class CreateOrderItemDto
