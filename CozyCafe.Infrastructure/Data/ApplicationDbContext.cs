@@ -54,6 +54,10 @@ namespace CozyCafe.Infrastructure.Data
                 .WithMany(c => c.SubCategories)
                 .HasForeignKey(c => c.ParentCategoryId)
                 .OnDelete(DeleteBehavior.Restrict);
+
+            builder.Entity<Category>()
+            .HasIndex(c => c.Name)
+            .IsUnique();
         }
 
         private void ConfigureCart(ModelBuilder builder)
@@ -87,6 +91,10 @@ namespace CozyCafe.Infrastructure.Data
                .WithMany(d => d.Orders)
                .HasForeignKey(o => o.DiscountId)
                .OnDelete(DeleteBehavior.SetNull);
+
+            builder.Entity<Order>()
+                .Property(o => o.Status)
+                .HasConversion<string>(); // Щоб зберігати enum як string у БД
         }
 
         private void ConfigureMenuItem(ModelBuilder builder)

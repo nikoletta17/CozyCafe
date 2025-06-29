@@ -9,7 +9,7 @@ namespace CozyCafe.Models.Domain
 
         [Required]
         [MaxLength(50)]
-        public string Name { get; set; }
+        public required string Name { get; set; }
 
         public int? ParentCategoryId { get; set; }
         public Category? ParentCategory { get; set; }

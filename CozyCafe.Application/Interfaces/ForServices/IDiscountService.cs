@@ -11,5 +11,7 @@ namespace CozyCafe.Application.Interfaces.ForServices
     public interface IDiscountService: IService<Discount>
     {
         Task<Discount?> GetByCodeAsync(string code);
+        Task AddDiscountAsync(Discount discount);
+        Task UpdateDiscountAsync(Discount discount);
     }
 }

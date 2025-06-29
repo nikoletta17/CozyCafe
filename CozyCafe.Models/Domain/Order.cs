@@ -25,7 +25,13 @@ namespace CozyCafe.Models.Domain
         public decimal Total { get; set; }
 
         [Required]
-        [MaxLength(20)]
-        public string Status { get; set; } = "Pending";
+        public OrderStatus Status { get; set; } = OrderStatus.Pending;
+
+        public enum OrderStatus
+        {
+            Pending,
+            Completed,
+            Cancelled
+        }
     }
 }

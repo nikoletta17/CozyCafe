@@ -18,6 +18,7 @@ namespace CozyCafe.Models.Domain
         [Range(0.01, 9999.99)]
         public decimal Price { get; set; }
 
+        [MaxLength(500)]
         public string? ImageUrl { get; set; }
 
         [Required]
