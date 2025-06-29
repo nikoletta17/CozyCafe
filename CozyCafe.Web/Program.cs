@@ -1,5 +1,8 @@
 using CozyCafe.Application.Interfaces.ForRerository;
+using CozyCafe.Application.Interfaces.ForServices;
 using CozyCafe.Application.Interfaces.Generic_Interfaces;
+using CozyCafe.Application.Services;
+using CozyCafe.Application.Services.Generic_Service;
 using CozyCafe.Infrastructure.Data;
 using CozyCafe.Infrastructure.Repositories;
 using CozyCafe.Infrastructure.Repositories.Generic_Repository;
@@ -16,7 +19,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 
 #region Repository DI
-//Connection repository registration to program file
+//Connection repositories to the program file
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<ICartRepository, CartRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
@@ -30,7 +33,16 @@ builder.Services.AddScoped<IReviewRepository, ReviewRepository>();
 
 
 #region Service DI
-
+//Connection services to the program file
+builder.Services.AddScoped(typeof(IService<>), typeof(Service<>));
+builder.Services.AddScoped<ICartService, CartService>();
+builder.Services.AddScoped<ICategoryService, CategoryService>();
+builder.Services.AddScoped<IDiscountService, DiscountService>();
+builder.Services.AddScoped<IMenuItemOptionGroupService, MenuItemOptionGroupService>();
+builder.Services.AddScoped<IMenuItemOptionService, MenuItemOptionService>();
+builder.Services.AddScoped<IMenuItemService, MenuItemService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IReviewService, ReviewService>();
 #endregion
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
