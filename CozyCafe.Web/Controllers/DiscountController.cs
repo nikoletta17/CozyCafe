@@ -52,7 +52,7 @@ namespace CozyCafe.Web.Controllers
                 return View(discountDto);
 
             var discount = _mapper.Map<Discount>(discountDto);
-            discount.ValidFrom = System.DateTime.UtcNow; // або передбачити в DTO
+            discount.ValidFrom = System.DateTime.UtcNow; 
 
             await _discountService.AddDiscountAsync(discount);
             return RedirectToAction(nameof(Index));
