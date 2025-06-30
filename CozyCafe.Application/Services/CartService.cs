@@ -49,6 +49,23 @@ namespace CozyCafe.Application.Services
             await _cartRepository.SaveChangesAsync(); 
         }
 
+        public async Task UpdateItemQuantityAsync(string userId, int menuItemId, int quantity)
+        {
+            var cart = await _cartRepository.GetByUserIdAsync(userId);
+            if (cart == null) return;
+
+            var item = cart.Items.FirstOrDefault(i => i.MenuItemId == menuItemId);
+            if (item != null)
+            {
+                if (quantity <= 0)
+                    cart.Items.Remove(item);  // Якщо кількість 0 або менше — видаляємо
+                else
+                    item.Quantity = quantity;  // Інакше оновлюємо кількість
+
+                await _cartRepository.SaveChangesAsync();
+            }
+        }
+
         public async Task RemoveCartItemAsync(string userId, int menuItemId)
         {
             var cart = await _cartRepository.GetByUserIdAsync(userId);
