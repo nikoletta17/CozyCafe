@@ -21,7 +21,7 @@ namespace CozyCafe.Web.Controllers
         public async Task<IActionResult> ByGroup(int  groupId)
         {
             var options = await _menuItemOptionService.GetByGroupIdAsync(groupId);
-            var dtos = _mapper.Map<List<MenuItemOptionDto>>(options);
+            var dtos = _mapper.Map<IEnumerable<MenuItemOptionDto>>(options);
             return View("Index", dtos);
         }
 
