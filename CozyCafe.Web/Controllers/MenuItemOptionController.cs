@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using CozyCafe.Application.Interfaces.ForServices;
 using CozyCafe.Models.Domain;
+using CozyCafe.Models.DTO;
 using CozyCafe.Web.Controllers.Generic_Controller;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,9 +19,11 @@ namespace CozyCafe.Web.Controllers
         }
 
         public async Task<IActionResult> ByGroup(int  groupId)
-
-
-        //Task<IEnumerable<MenuItemOption>> GetByGroupIdAsync(int groupId);
+        {
+            var options = await _menuItemOptionService.GetByGroupIdAsync(groupId);
+            var dtos = _mapper.Map<List<MenuItemOptionDto>>(options);
+            return View("Index", dtos);
+        }
 
     }
 }
