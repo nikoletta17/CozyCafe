@@ -10,6 +10,7 @@ using CozyCafe.Models.Domain;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using CozyCafe.Application.Mapping;
+using CozyCafe.Application.Services.Initialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +19,7 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
+
 
 #region Repository DI
 //Connection repositories to the program file
@@ -49,6 +51,8 @@ builder.Services.AddScoped<IReviewService, ReviewService>();
 #region AutoMapper
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 #endregion
+
+
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
@@ -107,5 +111,11 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 app.MapRazorPages();
+
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    await DbInitializer.SeedRolesAsync(services);
+}
 
 app.Run();
