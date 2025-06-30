@@ -33,7 +33,9 @@ namespace CozyCafe.Application.Mapping
             CreateMap<CreateOrderDto, Order>();
             CreateMap<CreateOrderItemDto, OrderItem>();
 
-            CreateMap<Review, ReviewDto>();
+            CreateMap<Review, ReviewDto>()
+                  .ForMember(dest => dest.UserFullName,
+                             opt => opt.MapFrom(src => src.User.FullName));
             CreateMap<CreateReviewDto, Review>();
 
             CreateMap<Category, CategoryDto>(); 
