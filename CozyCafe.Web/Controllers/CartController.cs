@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
 using AutoMapper;
 using CozyCafe.Application.Interfaces.ForServices;
+using CozyCafe.Models.Domain;
 using CozyCafe.Models.DTO;
 using Microsoft.AspNetCore.Mvc;
 
@@ -29,45 +30,57 @@ namespace CozyCafe.Web.Controllers
             return View(dto);
         }
 
-        // POST: /Cart/Add?menuItemId=1&quantity=2
         [HttpPost]
-        public async Task<IActionResult> Add(int menuItemId, int quantity)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AddOrUpdateItem(int menuItemId, int quantity)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (userId == null) return Unauthorized();
+            if (userId == null)
+                return Unauthorized();
 
-            await _cartService.AddOrUpdateItemAsync(userId, menuItemId, quantity);
+            var newItem = new CartItem
+            {
+                MenuItemId = menuItemId,
+                Quantity = quantity
+            };
+
+            await _cartService.AddOrUpdateCartItemAsync(userId, newItem);
             return RedirectToAction(nameof(Index));
         }
 
-        // POST: /Cart/Update?menuItemId=1&quantity=3
         [HttpPost]
-        public async Task<IActionResult> Update(int menuItemId, int quantity)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UpdateItemQuantity(int menuItemId, int quantity)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (userId == null) return Unauthorized();
+            if (userId == null)
+                return Unauthorized();
 
             await _cartService.UpdateItemQuantityAsync(userId, menuItemId, quantity);
             return RedirectToAction(nameof(Index));
         }
 
-        // POST: /Cart/Remove?menuItemId=1
+        // Видалити товар з кошика
         [HttpPost]
-        public async Task<IActionResult> Remove(int menuItemId)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RemoveItem(int menuItemId)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (userId == null) return Unauthorized();
+            if (userId == null)
+                return Unauthorized();
 
-            await _cartService.RemoveItemAsync(userId, menuItemId);
+            await _cartService.RemoveCartItemAsync(userId, menuItemId);
             return RedirectToAction(nameof(Index));
         }
 
-        // POST: /Cart/Clear
+        // Очистити весь кошик
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Clear()
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-            if (userId == null) return Unauthorized();
+            if (userId == null)
+                return Unauthorized();
 
             await _cartService.ClearCartAsync(userId);
             return RedirectToAction(nameof(Index));
