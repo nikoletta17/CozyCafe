@@ -54,6 +54,7 @@ namespace CozyCafe.Web.Controllers.Generic_Controller
             }
             var review = _mapper.Map<Review>(dto);
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            review.UserId = userId; 
             review.CreatedAt = DateTime.UtcNow;
 
             await _reviewService.AddAsync(review);

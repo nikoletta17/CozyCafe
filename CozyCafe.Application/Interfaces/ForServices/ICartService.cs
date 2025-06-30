@@ -12,6 +12,7 @@ namespace CozyCafe.Application.Interfaces.ForServices
     {
         Task<Cart?> GetByUserIdAsync(string userId);
         Task AddOrUpdateCartItemAsync(string userId, CartItem newItem);
+        Task UpdateItemQuantityAsync(string userId, int menuItemId, int quantity);
         Task RemoveCartItemAsync(string userId, int menuItemId);
         Task ClearCartAsync(string userId);
     }
