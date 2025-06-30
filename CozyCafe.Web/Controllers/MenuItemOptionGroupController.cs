@@ -1,0 +1,38 @@
+﻿using AutoMapper;
+using CozyCafe.Application.Interfaces.ForServices;
+using CozyCafe.Application.Services;
+using CozyCafe.Models.Domain;
+using CozyCafe.Models.DTO;
+using CozyCafe.Web.Controllers.Generic_Controller;
+using Microsoft.AspNetCore.Mvc;
+
+namespace CozyCafe.Web.Controllers
+{
+    public class MenuItemOptionGroupController : GenericController<MenuItemOptionGroup>
+    {
+        private readonly IMenuItemOptionGroupService _menuItemOptionGroupService;
+        private readonly IMapper _mapper;
+        public MenuItemOptionGroupController(IMenuItemOptionGroupService menuItemOptionGroupService, IMapper mapper)
+            :base(menuItemOptionGroupService)
+        {
+            _menuItemOptionGroupService = menuItemOptionGroupService;
+            _mapper = mapper;
+        }
+
+        // GET: MenuItemOptionGroup/WithOptions
+        public async Task<IActionResult> WithOptions()
+        {
+            var groups = await _menuItemOptionGroupService.GetAllWithOptionsAsync();
+            var dtos = _mapper.Map<IEnumerable<MenuItemOptionGroup>>(groups);
+            return View(dtos);
+        }
+
+        // GET: MenuItemOptionGroup/ByMenuItem/id
+        public async Task<IActionResult> ByMenuItem(int menuItemId)
+        {
+            var groups = await _menuItemOptionGroupService.GetByMenuItemIdAsync(menuItemId);
+            var dtos = _mapper.Map<IEnumerable<MenuItemOptionGroup>>(groups);
+            return View(dtos);
+        }
+    }
+}
