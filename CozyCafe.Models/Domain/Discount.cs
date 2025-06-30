@@ -7,7 +7,7 @@ public class Discount
 
     [Required]
     [MaxLength(20)]
-    public string Code { get; set; }
+    public required string Code { get; set; }
 
     [Required]
     [Range(1, 100)]
