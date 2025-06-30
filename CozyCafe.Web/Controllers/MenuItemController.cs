@@ -23,14 +23,14 @@ namespace CozyCafe.Web.Controllers
         {
             var items = await _menuItemService.GetByCategoryAsync(categoryId);
             var dtos = _mapper.Map<IEnumerable<MenuItemDto>>(items);
-            return View(dtos);
+            return View("Index", dtos);
         }
 
         public async Task<IActionResult> Search(string keyword)
         {
             var items = await _menuItemService.SearchAsync(keyword);
             var dtos = _mapper.Map<IEnumerable<MenuItemDto>>(items);
-            return View(dtos);
+            return View("Index", dtos);
         }
     }
 }

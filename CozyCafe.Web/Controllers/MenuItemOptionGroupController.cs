@@ -24,7 +24,7 @@ namespace CozyCafe.Web.Controllers
         {
             var groups = await _menuItemOptionGroupService.GetAllWithOptionsAsync();
             var dtos = _mapper.Map<IEnumerable<MenuItemOptionGroup>>(groups);
-            return View(dtos);
+            return View("Index", dtos);
         }
 
         // GET: MenuItemOptionGroup/ByMenuItem/id
@@ -32,7 +32,7 @@ namespace CozyCafe.Web.Controllers
         {
             var groups = await _menuItemOptionGroupService.GetByMenuItemIdAsync(menuItemId);
             var dtos = _mapper.Map<IEnumerable<MenuItemOptionGroup>>(groups);
-            return View(dtos);
+            return View("Index", dtos);
         }
     }
 }
