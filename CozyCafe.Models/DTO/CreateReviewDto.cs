@@ -9,7 +9,7 @@ namespace CozyCafe.Models.DTO
         public int Rating { get; set; }
 
         [MaxLength(500)]
-        public string? Comment { get; set; }
+        public string Comment { get; set; } = string.Empty;
 
         [Required]
         public int MenuItemId { get; set; }

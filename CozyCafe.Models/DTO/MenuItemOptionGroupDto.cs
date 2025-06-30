@@ -9,7 +9,7 @@ namespace CozyCafe.Models.DTO
     public class MenuItemOptionGroupDto
     {
         public int Id { get; set; }
-        public string Name { get; set; }
+        public required string Name { get; set; }
         public List<MenuItemOptionDto> Options { get; set; } = new();
     }
 }

@@ -8,7 +8,7 @@ namespace CozyCafe.Models.DTO
 {
     public class OrderItemOptionDto
     {
-        public string Name { get; set; }
+        public required string Name { get; set; }
         public decimal? ExtraPrice { get; set; }
     }
 }

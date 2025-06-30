@@ -8,7 +8,7 @@ namespace CozyCafe.Models.DTO
 {
     public class DiscountDto
     {
-        public string Code { get; set; }
+        public required string Code { get; set; }
         public int Percent { get; set; }
         public DateTime ValidTo { get; set; }
     }

@@ -9,7 +9,7 @@ namespace CozyCafe.Models.DTO
     public class MenuItemOptionDto
     {
         public int Id { get; set; }
-        public string? Name { get; set; }
+        public required string Name { get; set; }
         public decimal? ExtraPrice { get; set; }
     }
 }
