@@ -7,6 +7,7 @@ using CozyCafe.Application.Interfaces.ForRerository;
 using CozyCafe.Application.Interfaces.ForServices;
 using CozyCafe.Application.Services.Generic_Service;
 using CozyCafe.Models.Domain;
+using static CozyCafe.Models.Domain.Order;
 
 namespace CozyCafe.Application.Services
 {
@@ -52,6 +53,26 @@ namespace CozyCafe.Application.Services
                 throw new Exception("Order item not found");
 
             orderItem.SelectedOptions.Add(option);
+            await _orderRepository.SaveChangesAsync();
+        }
+
+        public async Task UpdateOrderStatusAsync(int orderId, string newStatus)
+        {
+            var order = await _orderRepository.GetByIdAsync(orderId);
+            if (order == null)
+                throw new Exception("Order not found");
+
+            
+            if (Enum.TryParse<OrderStatus>(newStatus, true, out var status))
+            {
+                order.Status = status;
+            }
+            else
+            {
+                throw new ArgumentException("Invalid status value.");
+            }
+
+            _orderRepository.Update(order);
             await _orderRepository.SaveChangesAsync();
         }
 

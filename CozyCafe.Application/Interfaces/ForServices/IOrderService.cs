@@ -13,6 +13,7 @@ namespace CozyCafe.Application.Interfaces.ForServices
         Task<IEnumerable<Order>> GetByUserIdAsync(string userId);
         Task<Order?> GetFullOrderAsync(int orderId);
         Task AddOrderItemAsync(int orderId, OrderItem item);
+        Task UpdateOrderStatusAsync(int orderId, string newStatus);
         Task AddOptionToOrderItemAsync(int orderId, int orderItemId, OrderItemOption option);
         Task RemoveOrderItemOptionAsync(int orderId, int orderItemId, int optionId);
     }

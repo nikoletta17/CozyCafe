@@ -24,14 +24,16 @@ namespace CozyCafe.Models.Domain
         [Range(0.01, 999999)]
         public decimal Total { get; set; }
 
-        [Required]
-        public OrderStatus Status { get; set; } = OrderStatus.Pending;
-
         public enum OrderStatus
         {
-            Pending,
-            Completed,
-            Cancelled
+            Pending,     //	Замовлення створене, очікує обробки
+            Confirmed,   //	Замовлення підтверджене (оплата/перевірка)
+            InProgress,  //Замовлення готується
+            Completed,  //	Замовлення виконано
+            Cancelled   //	Замовлення скасовано
         }
+
+        [Required]
+        public OrderStatus Status { get; set; } = OrderStatus.Pending;
     }
 }

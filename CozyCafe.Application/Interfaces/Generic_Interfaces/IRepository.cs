@@ -10,9 +10,10 @@ namespace CozyCafe.Application.Interfaces.Generic_Interfaces
     {
         Task<IEnumerable<T>> GetAllAsync();
         Task<T?> GetByIdAsync(int id);
-        Task AddAsync(T entity);
-        void Update(T entity);
-        void Delete(T entity);
+        Task AddAsync(T entity); // бо EF має AddAsync()
+        void Update(T entity);   // бо EF не має UpdateAsync()
+        void Delete(T entity);   // бо EF не має DeleteAsync()
         Task SaveChangesAsync();
+
     }
 }
