@@ -20,16 +20,7 @@ namespace CozyCafe.Application.Services.ForAdmin
         {
             _menuItemRepository = menuItemRepository;
         }
-        public async Task<IEnumerable<MenuItem>> GetByCategoryAsync(int categoryId)
-        {
-            return await _menuItemRepository.GetByCategoryAsync(categoryId);
-        }
-
-        public async Task<IEnumerable<MenuItem>> SearchAsync(string keyword)
-        {
-            return await _menuItemRepository.SearchAsync(keyword);
-        }
-
+        
         public async Task<IEnumerable<MenuItemDto>> GetFilteredAsync(MenuItemFilterModel filterModel)
         {
             var items = await _menuItemRepository.GetFilteredAsync(filterModel);

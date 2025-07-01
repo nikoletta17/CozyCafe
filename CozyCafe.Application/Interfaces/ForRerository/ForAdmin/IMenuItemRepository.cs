@@ -8,10 +8,7 @@ namespace CozyCafe.Application.Interfaces.ForRerository.ForAdmin
 {
     public interface IMenuItemRepository : IRepository<MenuItem>
     {
-        Task<IEnumerable<MenuItem>> GetByCategoryAsync(int categoryId);
-        Task<IEnumerable<MenuItem>> SearchAsync(string keyword);
         Task<IEnumerable<MenuItem>> GetFilteredAsync(MenuItemFilterModel filter);
-
 
     }
 }

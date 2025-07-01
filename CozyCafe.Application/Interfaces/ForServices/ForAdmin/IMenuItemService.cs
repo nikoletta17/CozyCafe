@@ -11,8 +11,6 @@ namespace CozyCafe.Application.Interfaces.ForServices.ForAdmin
 {
     public interface IMenuItemService: IService<MenuItem>
     {
-        Task<IEnumerable<MenuItem>> GetByCategoryAsync(int categoryId);
-        Task<IEnumerable<MenuItem>> SearchAsync(string keyword);
         Task<IEnumerable<MenuItemDto>> GetFilteredAsync(MenuItemFilterModel filterModel);
 
     }
