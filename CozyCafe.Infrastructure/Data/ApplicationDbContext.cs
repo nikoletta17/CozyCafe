@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using CozyCafe.Models.Domain;
+using CozyCafe.Models.Domain.Admin;
+using CozyCafe.Models.Domain.Common;
+using CozyCafe.Models.Domain.ForUser;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 

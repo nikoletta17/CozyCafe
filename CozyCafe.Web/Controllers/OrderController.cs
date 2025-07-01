@@ -1,8 +1,8 @@
 ﻿using System.Security.Claims;
 using AutoMapper;
-using CozyCafe.Application.Interfaces.ForServices;
-using CozyCafe.Models.Domain;
-using CozyCafe.Models.DTO;
+using CozyCafe.Application.Interfaces.ForServices.ForUser;
+using CozyCafe.Models.Domain.Common;
+using CozyCafe.Models.DTO.ForUser;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CozyCafe.Web.Controllers

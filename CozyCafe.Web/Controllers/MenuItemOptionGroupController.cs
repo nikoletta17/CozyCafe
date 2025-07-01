@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
-using CozyCafe.Application.Interfaces.ForServices;
+using CozyCafe.Application.Interfaces.ForServices.ForAdmin;
 using CozyCafe.Application.Services;
-using CozyCafe.Models.Domain;
+using CozyCafe.Models.Domain.Admin;
 using CozyCafe.Models.DTO;
 using CozyCafe.Web.Controllers.Generic_Controller;
 using Microsoft.AspNetCore.Mvc;

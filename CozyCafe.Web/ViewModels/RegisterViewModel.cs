@@ -1,19 +1,23 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace CozyCafe.Models.ViewModels
+namespace CozyCafe.Web.Models.ViewModels
 {
     public class RegisterViewModel
     {
         [Required]
+        public string FullName { get; set; }
+
+        [Required]
         [EmailAddress]
-        public string Email { get; set; } = string.Empty;
+        public required string Email { get; set; }
 
         [Required]
         [DataType(DataType.Password)]
-        public string Password { get; set; } = string.Empty;
+        public required string Password { get; set; }
 
         [DataType(DataType.Password)]
-        [Compare("Password", ErrorMessage = "Passwords do not match.")]
-        public string ConfirmPassword { get; set; } = string.Empty;
+        [Compare("Password")]
+        public required string ConfirmPassword { get; set; }
     }
+
 }

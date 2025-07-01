@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace CozyCafe.Models.ViewModels
+namespace CozyCafe.Web.Models.ViewModels
 {
     public class LoginViewModel
     {

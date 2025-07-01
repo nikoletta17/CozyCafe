@@ -1,0 +1,52 @@
+﻿@model CozyCafe.Models.DTO.Admin.AdminOrderDto
+
+@{
+    ViewData["Title"] = $"Деталі замовлення #{Model.Id}";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<p><strong>Користувач:</strong> @Model.UserFullName (@Model.UserEmail)</p>
+<p><strong>Дата замовлення:</strong> @Model.OrderedAt.ToString("dd.MM.yyyy HH:mm")</p>
+<p><strong>Статус:</strong> @Model.Status</p>
+<p><strong>Знижка:</strong> @Model.DiscountCode ?? "Немає"</p>
+<p><strong>Всього:</strong> @Model.Total.ToString("C")</p>
+
+<h4>Позиції замовлення</h4>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Страва</th>
+            <th>Кількість</th>
+            <th>Ціна за одиницю</th>
+            <th>Опції</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Items)
+        {
+            <tr>
+                <td>@item.MenuItemName</td>
+                <td>@item.Quantity</td>
+                <td>@item.Price.ToString("C")</td>
+                <td>
+                    @if (item.SelectedOptions.Any())
+                    {
+                        <ul>
+                            @foreach (var opt in item.SelectedOptions)
+                            {
+                                <li>@opt</li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <span>Немає</span>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<a asp-action="Index" class="btn btn-secondary">Назад до списку</a>
