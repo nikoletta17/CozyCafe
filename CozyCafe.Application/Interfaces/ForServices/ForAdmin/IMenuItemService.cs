@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using CozyCafe.Application.Interfaces.Generic_Interfaces;
 using CozyCafe.Models.Domain.Admin;
+using CozyCafe.Models.DTO.Admin;
 
 namespace CozyCafe.Application.Interfaces.ForServices.ForAdmin
 {
@@ -12,5 +13,7 @@ namespace CozyCafe.Application.Interfaces.ForServices.ForAdmin
     {
         Task<IEnumerable<MenuItem>> GetByCategoryAsync(int categoryId);
         Task<IEnumerable<MenuItem>> SearchAsync(string keyword);
+        Task<IEnumerable<MenuItemDto>> GetFilteredAsync(MenuItemFilterModel filterModel);
+
     }
 }
