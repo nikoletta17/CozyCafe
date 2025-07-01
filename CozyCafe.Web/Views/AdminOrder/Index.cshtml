@@ -2,25 +2,33 @@
 
 @{
     ViewData["Title"] = "Замовлення";
-    string? currentStatus = ViewData["CurrentStatusFilter"] as string;
-    string? currentUserSearch = ViewData["CurrentUserSearch"] as string;
+
+    // Створюємо список статусів для випадаючого списку
+    var statusList = new List<SelectListItem>
+    {
+        new SelectListItem { Text = "Усі статуси", Value = "" },
+        new SelectListItem { Text = "Pending", Value = "Pending" },
+        new SelectListItem { Text = "Confirmed", Value = "Confirmed" },
+        new SelectListItem { Text = "InProgress", Value = "InProgress" },
+        new SelectListItem { Text = "Completed", Value = "Completed" },
+        new SelectListItem { Text = "Cancelled", Value = "Cancelled" }
+    };
+
+    // Отримаємо поточне значення для фільтра з ViewData, або пустий рядок
+    string currentStatus = ViewData["CurrentStatusFilter"] as string ?? "";
 }
 
 <h2>Замовлення</h2>
 
 <form method="get" class="row g-3 mb-3">
     <div class="col-auto">
-        <select name="statusFilter" class="form-select">
-            <option value="">Усі статуси</option>
-            <option value="Pending" @(currentStatus == "Pending" ? "selected" : "")>Pending</option>
-            <option value="Confirmed" @(currentStatus == "Confirmed" ? "selected" : "")>Confirmed</option>
-            <option value="InProgress" @(currentStatus == "InProgress" ? "selected" : "")>InProgress</option>
-            <option value="Completed" @(currentStatus == "Completed" ? "selected" : "")>Completed</option>
-            <option value="Cancelled" @(currentStatus == "Cancelled" ? "selected" : "")>Cancelled</option>
+        <select name="statusFilter" class="form-select"
+                asp-items="statusList"
+                asp-for="@currentStatus">
         </select>
     </div>
     <div class="col-auto">
-        <input type="text" name="userSearch" value="@currentUserSearch" class="form-control" placeholder="Пошук користувача..." />
+        <input type="text" name="userSearch" value="@(ViewData["CurrentUserSearch"] ?? "")" class="form-control" placeholder="Пошук користувача..." />
     </div>
     <div class="col-auto">
         <button type="submit" class="btn btn-primary">Фільтрувати</button>

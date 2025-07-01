@@ -1,8 +1,86 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model IEnumerable<CozyCafe.Models.Domain.Admin.Category>
+
+@{
+    ViewData["Title"] = "CozyCafe - Ласкаво просимо";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<style>
+    /* Олд-мани стиль */
+    body {
+        font-family: 'Playfair Display', serif;
+        background-color: #f9f6f1;
+        color: #3b3a30;
+    }
+    .hero {
+        background-image: url('/images/food-banner.jpg'); /* заміни на свою картинку */
+        background-size: cover;
+        background-position: center;
+        height: 450px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        color: #fff;
+        text-shadow: 2px 2px 5px rgba(0,0,0,0.7);
+        margin-bottom: 2rem;
+    }
+    .hero h1 {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        font-weight: 700;
+    }
+    .hero a.btn {
+        font-size: 1.5rem;
+        padding: 0.8rem 2rem;
+        background-color: #4b4a3f;
+        border: 2px solid #c2b280;
+        color: #c2b280;
+        text-decoration: none;
+        transition: background-color 0.3s ease;
+    }
+    .hero a.btn:hover {
+        background-color: #c2b280;
+        color: #4b4a3f;
+    }
+    .categories {
+        display: flex;
+        justify-content: center;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+        margin-bottom: 4rem;
+    }
+    .category-card {
+        background-color: #fff;
+        border: 1px solid #c2b280;
+        border-radius: 10px;
+        padding: 1.5rem 2rem;
+        text-align: center;
+        width: 180px;
+        cursor: pointer;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+    }
+    .category-card:hover {
+        background-color: #c2b280;
+        color: #fff;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+    .category-card h3 {
+        margin: 0;
+        font-weight: 600;
+    }
+</style>
+
+<div class="hero">
+    <h1>Ласкаво просимо в CozyCafe</h1>
+    <a class="btn" href="/MenuItem/Index">Побачити меню</a>
+</div>
+
+<div class="categories">
+    @foreach (var category in Model)
+    {
+        <div class="category-card" onclick="location.href='@Url.Action("Index", "MenuItem", new { CategoryId = category.Id })'">
+            <h3>@category.Name</h3>
+        </div>
+    }
 </div>

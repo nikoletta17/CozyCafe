@@ -4,6 +4,8 @@ using CozyCafe.Application.Interfaces.ForServices.ForUser;
 using CozyCafe.Models.Domain;
 using CozyCafe.Models.DTO.ForUser;
 using Microsoft.AspNetCore.Mvc;
+using CozyCafe.Models.Domain.ForUser;
+
 
 namespace CozyCafe.Web.Controllers
 {
