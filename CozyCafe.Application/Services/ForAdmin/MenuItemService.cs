@@ -13,14 +13,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace CozyCafe.Application.Services.ForAdmin
 {
-    public class MenuItemService: Service<MenuItem>, IMenuItemService
+    public class MenuItemService : Service<MenuItem>, IMenuItemService
     {
         private readonly IMenuItemRepository _menuItemRepository;
-        public MenuItemService(IMenuItemRepository menuItemRepository): base (menuItemRepository) 
+        public MenuItemService(IMenuItemRepository menuItemRepository) : base(menuItemRepository)
         {
             _menuItemRepository = menuItemRepository;
         }
-        
+
         public async Task<IEnumerable<MenuItemDto>> GetFilteredAsync(MenuItemFilterModel filterModel)
         {
             var items = await _menuItemRepository.GetFilteredAsync(filterModel);

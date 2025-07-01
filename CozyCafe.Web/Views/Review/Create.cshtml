@@ -1,0 +1,99 @@
+﻿@model CozyCafe.Models.DTO.ForUser.CreateReviewDto
+
+@{
+    ViewData["Title"] = "Залишити відгук";
+}
+
+<style>
+    body {
+        font-family: 'Playfair Display', serif;
+        background-color: #f9f6f1;
+        color: #3b3a30;
+    }
+
+    .review-form {
+        max-width: 500px;
+        margin: 3rem auto;
+        padding: 2rem;
+        background: #fff;
+        border: 1px solid #c2b280;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+        text-align: center;
+        font-weight: 700;
+        margin-bottom: 1.5rem;
+    }
+
+    label {
+        font-weight: 600;
+        display: block;
+        margin-bottom: 0.3rem;
+    }
+
+    select, textarea, input[type=number] {
+        width: 100%;
+        padding: 0.5rem;
+        margin-bottom: 1rem;
+        border: 1px solid #c2b280;
+        border-radius: 5px;
+        font-family: 'Playfair Display', serif;
+        font-size: 1rem;
+        color: #3b3a30;
+        background-color: #f9f6f1;
+    }
+
+    textarea {
+        resize: vertical;
+        min-height: 100px;
+    }
+
+    .btn-submit {
+        background-color: #4b4a3f;
+        color: #c2b280;
+        padding: 0.7rem 1.5rem;
+        border: 2px solid #c2b280;
+        border-radius: 8px;
+        font-weight: 700;
+        font-size: 1.1rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        display: block;
+        margin: 0 auto;
+    }
+
+        .btn-submit:hover {
+            background-color: #c2b280;
+            color: #4b4a3f;
+        }
+
+    .validation-error {
+        color: #a04040;
+        font-style: italic;
+        margin-bottom: 1rem;
+    }
+</style>
+
+<div class="review-form">
+    <h2>Залишити відгук</h2>
+
+    <form asp-action="Create" method="post">
+        <input type="hidden" asp-for="MenuItemId" />
+
+        <label asp-for="Rating">Оцінка (1-5):</label>
+        <select asp-for="Rating" asp-items="new SelectList(Enumerable.Range(1,5))"></select>
+        <span asp-validation-for="Rating" class="validation-error"></span>
+
+        <label asp-for="Comment">Коментар (необов'язково):</label>
+        <textarea asp-for="Comment"></textarea>
+        <span asp-validation-for="Comment" class="validation-error"></span>
+
+        <button type="submit" class="btn-submit">Відправити</button>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

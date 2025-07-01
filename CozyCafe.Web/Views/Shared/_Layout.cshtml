@@ -30,7 +30,22 @@
                     @if (User.Identity?.IsAuthenticated ?? false)
                     {
                         <span class="navbar-text me-2">Hello, @User.Identity.Name!</span>
-                        <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+
+                        <a class="btn btn-sm"
+                           href="@Url.Action("Create", "Review", new { menuItemId = ViewBag.MenuItemId ?? 0 })"
+                           style="
+                                  font-family: 'Playfair Display', serif;
+                                  color: #c2b280;
+                                  border: 1px solid #c2b280;
+                                  padding: 0.3rem 0.6rem;
+                                  border-radius: 6px;
+                                  text-decoration:none;
+                                  margin-left: 1rem;
+                                      ">
+                            Залишити відгук
+                        </a>
+
+                        <form asp-controller="Account" asp-action="Logout" method="post" class="d-inline ms-3">
                             <button type="submit" class="btn btn-link nav-link" style="display:inline; padding: 0;">Logout</button>
                         </form>
                     }
@@ -39,6 +54,7 @@
                         <a class="nav-link" asp-controller="Account" asp-action="Login">Login</a>
                         <a class="nav-link" asp-controller="Account" asp-action="Register">Register</a>
                     }
+
 
                 </div>
             </div>

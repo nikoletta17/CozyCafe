@@ -22,6 +22,8 @@ namespace CozyCafe.Web.Controllers
             _menuItemService = service;
             _mapper = mapper;
         }
+
+        [HttpGet]
         public async Task<IActionResult> Index(MenuItemFilterModel filter)
         {
             var items = await _menuItemService.GetFilteredAsync(filter);
@@ -31,6 +33,5 @@ namespace CozyCafe.Web.Controllers
 
             return View((items, filter));
         }
-
     }
 }

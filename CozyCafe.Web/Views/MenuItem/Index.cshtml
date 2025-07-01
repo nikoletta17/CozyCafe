@@ -1,80 +1,193 @@
 ﻿@model (IEnumerable<CozyCafe.Models.DTO.Admin.MenuItemDto> Items, CozyCafe.Models.DTO.Admin.MenuItemFilterModel Filter)
-@using Microsoft.AspNetCore.Mvc.Rendering
 
 @{
     ViewData["Title"] = "Меню";
+    var categories = ViewBag.Categories as List<CozyCafe.Models.DTO.Admin.CategoryDto> ?? new List<CozyCafe.Models.DTO.Admin.CategoryDto>();
 }
 
-<h2>Меню</h2>
+<style>
+    .filter-section {
+        max-width: 900px;
+        margin: 1rem auto;
+        padding: 1rem;
+        background-color: #f9f6f1;
+        border: 1px solid #c2b280;
+        border-radius: 10px;
+        font-family: 'Playfair Display', serif;
+        color: #4b4a3f;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        align-items: center;
+        justify-content: center;
+    }
+    .filter-section label {
+        font-weight: 600;
+        margin-right: 0.3rem;
+    }
+    .filter-section select, .filter-section input[type="text"], .filter-section input[type="number"] {
+        padding: 0.3rem 0.5rem;
+        border: 1px solid #c2b280;
+        border-radius: 5px;
+        font-family: 'Georgia', serif;
+    }
+    .filter-section button {
+        background-color: #4b4a3f;
+        color: #c2b280;
+        border: 2px solid #c2b280;
+        padding: 0.4rem 1rem;
+        font-weight: 600;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+    .filter-section button:hover {
+        background-color: #c2b280;
+        color: #4b4a3f;
+    }
+    .menu-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 2rem;
+        padding: 2rem;
+    }
+    .menu-card {
+        background: #fff;
+        border: 1px solid #c2b280;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+    }
+    .menu-card:hover {
+        transform: scale(1.02);
+        box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+    }
+    .menu-card img {
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+    }
+    .menu-card-body {
+        padding: 1rem;
+    }
+    .menu-card-body h5 {
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+    }
+    .menu-card-body p {
+        font-size: 0.9rem;
+        color: #555;
+        min-height: 3rem;
+    }
+    .menu-card-body .price {
+        font-weight: bold;
+        color: #4b4a3f;
+        margin-top: 1rem;
+        font-size: 1.1rem;
+    }
+    .btn-add, .btn-details {
+        background-color: #4b4a3f;
+        color: #c2b280;
+        border: 2px solid #c2b280;
+        padding: 0.4rem 0.8rem;
+        font-weight: 600;
+        border-radius: 6px;
+        text-decoration: none;
+        display: inline-block;
+        margin-top: 0.5rem;
+        text-align: center;
+        transition: background-color 0.3s ease;
+        cursor: pointer;
+    }
+    .btn-add:hover, .btn-details:hover {
+        background-color: #c2b280;
+        color: #4b4a3f;
+    }
+</style>
 
-<form method="get" class="mb-4">
-    <div class="row g-2">
-        <div class="col-md-3">
-            <input type="text" name="SearchTerm" class="form-control" placeholder="🔍 Назва" value="@Model.Filter.SearchTerm" />
-        </div>
+<h2 class="text-center my-4">Меню CozyCafe</h2>
 
-        <div class="col-md-3">
-            <select name="CategoryId" class="form-select">
-                <option value="">Всі категорії</option>
-                @foreach (var cat in ViewBag.Categories as SelectList)
-                {
-                    <option value="@cat.Value" selected="@(Model.Filter.CategoryId?.ToString() == cat.Value)">
-                        @cat.Text
-                    </option>
-                }
-            </select>
-        </div>
+<form method="get" asp-action="Index" asp-controller="MenuItem" class="filter-section">
+    <label for="SearchTerm">Пошук:</label>
+    <input type="text" name="SearchTerm" value="@Model.Filter.SearchTerm" placeholder="Назва страви" />
 
-        <div class="col-md-2">
-            <input type="number" name="MinPrice" step="0.01" class="form-control" placeholder="Від ₴" value="@Model.Filter.MinPrice" />
-        </div>
+    <label for="CategoryId">Категорія:</label>
+    <select name="CategoryId">
+        <option value="">Всі</option>
+        @foreach (var cat in categories)
+        {
+            if (cat.Id == Model.Filter.CategoryId)
+            {
+                <option value="@cat.Id" selected="selected">@cat.Name</option>
+            }
+            else
+            {
+                <option value="@cat.Id">@cat.Name</option>
+            }
+        }
+    </select>
 
-        <div class="col-md-2">
-            <input type="number" name="MaxPrice" step="0.01" class="form-control" placeholder="До ₴" value="@Model.Filter.MaxPrice" />
-        </div>
+    <label for="MinPrice">Ціна від:</label>
+    <input type="number" name="MinPrice" value="@Model.Filter.MinPrice?.ToString()" step="0.01" min="0" />
 
-        <div class="col-md-2">
-            <select name="SortBy" class="form-select">
-                <option value="">Сортування</option>
-                <option value="name" selected="@(Model.Filter.SortBy == "name")">Назва ↑</option>
-                <option value="price_asc" selected="@(Model.Filter.SortBy == "price_asc")">Ціна ↑</option>
-                <option value="price_desc" selected="@(Model.Filter.SortBy == "price_desc")">Ціна ↓</option>
-            </select>
-        </div>
+    <label for="MaxPrice">до:</label>
+    <input type="number" name="MaxPrice" value="@Model.Filter.MaxPrice?.ToString()" step="0.01" min="0" />
 
-        <div class="col-md-12 mt-2">
-            <button type="submit" class="btn btn-primary">🔍 Пошук</button>
-        </div>
-    </div>
+    <label for="SortBy">Сортування:</label>
+   <select name="SortBy">
+    @if (string.IsNullOrEmpty(Model.Filter.SortBy))
+    {
+        <option value="" selected="selected">За замовчуванням</option>
+    }
+    else
+    {
+        <option value="">За замовчуванням</option>
+    }
+
+    @if (Model.Filter.SortBy == "name")
+    {
+        <option value="name" selected="selected">Назва (А-Я)</option>
+    }
+    else
+    {
+        <option value="name">Назва (А-Я)</option>
+    }
+
+    @if (Model.Filter.SortBy == "price_asc")
+    {
+        <option value="price_asc" selected="selected">Ціна ↑</option>
+    }
+    else
+    {
+        <option value="price_asc">Ціна ↑</option>
+    }
+
+    @if (Model.Filter.SortBy == "price_desc")
+    {
+        <option value="price_desc" selected="selected">Ціна ↓</option>
+    }
+    else
+    {
+        <option value="price_desc">Ціна ↓</option>
+    }
+</select>
+
+    <button type="submit">Фільтрувати</button>
 </form>
 
-<hr />
-
-@if (!Model.Items.Any())
-{
-    <div class="alert alert-warning">Нічого не знайдено</div>
-}
-else
-{
-    <div class="row row-cols-1 row-cols-md-3 g-4">
-        @foreach (var item in Model.Items)
-        {
-            <div class="col">
-                <div class="card h-100 shadow-sm">
-                    @if (!string.IsNullOrEmpty(item.ImageUrl))
-                    {
-                        <img src="@item.ImageUrl" class="card-img-top" alt="@item.Name" />
-                    }
-
-                    <div class="card-body">
-                        <h5 class="card-title">@item.Name</h5>
-                        <p class="card-text">@item.Description</p>
-                        <p><strong>Категорія:</strong> @item.CategoryName</p>
-                        <p><strong>Ціна:</strong> @item.Price ₴</p>
-                    </div>
-                </div>
+<div class="menu-container">
+    @foreach (var item in Model.Items)
+    {
+        <div class="menu-card">
+            <img src="@item.ImageUrl ?? "/images/default-dish.jpg"" alt="@item.Name" />
+            <div class="menu-card-body">
+                <h5>@item.Name</h5>
+                <p>@item.Description</p>
+                <div class="price">@item.Price.ToString("C")</div>
+                <a href="@Url.Action("Details", "MenuItem", new { id = item.Id })" class="btn-details">Деталі</a>
+                <a href="@Url.Action("AddToCart", "Cart", new { id = item.Id })" class="btn-add">Додати в кошик</a>
             </div>
-        }
-    </div>
-}
-
+        </div>
+    }
+</div>
