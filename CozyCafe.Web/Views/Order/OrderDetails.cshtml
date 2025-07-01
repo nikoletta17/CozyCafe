@@ -1,0 +1,114 @@
+﻿@model CozyCafe.Models.DTO.ForUser.OrderDto
+@using Microsoft.AspNetCore.Mvc.Rendering
+@{
+    ViewData["Title"] = "Деталі замовлення";
+}
+
+<h2 class="mb-4" style="font-family: 'Playfair Display', serif; color: #4B3B2B;">Деталі замовлення #@Model.Id</h2>
+
+<div class="mb-3 text-muted">
+    <strong>Дата замовлення:</strong> @Model.OrderedAt.ToLocalTime().ToString("dd MMM yyyy HH:mm")<br />
+    <strong>Статус:</strong> @Model.Status<br />
+    <strong>Знижковий код:</strong> @(string.IsNullOrEmpty(Model.DiscountCode) ? "-" : Model.DiscountCode)<br />
+    <strong>Загальна сума:</strong> @Model.Total.ToString("C")
+</div>
+
+<hr class="mb-4" />
+
+<h4 style="font-family: 'Playfair Display', serif; color: #4B3B2B;">Позиції замовлення</h4>
+<table class="table table-bordered" style="background-color:#f9f5f1;">
+    <thead>
+        <tr>
+            <th>Назва</th>
+            <th>Кількість</th>
+            <th>Ціна</th>
+            <th>Опції</th>
+            <th>Дії</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.Items)
+        {
+            <tr>
+                <td>@item.MenuItemName</td>
+                <td>@item.Quantity</td>
+                <td>@item.Price.ToString("C")</td>
+                <td>
+                    @if (item.SelectedOptions.Any())
+                    {
+                        <ul class="mb-0">
+                            @foreach (var option in item.SelectedOptions)
+                            {
+                                <li>
+                                    @option.Name
+                                    @if (option.ExtraPrice.HasValue && option.ExtraPrice.Value > 0)
+                                    {
+                                        <small> (+@option.ExtraPrice.Value.ToString("C"))</small>
+                                    }
+                                    <form asp-action="RemoveOption" method="post" class="d-inline ms-2">
+                                        <input type="hidden" name="orderId" value="@Model.Id" />
+                                        <input type="hidden" name="orderItemId" value="@item.Id" />
+                                        <input type="hidden" name="optionId" value="@option.Id" />
+                                        <button type="submit" class="btn btn-sm btn-outline-danger" title="Видалити опцію">&times;</button>
+                                    </form>
+                                </li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <span>-</span>
+                    }
+                </td>
+                <td>
+                    <!-- Форма для додавання опції до цієї позиції -->
+                    <form asp-action="AddOption" method="post" class="d-flex gap-2 align-items-center">
+                        <input type="hidden" name="orderId" value="@Model.Id" />
+                        <input type="hidden" name="orderItemId" value="@item.Id" />
+                        <input type="text" name="option.Name" placeholder="Нова опція" class="form-control form-control-sm" required />
+                        <input type="number" name="option.ExtraPrice" placeholder="Ціна" class="form-control form-control-sm" min="0" step="0.01" style="max-width: 100px;" />
+                        <button type="submit" class="btn btn-sm btn-success">Додати</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<hr />
+
+<h4 style="font-family: 'Playfair Display', serif; color: #4B3B2B;">Додати позицію</h4>
+<form asp-action="AddItem" method="post" class="row g-3 align-items-center mb-4">
+    <input type="hidden" name="orderId" value="@Model.Id" />
+    <div class="col-auto">
+        <select name="MenuItemId" class="form-select" required>
+            <option value="" selected disabled>Оберіть страву</option>
+            @foreach (var menu in ViewBag.MenuItems as SelectList)
+            {
+                <option value="@menu.Value">@menu.Text</option>
+            }
+        </select>
+    </div>
+    <div class="col-auto">
+        <input type="number" name="Quantity" min="1" max="100" value="1" class="form-control" required />
+    </div>
+    <div class="col-auto">
+        <button type="submit" class="btn btn-primary">Додати</button>
+    </div>
+</form>
+
+<hr />
+
+<h4 style="font-family: 'Playfair Display', serif; color: #4B3B2B;">Оновити статус замовлення</h4>
+<form asp-action="UpdateStatus" method="post" class="mb-5" style="max-width: 350px;">
+    <input type="hidden" name="orderId" value="@Model.Id" />
+    <select name="newStatus" class="form-select mb-3" required>
+        <option value="" disabled selected>Оберіть статус</option>
+        <option value="Pending">Очікується</option>
+        <option value="Confirmed">Підтверджено</option>
+        <option value="InProgress">В процесі</option>
+        <option value="Completed">Виконано</option>
+        <option value="Cancelled">Скасовано</option>
+    </select>
+    <button type="submit" class="btn btn-secondary">Оновити статус</button>
+</form>

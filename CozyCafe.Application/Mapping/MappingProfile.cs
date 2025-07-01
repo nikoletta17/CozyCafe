@@ -26,8 +26,11 @@ namespace CozyCafe.Application.Mapping
             // Orders (User)
             CreateMap<Order, OrderDto>();
             CreateMap<OrderItem, OrderItemDto>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id)) // додаємо Id
                 .ForMember(dest => dest.MenuItemName, opt => opt.MapFrom(src => src.MenuItem.Name));
-            CreateMap<OrderItemOption, OrderItemOptionDto>();
+            CreateMap<OrderItemOption, OrderItemOptionDto>()
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id)); // додаємо Id
+
             CreateMap<CreateOrderDto, Order>();
             CreateMap<CreateOrderItemDto, OrderItem>();
 

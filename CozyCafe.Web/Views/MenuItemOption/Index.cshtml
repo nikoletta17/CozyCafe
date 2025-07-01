@@ -1,0 +1,32 @@
+﻿@model IEnumerable<CozyCafe.Models.DTO.Admin.MenuItemOptionDto>
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Options";
+}
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display&display=swap" rel="stylesheet" />
+
+<div class="container my-5" style="font-family: 'Playfair Display', serif;">
+    <h1 class="mb-4 text-secondary">Options</h1>
+
+    @if (!Model.Any())
+    {
+        <p class="text-muted">No options found for this group.</p>
+    }
+    else
+    {
+        <ul class="list-group shadow rounded-4" style="background-color: #f9f6f2;">
+            @foreach (var option in Model)
+            {
+                <li class="list-group-item d-flex justify-content-between align-items-center border-0">
+                    <span class="fw-semibold text-dark">@option.Name</span>
+                    @if (option.ExtraPrice.HasValue && option.ExtraPrice.Value > 0)
+                    {
+                        <span class="badge bg-secondary rounded-pill">+@option.ExtraPrice.Value.ToString("C")</span>
+                    }
+                </li>
+            }
+        </ul>
+    }
+</div>

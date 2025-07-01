@@ -1,0 +1,22 @@
+﻿@model CozyCafe.Models.DTO.Admin.DiscountDto
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Delete Discount";
+}
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display&display=swap" rel="stylesheet" />
+
+<div class="container my-5 text-center" style="font-family: 'Playfair Display', serif; max-width: 480px;">
+    <h1 class="mb-4 text-danger">Delete Discount</h1>
+
+    <div class="alert alert-warning shadow rounded-4" role="alert" style="background-color: #f9f6f2;">
+        <p>Are you sure you want to delete the discount <strong>@Model.Code</strong>?</p>
+    </div>
+
+    <form asp-action="Delete" method="post">
+        <input type="hidden" asp-for="Id" />
+        <button type="submit" class="btn btn-outline-danger rounded-4 px-4 me-3">Delete</button>
+        <a asp-action="Index" class="btn btn-link text-muted">Cancel</a>
+    </form>
+</div>

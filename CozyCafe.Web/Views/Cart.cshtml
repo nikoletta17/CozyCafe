@@ -1,0 +1,89 @@
+﻿@model CozyCafe.Models.DTO.ForUser.CartDto
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Your Cart";
+}
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display&display=swap" rel="stylesheet" />
+
+<div class="container my-5" style="font-family: 'Playfair Display', serif; max-width: 900px;">
+
+    <h1 class="mb-4 text-secondary fw-bold">Your Cart</h1>
+
+    @if (!Model.Items.Any())
+    {
+        <p class="text-muted fst-italic">Your cart is empty. Add something delicious!</p>
+    }
+    else
+    {
+        <form asp-action="Clear" method="post" class="mb-4">
+            <button type="submit" class="btn btn-outline-danger rounded-4 fw-semibold px-4">
+                Clear Cart
+            </button>
+        </form>
+
+        <table class="table shadow rounded-4" style="background-color: #f9f6f2;">
+            <thead class="table-light">
+                <tr>
+                    <th>Item</th>
+                    <th style="width: 120px;">Quantity</th>
+                    <th>Price</th>
+                    <th>Total</th>
+                    <th style="width: 110px;"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Items)
+                {
+                    <tr>
+                        <td>
+                            <div class="d-flex align-items-center gap-3">
+                                @if (!string.IsNullOrEmpty(item.ImageUrl))
+                                {
+                                    <img src="@item.ImageUrl" alt="@item.MenuItemName" style="width: 64px; height: 64px; object-fit: cover; border-radius: 0.5rem;" />
+                                }
+                                <span class="fw-semibold text-dark">@item.MenuItemName</span>
+                            </div>
+                        </td>
+
+                        <td>
+                            <form asp-action="UpdateItemQuantity" method="post" class="d-flex align-items-center gap-2">
+                                <input type="hidden" name="menuItemId" value="@item.MenuItemId" />
+                                <input type="number" name="quantity" min="1" class="form-control form-control-sm rounded-3" style="width: 70px;" value="@item.Quantity" />
+                                <button type="submit" class="btn btn-outline-secondary btn-sm rounded-4">Update</button>
+                            </form>
+                        </td>
+
+                        <td>@item.Price.ToString("C")</td>
+                        <td>@(item.Price * item.Quantity).ToString("C")</td>
+
+                        <td>
+                            <form asp-action="RemoveItem" method="post">
+                                <input type="hidden" name="menuItemId" value="@item.MenuItemId" />
+                                <button type="submit" class="btn btn-outline-danger btn-sm rounded-4" title="Remove item">
+                                    &times;
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="3" class="text-end fw-bold fs-5">Total:</td>
+                    <td colspan="2" class="fw-bold fs-5">@Model.Total.ToString("C")</td>
+                </tr>
+            </tfoot>
+        </table>
+
+        <div class="text-end mt-4">
+            <a href="@Url.Action("Index", "Menu")" class="btn btn-outline-primary rounded-4 fw-semibold px-4 me-3">
+                Continue Shopping
+            </a>
+            <a href="@Url.Action("Checkout", "Order")" class="btn btn-dark rounded-4 fw-semibold px-4">
+                Proceed to Checkout
+            </a>
+        </div>
+    }
+</div>

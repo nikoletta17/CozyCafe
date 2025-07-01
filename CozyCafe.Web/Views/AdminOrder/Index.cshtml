@@ -1,65 +1,94 @@
 ﻿@model List<CozyCafe.Models.DTO.Admin.AdminOrderDto>
 
 @{
-    ViewData["Title"] = "Замовлення";
-
-    // Створюємо список статусів для випадаючого списку
-    var statusList = new List<SelectListItem>
-    {
-        new SelectListItem { Text = "Усі статуси", Value = "" },
-        new SelectListItem { Text = "Pending", Value = "Pending" },
-        new SelectListItem { Text = "Confirmed", Value = "Confirmed" },
-        new SelectListItem { Text = "InProgress", Value = "InProgress" },
-        new SelectListItem { Text = "Completed", Value = "Completed" },
-        new SelectListItem { Text = "Cancelled", Value = "Cancelled" }
-    };
-
-    // Отримаємо поточне значення для фільтра з ViewData, або пустий рядок
-    string currentStatus = ViewData["CurrentStatusFilter"] as string ?? "";
+    ViewData["Title"] = "Усі замовлення";
 }
 
-<h2>Замовлення</h2>
+<style>
+    .admin-orders {
+        font-family: 'Playfair Display', serif;
+        padding: 2rem;
+        background-color: #f9f6f1;
+    }
 
-<form method="get" class="row g-3 mb-3">
-    <div class="col-auto">
-        <select name="statusFilter" class="form-select"
-                asp-items="statusList"
-                asp-for="@currentStatus">
-        </select>
-    </div>
-    <div class="col-auto">
-        <input type="text" name="userSearch" value="@(ViewData["CurrentUserSearch"] ?? "")" class="form-control" placeholder="Пошук користувача..." />
-    </div>
-    <div class="col-auto">
-        <button type="submit" class="btn btn-primary">Фільтрувати</button>
-        <a asp-action="Index" class="btn btn-secondary">Скинути</a>
-    </div>
-</form>
-
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>Користувач</th>
-            <th>Дата</th>
-            <th>Сума</th>
-            <th>Статус</th>
-            <th>Дії</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var order in Model)
-        {
-            <tr>
-                <td>@order.Id</td>
-                <td>@order.UserFullName (@order.UserEmail)</td>
-                <td>@order.OrderedAt.ToString("dd.MM.yyyy HH:mm")</td>
-                <td>@order.Total.ToString("C")</td>
-                <td>@order.Status</td>
-                <td>
-                    <a asp-action="Details" asp-route-id="@order.Id" class="btn btn-sm btn-info">Деталі</a>
-                </td>
-            </tr>
+        .admin-orders h2 {
+            margin-bottom: 2rem;
         }
-    </tbody>
-</table>
+
+    .filter-form {
+        margin-bottom: 2rem;
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .order-table {
+        background-color: #fff;
+        border: 1px solid #c2b280;
+        width: 100%;
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+        .order-table th, .order-table td {
+            padding: 0.75rem;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .order-table th {
+            background-color: #c2b280;
+            color: #fff;
+        }
+
+        .order-table tr:hover {
+            background-color: #f0ece1;
+        }
+
+    .btn-details {
+        color: #4b4a3f;
+        font-weight: bold;
+    }
+</style>
+
+<div class="admin-orders">
+    <h2>Усі замовлення</h2>
+
+    <form method="get" asp-action="Index" class="filter-form">
+        <input type="text" name="userSearch" value="@ViewData["CurrentUserSearch"]" placeholder="Пошук за користувачем..." class="form-control" />
+        <select name="statusFilter" class="form-select">
+            <option value="">Усі статуси</option>
+            <option value="Pending" selected="@((ViewData["CurrentStatusFilter"] as string) == "Pending")">Очікує</option>
+            <option value="Confirmed" selected="@((ViewData["CurrentStatusFilter"] as string) == "Confirmed")">Підтверджено</option>
+            <option value="Completed" selected="@((ViewData["CurrentStatusFilter"] as string) == "Completed")">Завершено</option>
+        </select>
+        <button type="submit" class="btn btn-dark">Фільтрувати</button>
+    </form>
+
+    <table class="order-table">
+        <thead>
+            <tr>
+                <th>№</th>
+                <th>Користувач</th>
+                <th>Email</th>
+                <th>Статус</th>
+                <th>Сума</th>
+                <th>Дата</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var order in Model)
+            {
+                <tr>
+                    <td>@order.Id</td>
+                    <td>@order.UserFullName</td>
+                    <td>@order.UserEmail</td>
+                    <td>@order.Status</td>
+                    <td>@order.Total.ToString("C")</td>
+                    <td>@order.OrderedAt.ToShortDateString()</td>
+                    <td><a asp-action="Details" asp-route-id="@order.Id" class="btn-details">Деталі</a></td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

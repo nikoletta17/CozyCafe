@@ -1,9 +1,14 @@
 ﻿using System.Security.Claims;
 using AutoMapper;
 using CozyCafe.Application.Interfaces.ForServices.ForUser;
+using CozyCafe.Application.Interfaces.ForServices.ForAdmin; // Додати для IMenuItemService
 using CozyCafe.Models.Domain.Common;
 using CozyCafe.Models.DTO.ForUser;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering; // для SelectList
+using System.Threading.Tasks;
+
+
 
 namespace CozyCafe.Web.Controllers
 {
@@ -11,11 +16,15 @@ namespace CozyCafe.Web.Controllers
     {
         private readonly IOrderService _orderService;
         private readonly IMapper _mapper;
-        public OrderController(IOrderService orderService, IMapper mapper)
+        private readonly IMenuItemService _menuItemService; // для списку меню
+
+        public OrderController(IOrderService orderService, IMapper mapper, IMenuItemService menuItemService)
         {
             _orderService = orderService;
-            _mapper = mapper;   
+            _mapper = mapper;
+            _menuItemService = menuItemService;
         }
+
         // GET: всі замовлення користувача
         public async Task<IActionResult> MyOrders()
         {
@@ -29,10 +38,14 @@ namespace CozyCafe.Web.Controllers
         public async Task<IActionResult> Details(int id)
         {
             var order = await _orderService.GetFullOrderAsync(id);
-            if (order == null) 
+            if (order == null)
                 return NotFound();
 
             var dto = _mapper.Map<OrderDto>(order);
+
+            // Отримуємо список меню для селекта у формі додавання позиції
+            var menuItems = await _menuItemService.GetAllAsync();
+            ViewBag.MenuItems = new SelectList(menuItems, "Id", "Name");
 
             return View("OrderDetails", dto);
         }
@@ -40,8 +53,13 @@ namespace CozyCafe.Web.Controllers
         // POST: Додати позицію до замовлення
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddItem(int orderId, OrderItem item)
+        public async Task<IActionResult> AddItem(int orderId, int MenuItemId, int Quantity)
         {
+            var item = new OrderItem
+            {
+                MenuItemId = MenuItemId,
+                Quantity = Quantity
+            };
             await _orderService.AddOrderItemAsync(orderId, item);
             return RedirectToAction("Details", new { id = orderId });
         }

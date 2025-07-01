@@ -1,52 +1,82 @@
 ﻿@model CozyCafe.Models.DTO.Admin.AdminOrderDto
 
 @{
-    ViewData["Title"] = $"Деталі замовлення #{Model.Id}";
+    ViewData["Title"] = $"Замовлення №{Model.Id}";
 }
 
-<h2>@ViewData["Title"]</h2>
+<style>
+    .order-details {
+        font-family: 'Playfair Display', serif;
+        padding: 2rem;
+        background-color: #f9f6f1;
+    }
 
-<p><strong>Користувач:</strong> @Model.UserFullName (@Model.UserEmail)</p>
-<p><strong>Дата замовлення:</strong> @Model.OrderedAt.ToString("dd.MM.yyyy HH:mm")</p>
-<p><strong>Статус:</strong> @Model.Status</p>
-<p><strong>Знижка:</strong> @Model.DiscountCode ?? "Немає"</p>
-<p><strong>Всього:</strong> @Model.Total.ToString("C")</p>
+    .order-info {
+        margin-bottom: 2rem;
+    }
 
-<h4>Позиції замовлення</h4>
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Страва</th>
-            <th>Кількість</th>
-            <th>Ціна за одиницю</th>
-            <th>Опції</th>
-        </tr>
-    </thead>
-    <tbody>
+    .order-items {
+        background-color: #fff;
+        border: 1px solid #c2b280;
+        border-radius: 10px;
+        padding: 1rem;
+    }
+
+        .order-items h4 {
+            margin-bottom: 1rem;
+        }
+
+    .item-row {
+        border-bottom: 1px solid #ddd;
+        padding: 0.5rem 0;
+    }
+
+    .option {
+        font-size: 0.9rem;
+        color: #777;
+    }
+
+    .status-form {
+        margin-top: 2rem;
+    }
+</style>
+
+<div class="order-details">
+    <h2>Замовлення №@Model.Id</h2>
+
+    <div class="order-info">
+        <p><strong>Користувач:</strong> @Model.UserFullName (@Model.UserEmail)</p>
+        <p><strong>Статус:</strong> @Model.Status</p>
+        <p><strong>Знижка:</strong> @Model.DiscountCode ?? "-"</p>
+        <p><strong>Сума:</strong> @Model.Total.ToString("C")</p>
+        <p><strong>Дата:</strong> @Model.OrderedAt.ToString("dd.MM.yyyy")</p>
+    </div>
+
+    <div class="order-items">
+        <h4>Позиції</h4>
         @foreach (var item in Model.Items)
         {
-            <tr>
-                <td>@item.MenuItemName</td>
-                <td>@item.Quantity</td>
-                <td>@item.Price.ToString("C")</td>
-                <td>
-                    @if (item.SelectedOptions.Any())
-                    {
-                        <ul>
-                            @foreach (var opt in item.SelectedOptions)
-                            {
-                                <li>@opt</li>
-                            }
-                        </ul>
-                    }
-                    else
-                    {
-                        <span>Немає</span>
-                    }
-                </td>
-            </tr>
+            <div class="item-row">
+                <p><strong>@item.MenuItemName</strong> × @item.Quantity — @item.Price.ToString("C")</p>
+                @if (item.SelectedOptions.Any())
+                {
+                    <p class="option">Опції: @string.Join(", ", item.SelectedOptions)</p>
+                }
+            </div>
         }
-    </tbody>
-</table>
+    </div>
 
-<a asp-action="Index" class="btn btn-secondary">Назад до списку</a>
+    <div class="status-form">
+        <form asp-action="UpdateStatus" method="post">
+            <input type="hidden" name="OrderId" value="@Model.Id" />
+            <label for="newStatus">Оновити статус:</label>
+            <select name="NewStatus" class="form-select mt-1 mb-2" required>
+                <option value="">Оберіть...</option>
+                <option value="Pending">Очікує</option>
+                <option value="Confirmed">Підтверджено</option>
+                <option value="Completed">Завершено</option>
+            </select>
+            <button type="submit" class="btn btn-dark">Оновити</button>
+        </form>
+    </div>
+</div>

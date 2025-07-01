@@ -1,0 +1,100 @@
+﻿@model CozyCafe.Models.DTO.Admin.DashboardStatsDto
+
+@{
+    ViewData["Title"] = "Адмін Панель";
+}
+
+<style>
+    .dashboard-container {
+        padding: 2rem;
+        font-family: 'Playfair Display', serif;
+        background-color: #f9f6f1;
+        color: #3b3a30;
+    }
+
+    .dashboard-metrics {
+        display: flex;
+        justify-content: space-between;
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .metric-card {
+        flex: 1;
+        background: white;
+        border: 1px solid #c2b280;
+        border-radius: 12px;
+        padding: 1.5rem;
+        text-align: center;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+        .metric-card h2 {
+            font-size: 2rem;
+            margin: 0;
+            color: #4b4a3f;
+        }
+
+        .metric-card p {
+            margin: 0.5rem 0 0;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+    .top-items {
+        background: white;
+        border: 1px solid #c2b280;
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+        .top-items h3 {
+            margin-bottom: 1rem;
+            color: #4b4a3f;
+        }
+
+        .top-items ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .top-items li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+        }
+</style>
+
+<div class="dashboard-container">
+    <h1 class="text-center mb-4">Адмін Панель</h1>
+
+    <div class="dashboard-metrics">
+        <div class="metric-card">
+            <h2>@Model.TotalOrders</h2>
+            <p>Загалом замовлень</p>
+        </div>
+        <div class="metric-card">
+            <h2>@Model.TotalRevenue.ToString("C")</h2>
+            <p>Прибуток</p>
+        </div>
+        <div class="metric-card">
+            <h2>@Model.TotalUsers</h2>
+            <p>Користувачів</p>
+        </div>
+    </div>
+
+    <div class="top-items">
+        <h3>Топ-5 страв за продажами</h3>
+        <ul>
+            @foreach (var item in Model.TopMenuItems)
+            {
+                <li>
+                    <span>@item.Name</span>
+                    <strong>@item.QuantitySold шт.</strong>
+                </li>
+            }
+        </ul>
+    </div>
+</div>

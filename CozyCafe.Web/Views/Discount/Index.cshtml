@@ -1,0 +1,48 @@
+﻿@model IEnumerable<CozyCafe.Models.DTO.Admin.DiscountDto>
+
+@{
+    Layout = "_Layout";
+    ViewData["Title"] = "Discounts";
+}
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display&display=swap" rel="stylesheet" />
+
+<div class="container my-5" style="font-family: 'Playfair Display', serif;">
+    <h1 class="mb-4 text-secondary">Discounts</h1>
+
+    <a href="@Url.Action("Create")" class="btn btn-outline-dark mb-3 rounded-4" style="font-weight: 600;">
+        + Add New Discount
+    </a>
+
+    @if (!Model.Any())
+    {
+        <p class="text-muted fst-italic">No discounts found.</p>
+    }
+    else
+    {
+        <table class="table table-striped shadow rounded-4" style="background-color: #f9f6f2;">
+            <thead class="table-light">
+                <tr>
+                    <th>Code</th>
+                    <th>Percent (%)</th>
+                    <th>Valid Until</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var discount in Model)
+                {
+                    <tr>
+                        <td class="fw-bold">@discount.Code</td>
+                        <td>@discount.Percent</td>
+                        <td>@discount.ValidTo.ToString("dd MMM yyyy")</td>
+                        <td>
+                            <a href="@Url.Action("Edit", new { id = discount.Id })" class="btn btn-sm btn-outline-primary rounded-4 me-2">Edit</a>
+                            <a href="@Url.Action("Delete", new { id = discount.Id })" class="btn btn-sm btn-outline-danger rounded-4">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>
