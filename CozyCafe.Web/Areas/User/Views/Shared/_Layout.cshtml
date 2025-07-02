@@ -141,11 +141,24 @@
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
+
+    <footer class="text-center py-4 mt-auto" style="background-color: #4b4a3f; border-top: 2px solid #c2b280;">
         <div class="container">
-            &copy; 2025 - CozyCafe.Web - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            <p style="margin: 0; color: #c2b280; font-family: 'Playfair Display', serif;">
+                &copy; @DateTime.Now.Year CozyCafe — Стильно. Затишно. Смачно.
+            </p>
+            <p style="margin: 0; color: #c2b280; font-family: 'Playfair Display', serif;">
+                <a href="/Home/About" class="text-decoration-none" style="color: #c2b280;">Про нас</a> |
+                <a href="/Home/Contact" class="text-decoration-none" style="color: #c2b280;">Контакти</a>
+            </p>
         </div>
     </footer>
+
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
