@@ -25,12 +25,13 @@ namespace CozyCafe.Web.Areas.User.Controllers
         }
 
         // All reviews for the certain MenuItem
-        public async Task<IActionResult> ByMetuItem(int menuItemId)
+        public async Task<IActionResult> ByMenuItem(int menuItemId)
         {
             var reviews = await _reviewService.GetByMenuItemIdAsync(menuItemId);
             var dto = _mapper.Map<IEnumerable<ReviewDto>>(reviews);
             return View("ReviewsByMenuItem", dto);
         }
+
 
         // All reviews from a specific user
         public async Task<IActionResult> ByUser(string userId)
@@ -53,10 +54,11 @@ namespace CozyCafe.Web.Areas.User.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateReviewDto dto)
         {
-            if(ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
                 return View(dto);
             }
+
             var review = _mapper.Map<Review>(dto);
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
             review.UserId = userId; 
@@ -64,6 +66,7 @@ namespace CozyCafe.Web.Areas.User.Controllers
 
             await _reviewService.AddAsync(review);
             return RedirectToAction("ByMenuItem", new { menuItemId = dto.MenuItemId });
+
 
         }
 

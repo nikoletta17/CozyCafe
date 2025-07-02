@@ -11,73 +11,125 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/CozyCafe.Web.styles.css" asp-append-version="true" />
+    <style>
+        .cozy-btn {
+            font-family: 'Playfair Display', serif;
+            padding: 0.5rem 1.2rem;
+            background-color: #4b4a3f;
+            border: 2px solid #c2b280;
+            color: #c2b280;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            margin-right: 0.5rem;
+        }
+
+            .cozy-btn:hover {
+                background-color: #c2b280;
+                color: #4b4a3f;
+            }
+
+        .cozy-nav-link {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            color: #c2b280 !important;
+            margin-right: 1rem;
+            transition: color 0.3s ease;
+            font-size: 1.3rem;
+        }
+
+            .cozy-nav-link:hover {
+                color: #fff !important;
+            }
+
+        .navbar-icon {
+            font-size: 1.3rem;
+            color: #c2b280;
+            transition: color 0.3s ease;
+        }
+
+            .navbar-icon:hover {
+                color: #fff;
+            }
+    </style>
 </head>
 <body>
-    <style>
-        /* Твій CSS залишив без змін */
-    </style>
-
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-lg" style="background-color: #4b4a3f; border-bottom: 2px solid #c2b280;">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">CozyCafe.Web</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
+                <a class="navbar-brand fw-bold" asp-area="User" asp-controller="Home" asp-action="Index"
+                   style="font-family: 'Playfair Display', serif; font-size: 1.3rem; color: #c2b280;">
+                    CozyCafe
+                </a>
+
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon" style="filter: invert(1);"></span>
                 </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+
+                <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
+                    <!-- Ліва частина меню -->
+                    <ul class="navbar-nav">
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="cozy-nav-link nav-link" asp-area="User" asp-controller="Home" asp-action="Index">Головна</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="cozy-nav-link nav-link" asp-area="" asp-controller="MenuItem" asp-action="Index">Меню</a>
                         </li>
-                    </ul>
+                        <li class="nav-item">
+                            <a class="cozy-nav-link nav-link" asp-area="User" asp-controller="Review" asp-action="Create">Відгуки</a>
+                        </li>
+                        @if (User.Identity?.IsAuthenticated ?? false)
+                        {
+                            <li class="nav-item">
+                                <a class="cozy-nav-link nav-link" asp-area="User" asp-controller="Order" asp-action="Index">Замовлення</a>
+                            </li>
 
-                    @if (User.Identity?.IsAuthenticated ?? false)
-                    {
-                        <ul class="navbar-nav">
-                            <li class="nav-item nav-link text-dark">Hello, @User.Identity.Name!</li>
-
-                            @* Admin link *@
                             @if (User.IsInRole("Admin"))
                             {
                                 <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="Admin" asp-controller="Dashboard" asp-action="Index">Admin Panel</a>
+                                    <a class="cozy-nav-link nav-link fw-bold" style="color: #ffc107;" asp-area="Admin" asp-controller="Dashboard" asp-action="Index">
+                                        ⚙️ Адмін-панель
+                                    </a>
                                 </li>
                             }
+                        }
+                    </ul>
 
-                            @* User area link *@
-                            @if (User.IsInRole("User"))
-                            {
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="User" asp-controller="UserProfile" asp-action="Index">My Profile</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link text-dark" asp-area="User" asp-controller="Orders" asp-action="Index">My Orders</a>
-                                </li>
-                            }
+                    <!-- Права частина меню: Кошик + кнопки -->
+                    <ul class="navbar-nav align-items-center">
+                        <li class="nav-item me-3">
+                            <a class="cozy-nav-link nav-link" asp-area="User" asp-controller="Cart" asp-action="Index" style="font-size: 1.3rem;">
+                                <span class="navbar-icon" style="margin-right: 6px;">🛒</span>Кошик
+                            </a>
+                        </li>
 
+                        @if (User.Identity?.IsAuthenticated ?? false)
+                        {
                             <li class="nav-item">
-                                <form asp-area="" asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
-                                    <button type="submit" class="btn btn-link nav-link" style="display:inline; padding: 0;">Logout</button>
+                                <span class="navbar-text me-3 text-light" style="font-size: 1.3rem;">
+                                    Привіт, @User.Identity.Name!
+                                </span>
+                            </li>
+                            <li class="nav-item">
+                                <form asp-area="User" asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+                                    <button type="submit" class="cozy-btn" style="font-size: 1.25rem;">Вийти</button>
                                 </form>
                             </li>
-                        </ul>
-                    }
-                    else
-                    {
-                        <ul class="navbar-nav">
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Login">Login</a>
+                        }
+                        else
+                        {
+                            <li class="nav-item me-2">
+                                <a class="cozy-btn" style="font-size: 1.25rem;" asp-area="User" asp-controller="Account" asp-action="Login">
+                                    Увійти
+                                </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Register">Register</a>
+                                <a class="cozy-btn" style="font-size: 1.25rem;" asp-area="User" asp-controller="Account" asp-action="Register">
+                                    Реєстрація
+                                </a>
                             </li>
-                        </ul>
-                    }
-
+                        }
+                    </ul>
                 </div>
             </div>
         </nav>
