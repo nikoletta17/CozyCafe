@@ -53,6 +53,7 @@ builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IReviewService, ReviewService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
 builder.Services.AddScoped<IAdminOrderService, AdminOrderService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 #endregion
 
@@ -120,7 +121,12 @@ app.UseSession();
 app.UseAuthentication();  // додаємо аутентифікацію
 app.UseAuthorization();   // додаємо авторизацію
 
-// Маршрутизація MVC
+// Маршрут для Areas (має бути ПЕРЕД дефолтним маршрутом)
+app.MapControllerRoute(
+    name: "areas",
+    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+
+// Дефолтний маршрут
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");

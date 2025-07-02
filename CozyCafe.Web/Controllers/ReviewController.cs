@@ -3,12 +3,14 @@ using CozyCafe.Application.Interfaces.ForServices.ForUser;
 using CozyCafe.Application.Services.Generic_Service;
 using CozyCafe.Models.Domain.ForUser;
 using CozyCafe.Models.DTO.ForUser;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
 
 namespace CozyCafe.Web.Controllers.Generic_Controller
 {
+    [Authorize]
     public class ReviewController : GenericController<Review>
     {
         private readonly IReviewService _reviewService;

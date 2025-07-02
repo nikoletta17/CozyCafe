@@ -4,16 +4,20 @@ using CozyCafe.Application.Services;
 using CozyCafe.Models.Domain.Admin;
 using CozyCafe.Models.DTO;
 using CozyCafe.Web.Controllers.Generic_Controller;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CozyCafe.Web.Controllers
 {
+    [Authorize(Roles = "Admin")]
+    [Area("Admin")]
+    [Route("Admin/[controller]/[action]")]
     public class MenuItemOptionGroupController : GenericController<MenuItemOptionGroup>
     {
         private readonly IMenuItemOptionGroupService _menuItemOptionGroupService;
         private readonly IMapper _mapper;
         public MenuItemOptionGroupController(IMenuItemOptionGroupService menuItemOptionGroupService, IMapper mapper)
-            :base(menuItemOptionGroupService)
+            : base(menuItemOptionGroupService)
         {
             _menuItemOptionGroupService = menuItemOptionGroupService;
             _mapper = mapper;

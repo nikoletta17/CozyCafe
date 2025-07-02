@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 namespace CozyCafe.Controllers
 {
     [Authorize(Roles = "Admin")]
+    [Area("Admin")]
+    [Route("Admin/[controller]/[action]")]
     public class AdminOrderController : Controller
     {
         private readonly IAdminOrderService _adminOrderService;

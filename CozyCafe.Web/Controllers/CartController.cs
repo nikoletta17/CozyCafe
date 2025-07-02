@@ -5,10 +5,12 @@ using CozyCafe.Models.Domain;
 using CozyCafe.Models.DTO.ForUser;
 using Microsoft.AspNetCore.Mvc;
 using CozyCafe.Models.Domain.ForUser;
+using Microsoft.AspNetCore.Authorization;
 
 
 namespace CozyCafe.Web.Controllers
 {
+    [Authorize]
     public class CartController : Controller
     {
         private readonly ICartService _cartService;

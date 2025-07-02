@@ -2,11 +2,15 @@
 using CozyCafe.Application.Interfaces.ForServices.ForAdmin;
 using CozyCafe.Models.Domain;
 using CozyCafe.Models.DTO.Admin;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 
 namespace CozyCafe.Web.Controllers
 {
+    [Authorize(Roles = "Admin")]
+    [Area("Admin")]
+    [Route("Admin/[controller]/[action]")]
     public class DiscountController : Controller
     {
         private readonly IDiscountService _discountService;
@@ -52,7 +56,7 @@ namespace CozyCafe.Web.Controllers
                 return View(discountDto);
 
             var discount = _mapper.Map<Discount>(discountDto);
-            discount.ValidFrom = System.DateTime.UtcNow; 
+            discount.ValidFrom = System.DateTime.UtcNow;
 
             await _discountService.AddDiscountAsync(discount);
             return RedirectToAction(nameof(Index));

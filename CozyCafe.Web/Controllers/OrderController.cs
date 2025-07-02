@@ -7,11 +7,13 @@ using CozyCafe.Application.Interfaces.ForServices.ForAdmin;
 using CozyCafe.Application.Interfaces.ForServices.ForUser;
 using CozyCafe.Models.Domain.Common;
 using CozyCafe.Models.DTO.ForUser;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace CozyCafe.Web.Controllers
 {
+    [Authorize]
     public class OrderController : Controller
     {
         private readonly IOrderService _orderService;

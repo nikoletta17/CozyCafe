@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\CozyCafe.Models.ViewModels\CozyCafe.Models.ViewModels.csproj" />
     <ProjectReference Include="..\CozyCafe.Models\CozyCafe.Models.csproj" />
   </ItemGroup>
 

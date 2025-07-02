@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
-using CozyCafe.Web.Models.ViewModels;
+using CozyCafe.Models.ViewModels;
 using CozyCafe.Models.Domain.ForUser;
 
 namespace CozyCafe.Web.Controllers

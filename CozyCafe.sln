@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CozyCafe.Infrastructure", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CozyCafe.Application", "CozyCafe.Application\CozyCafe.Application.csproj", "{5163F6DE-C979-4CA4-8C38-ACF8AD68D9C9}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CozyCafe.Models.ViewModels", "CozyCafe.Models.ViewModels\CozyCafe.Models.ViewModels.csproj", "{29E9B119-B6D7-4BC3-9117-09F8C1BAAF59}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{5163F6DE-C979-4CA4-8C38-ACF8AD68D9C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5163F6DE-C979-4CA4-8C38-ACF8AD68D9C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5163F6DE-C979-4CA4-8C38-ACF8AD68D9C9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{29E9B119-B6D7-4BC3-9117-09F8C1BAAF59}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{29E9B119-B6D7-4BC3-9117-09F8C1BAAF59}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{29E9B119-B6D7-4BC3-9117-09F8C1BAAF59}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{29E9B119-B6D7-4BC3-9117-09F8C1BAAF59}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
