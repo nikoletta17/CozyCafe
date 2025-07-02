@@ -1,0 +1,66 @@
+﻿@model CozyCafe.Models.DTO.ForUser.CartDto
+
+@{
+    ViewData["Title"] = "Кошик";
+}
+
+<h2>Ваш кошик</h2>
+
+@if (!Model.Items.Any())
+{
+    <p>Ваш кошик порожній.</p>
+}
+else
+{
+    <form asp-action="Clear" method="post" asp-controller="Cart" style="margin-bottom: 20px;">
+        <button type="submit" class="btn btn-danger">Очистити кошик</button>
+    </form>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Фото</th>
+                <th>Назва</th>
+                <th>Ціна</th>
+                <th>Кількість</th>
+                <th>Сума</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Items)
+            {
+                <tr>
+                    <td>
+                        @if (!string.IsNullOrEmpty(item.ImageUrl))
+                        {
+                            <img src="@item.ImageUrl" alt="@item.MenuItemName" style="max-width: 80px;" />
+                        }
+                        else
+                        {
+                            <span>Нема фото</span>
+                        }
+                    </td>
+                    <td>@item.MenuItemName</td>
+                    <td>@item.Price.ToString("C")</td>
+                    <td>
+                        <form asp-action="UpdateItemQuantity" asp-controller="Cart" method="post" style="display:inline-block; width:120px;">
+                            <input type="hidden" name="menuItemId" value="@item.MenuItemId" />
+                            <input type="number" name="quantity" value="@item.Quantity" min="1" class="form-control" style="width: 70px; display:inline-block;" />
+                            <button type="submit" class="btn btn-primary btn-sm">Оновити</button>
+                        </form>
+                    </td>
+                    <td>@(item.Price * item.Quantity).ToString("C")</td>
+                    <td>
+                        <form asp-action="RemoveItem" asp-controller="Cart" method="post" style="display:inline;">
+                            <input type="hidden" name="menuItemId" value="@item.MenuItemId" />
+                            <button type="submit" class="btn btn-danger btn-sm" title="Видалити">×</button>
+                        </form>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <h4>Всього: @Model.Total.ToString("C")</h4>
+}

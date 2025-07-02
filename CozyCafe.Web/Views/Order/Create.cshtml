@@ -1,116 +1,25 @@
-﻿@model CozyCafe.Models.DTO.ForUser.CreateOrderDto
+﻿@model CozyCafe.Models.Domain.Common.Order
 
 @{
-    Layout = "_Layout";
-    ViewData["Title"] = "Create New Order";
+    ViewData["Title"] = "Створити замовлення";
 }
 
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display&display=swap" rel="stylesheet" />
+<h2>Створити нове замовлення</h2>
 
-<div class="container my-5" style="font-family: 'Playfair Display', serif; max-width: 700px; background-color: #f8f4f0; padding: 30px; border-radius: 1rem; box-shadow: 0 0 15px rgba(0,0,0,0.1);">
+<form asp-action="Create" method="post" class="needs-validation" novalidate>
+    @Html.AntiForgeryToken()
 
-    <h1 class="mb-4 text-secondary fw-bold">Place Your Order</h1>
+    <div class="mb-3">
+        <label asp-for="UserId" class="form-label">UserId (якщо потрібно)</label>
+        <input asp-for="UserId" class="form-control" />
+        <span asp-validation-for="UserId" class="text-danger"></span>
+    </div>
 
-    <form asp-action="Create" method="post">
+    <!-- Тут можна додати інші потрібні поля -->
 
-        <div class="mb-4">
-            <label asp-for="DiscountCode" class="form-label fw-semibold">Discount Code (optional)</label>
-            <input asp-for="DiscountCode" class="form-control rounded-3" />
-            <span asp-validation-for="DiscountCode" class="text-danger"></span>
-        </div>
-
-        <h4 class="mb-3 text-dark">Order Items</h4>
-
-        <div id="orderItemsContainer">
-            @for (int i = 0; i < Model.Items.Count; i++)
-            {
-                <div class="card mb-3 p-3 rounded-4 shadow-sm" style="background-color: #fff7f2;">
-                    <div class="row g-3 align-items-center">
-                        <div class="col-md-6">
-                            <label asp-for="@Model.Items[i].MenuItemId" class="form-label fw-semibold">Menu Item</label>
-                            <select asp-for="@Model.Items[i].MenuItemId" class="form-select rounded-3" asp-items="ViewBag.MenuItems">
-                                <option value="">-- Select a menu item --</option>
-                            </select>
-                            <span asp-validation-for="@Model.Items[i].MenuItemId" class="text-danger"></span>
-                        </div>
-                        <div class="col-md-3">
-                            <label asp-for="@Model.Items[i].Quantity" class="form-label fw-semibold">Quantity</label>
-                            <input asp-for="@Model.Items[i].Quantity" class="form-control rounded-3" min="1" max="100" type="number" />
-                            <span asp-validation-for="@Model.Items[i].Quantity" class="text-danger"></span>
-                        </div>
-                        <div class="col-md-3 d-flex align-items-end">
-                            <button type="button" class="btn btn-outline-danger rounded-4 remove-item-btn w-100">Remove</button>
-                        </div>
-                    </div>
-
-                    <div class="mt-2">
-                        <label class="form-label fw-semibold">Selected Options (IDs, comma-separated)</label>
-                        <input name="Items[@i].SelectedOptionIds" class="form-control rounded-3" placeholder="e.g. 1,2,5" />
-                    </div>
-                </div>
-            }
-        </div>
-
-        <div class="mb-4">
-            <button type="button" id="addItemBtn" class="btn btn-outline-primary rounded-4 fw-semibold px-4">Add Another Item</button>
-        </div>
-
-        <button type="submit" class="btn btn-dark rounded-4 fw-semibold px-5">Submit Order</button>
-    </form>
-</div>
+    <button type="submit" class="btn btn-success">Створити</button>
+</form>
 
 @section Scripts {
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script>
-        $(function () {
-            var orderItemsContainer = $('#orderItemsContainer');
-
-            $('#addItemBtn').click(function () {
-                var index = orderItemsContainer.children().length;
-                var newItem = `
-                <div class="card mb-3 p-3 rounded-4 shadow-sm" style="background-color: #fff7f2;">
-                    <div class="row g-3 align-items-center">
-                        <div class="col-md-6">
-                            <label class="form-label fw-semibold" for="Items_${index}__MenuItemId">Menu Item</label>
-                            <select name="Items[${index}].MenuItemId" class="form-select rounded-3" required>
-                                <option value="">-- Select a menu item --</option>
-        @foreach (var menuItem in (SelectList)ViewBag.MenuItems)
-        {
-            <text><option value="@menuItem.Value">@menuItem.Text</option></text>
-        }
-                            </select>
-                        </div>
-                        <div class="col-md-3">
-                            <label class="form-label fw-semibold" for="Items_${index}__Quantity">Quantity</label>
-                            <input name="Items[${index}].Quantity" type="number" class="form-control rounded-3" min="1" max="100" value="1" required />
-                        </div>
-                        <div class="col-md-3 d-flex align-items-end">
-                            <button type="button" class="btn btn-outline-danger rounded-4 remove-item-btn w-100">Remove</button>
-                        </div>
-                    </div>
-                    <div class="mt-2">
-                        <label class="form-label fw-semibold">Selected Options (IDs, comma-separated)</label>
-                        <input name="Items[${index}].SelectedOptionIds" class="form-control rounded-3" placeholder="e.g. 1,2,5" />
-                    </div>
-                </div>`;
-
-                orderItemsContainer.append(newItem);
-            });
-
-            orderItemsContainer.on('click', '.remove-item-btn', function () {
-                $(this).closest('.card').remove();
-
-                // Re-index all items
-                orderItemsContainer.children().each(function (i, el) {
-                    $(el).find('select, input').each(function () {
-                        var name = $(this).attr('name');
-                        if (name) {
-                            var newName = name.replace(/\Items\[\d+\]/, `Items[${i}]`);
-                            $(this).attr('name', newName);
-                        }
-                    });
-                });
-            });
-        });
-    </script>
+    <partial name="_ValidationScriptsPartial" />
 }

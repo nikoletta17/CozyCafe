@@ -1,0 +1,22 @@
+﻿@model CozyCafe.Models.DTO.Admin.MenuItemOptionGroupDto
+
+@{
+    ViewData["Title"] = "Створити групу опцій";
+}
+
+<h1 class="text-2xl font-serif font-semibold mb-6">Створити нову групу опцій</h1>
+
+<form asp-action="Create" method="post" class="max-w-md">
+    <div class="mb-4">
+        <label asp-for="Name" class="block font-semibold mb-1"></label>
+        <input asp-for="Name" class="border border-gray-300 rounded px-3 py-2 w-full" />
+        <span asp-validation-for="Name" class="text-red-600 text-sm"></span>
+    </div>
+
+    <button type="submit" class="bg-green-600 text-white px-5 py-2 rounded hover:bg-green-700 transition">Створити</button>
+    <a asp-action="Index" class="ml-4 text-blue-600 hover:underline">Відмінити</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

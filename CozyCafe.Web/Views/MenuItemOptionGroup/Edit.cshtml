@@ -1,0 +1,24 @@
+﻿@model CozyCafe.Models.DTO.Admin.MenuItemOptionGroupDto
+
+@{
+    ViewData["Title"] = "Редагувати групу опцій";
+}
+
+<h1 class="text-2xl font-serif font-semibold mb-6">Редагувати групу опцій</h1>
+
+<form asp-action="Edit" method="post" class="max-w-md">
+    <input type="hidden" asp-for="Id" />
+
+    <div class="mb-4">
+        <label asp-for="Name" class="block font-semibold mb-1"></label>
+        <input asp-for="Name" class="border border-gray-300 rounded px-3 py-2 w-full" />
+        <span asp-validation-for="Name" class="text-red-600 text-sm"></span>
+    </div>
+
+    <button type="submit" class="bg-green-600 text-white px-5 py-2 rounded hover:bg-green-700 transition">Зберегти</button>
+    <a asp-action="Index" class="ml-4 text-blue-600 hover:underline">Відмінити</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,18 @@
+﻿@model CozyCafe.Models.Domain.Admin.MenuItemOption
+
+@{
+    ViewData["Title"] = "Деталі опції меню";
+}
+
+<h1 class="text-3xl font-serif mb-6">Деталі опції</h1>
+
+<div class="mb-4">
+    <strong>Назва:</strong> @Model.Name
+</div>
+
+<div class="mb-4">
+    <strong>Додаткова ціна:</strong> @String.Format("{0:C}", Model.ExtraPrice ?? 0)
+</div>
+
+<a asp-action="Edit" asp-route-id="@Model.Id" class="text-green-600 hover:underline mr-4">Редагувати</a>
+<a asp-action="Index" class="text-gray-600 hover:underline">Назад до списку</a>

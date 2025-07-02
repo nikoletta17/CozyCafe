@@ -1,0 +1,16 @@
+﻿@model CozyCafe.Models.Domain.ForUser.Review
+
+<h2>Видалити відгук</h2>
+
+<h3>Ви дійсно хочете видалити цей відгук?</h3>
+
+<div>
+    <strong>Рейтинг:</strong> @Model.Rating <br />
+    <strong>Коментар:</strong> @Model.Comment
+</div>
+
+<form asp-action="DeleteConfirmed" method="post">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit">Так, видалити</button> |
+    <a asp-action="Index">Скасувати</a>
+</form>

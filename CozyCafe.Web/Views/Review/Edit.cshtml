@@ -1,9 +1,9 @@
-﻿@model CozyCafe.Models.DTO.ForUser.CreateReviewDto
+﻿@model CozyCafe.Models.Domain.ForUser.Review
 
-<h2>Додати відгук</h2>
+<h2>Редагувати відгук</h2>
 
-<form asp-action="Create" method="post">
-    <input type="hidden" asp-for="MenuItemId" />
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="Id" />
     <div>
         <label asp-for="Rating"></label>
         <input asp-for="Rating" type="number" min="1" max="5" />
@@ -14,7 +14,7 @@
         <textarea asp-for="Comment"></textarea>
         <span asp-validation-for="Comment" class="text-danger"></span>
     </div>
-    <button type="submit">Надіслати</button>
+    <button type="submit">Зберегти</button>
 </form>
 
 @section Scripts {
@@ -22,4 +22,3 @@
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }
-

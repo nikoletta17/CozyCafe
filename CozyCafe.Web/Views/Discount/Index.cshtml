@@ -1,48 +1,37 @@
 ﻿@model IEnumerable<CozyCafe.Models.DTO.Admin.DiscountDto>
 
 @{
-    Layout = "_Layout";
-    ViewData["Title"] = "Discounts";
+    ViewData["Title"] = "Список знижок";
 }
 
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display&display=swap" rel="stylesheet" />
+<h1>Список знижок</h1>
 
-<div class="container my-5" style="font-family: 'Playfair Display', serif;">
-    <h1 class="mb-4 text-secondary">Discounts</h1>
+<p>
+    <a asp-action="Create" class="btn btn-primary">Додати нову знижку</a>
+</p>
 
-    <a href="@Url.Action("Create")" class="btn btn-outline-dark mb-3 rounded-4" style="font-weight: 600;">
-        + Add New Discount
-    </a>
-
-    @if (!Model.Any())
-    {
-        <p class="text-muted fst-italic">No discounts found.</p>
-    }
-    else
-    {
-        <table class="table table-striped shadow rounded-4" style="background-color: #f9f6f2;">
-            <thead class="table-light">
-                <tr>
-                    <th>Code</th>
-                    <th>Percent (%)</th>
-                    <th>Valid Until</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach (var discount in Model)
-                {
-                    <tr>
-                        <td class="fw-bold">@discount.Code</td>
-                        <td>@discount.Percent</td>
-                        <td>@discount.ValidTo.ToString("dd MMM yyyy")</td>
-                        <td>
-                            <a href="@Url.Action("Edit", new { id = discount.Id })" class="btn btn-sm btn-outline-primary rounded-4 me-2">Edit</a>
-                            <a href="@Url.Action("Delete", new { id = discount.Id })" class="btn btn-sm btn-outline-danger rounded-4">Delete</a>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    }
-</div>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Код</th>
+            <th>Відсоток (%)</th>
+            <th>Дійсна до</th>
+            <th>Дії</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach(var discount in Model)
+        {
+            <tr>
+                <td>@discount.Code</td>
+                <td>@discount.Percent</td>
+                <td>@discount.ValidTo.ToString("dd.MM.yyyy")</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@discount.Id" class="btn btn-info btn-sm">Деталі</a>
+                    <a asp-action="Edit" asp-route-id="@discount.Id" class="btn btn-warning btn-sm">Редагувати</a>
+                    <a asp-action="Delete" asp-route-id="@discount.Id" class="btn btn-danger btn-sm">Видалити</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

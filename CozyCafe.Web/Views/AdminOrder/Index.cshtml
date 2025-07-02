@@ -1,94 +1,59 @@
-﻿@model List<CozyCafe.Models.DTO.Admin.AdminOrderDto>
+﻿@model IEnumerable<CozyCafe.Models.DTO.Admin.AdminOrderDto>
 
 @{
-    ViewData["Title"] = "Усі замовлення";
+    ViewData["Title"] = "Адміністрування замовлень";
+    var statuses = (IEnumerable<SelectListItem>)ViewData["StatusList"];
+    string currentUserSearch = ViewData["CurrentUserSearch"] as string ?? "";
 }
 
-<style>
-    .admin-orders {
-        font-family: 'Playfair Display', serif;
-        padding: 2rem;
-        background-color: #f9f6f1;
-    }
+<h1 class="text-2xl font-semibold mb-4">Адміністрування замовлень</h1>
 
-        .admin-orders h2 {
-            margin-bottom: 2rem;
-        }
+<form method="get" asp-action="Index" class="mb-4 flex space-x-4 items-center">
+    <select name="statusFilter" class="border rounded px-3 py-1 font-serif" asp-items="statuses"></select>
 
-    .filter-form {
-        margin-bottom: 2rem;
-        display: flex;
-        gap: 1rem;
-        flex-wrap: wrap;
-    }
+    <input type="text" name="userSearch" value="@currentUserSearch"
+           placeholder="Пошук користувача"
+           class="border rounded px-3 py-1 font-serif" />
 
-    .order-table {
-        background-color: #fff;
-        border: 1px solid #c2b280;
-        width: 100%;
-        border-radius: 10px;
-        overflow: hidden;
-    }
+    <button type="submit" class="bg-blue-600 text-white px-4 py-1 rounded hover:bg-blue-700">Фільтрувати</button>
+</form>
 
-        .order-table th, .order-table td {
-            padding: 0.75rem;
-            border-bottom: 1px solid #ddd;
-        }
-
-        .order-table th {
-            background-color: #c2b280;
-            color: #fff;
-        }
-
-        .order-table tr:hover {
-            background-color: #f0ece1;
-        }
-
-    .btn-details {
-        color: #4b4a3f;
-        font-weight: bold;
-    }
-</style>
-
-<div class="admin-orders">
-    <h2>Усі замовлення</h2>
-
-    <form method="get" asp-action="Index" class="filter-form">
-        <input type="text" name="userSearch" value="@ViewData["CurrentUserSearch"]" placeholder="Пошук за користувачем..." class="form-control" />
-        <select name="statusFilter" class="form-select">
-            <option value="">Усі статуси</option>
-            <option value="Pending" selected="@((ViewData["CurrentStatusFilter"] as string) == "Pending")">Очікує</option>
-            <option value="Confirmed" selected="@((ViewData["CurrentStatusFilter"] as string) == "Confirmed")">Підтверджено</option>
-            <option value="Completed" selected="@((ViewData["CurrentStatusFilter"] as string) == "Completed")">Завершено</option>
-        </select>
-        <button type="submit" class="btn btn-dark">Фільтрувати</button>
-    </form>
-
-    <table class="order-table">
-        <thead>
+<table class="table-auto w-full border-collapse border border-gray-300">
+    <thead>
+        <tr class="bg-gray-100">
+            <th class="border border-gray-300 px-2 py-1">ID</th>
+            <th class="border border-gray-300 px-2 py-1">Користувач</th>
+            <th class="border border-gray-300 px-2 py-1">Email</th>
+            <th class="border border-gray-300 px-2 py-1">Статус</th>
+            <th class="border border-gray-300 px-2 py-1">Дата</th>
+            <th class="border border-gray-300 px-2 py-1">Загальна сума</th>
+            <th class="border border-gray-300 px-2 py-1">Дії</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var order in Model)
+        {
             <tr>
-                <th>№</th>
-                <th>Користувач</th>
-                <th>Email</th>
-                <th>Статус</th>
-                <th>Сума</th>
-                <th>Дата</th>
-                <th></th>
+                <td class="border border-gray-300 px-2 py-1">@order.Id</td>
+                <td class="border border-gray-300 px-2 py-1">@order.UserFullName</td>
+                <td class="border border-gray-300 px-2 py-1">@order.UserEmail</td>
+                <td class="border border-gray-300 px-2 py-1">@order.Status</td>
+                <td class="border border-gray-300 px-2 py-1">@order.OrderedAt.ToString("yyyy-MM-dd HH:mm")</td>
+                <td class="border border-gray-300 px-2 py-1">@order.Total.ToString("C")</td>
+                <td class="border border-gray-300 px-2 py-1">
+                    <a asp-action="Details" asp-route-id="@order.Id" class="text-blue-600 hover:underline">Деталі</a>
+                </td>
             </tr>
-        </thead>
-        <tbody>
-            @foreach (var order in Model)
-            {
-                <tr>
-                    <td>@order.Id</td>
-                    <td>@order.UserFullName</td>
-                    <td>@order.UserEmail</td>
-                    <td>@order.Status</td>
-                    <td>@order.Total.ToString("C")</td>
-                    <td>@order.OrderedAt.ToShortDateString()</td>
-                    <td><a asp-action="Details" asp-route-id="@order.Id" class="btn-details">Деталі</a></td>
-                </tr>
-            }
-        </tbody>
-    </table>
-</div>
+        }
+    </tbody>
+</table>
+
+@if (TempData["Error"] != null)
+{
+    <div class="mt-4 text-red-600 font-semibold">@TempData["Error"]</div>
+}
+
+@if (TempData["Success"] != null)
+{
+    <div class="mt-4 text-green-600 font-semibold">@TempData["Success"]</div>
+}

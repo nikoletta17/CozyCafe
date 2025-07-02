@@ -1,0 +1,40 @@
+﻿@model CozyCafe.Models.DTO.Admin.MenuItemOptionGroupDto
+
+@{
+    ViewData["Title"] = "Деталі групи опцій";
+}
+
+<h1 class="text-2xl font-serif font-semibold mb-4">Деталі групи опцій</h1>
+
+<div class="mb-4">
+    <strong>ID:</strong> @Model.Id
+</div>
+
+<div class="mb-4">
+    <strong>Назва групи:</strong> @Model.Name
+</div>
+
+<div>
+    <strong>Опції:</strong>
+    @if (Model.Options != null && Model.Options.Any())
+    {
+        <ul class="list-disc list-inside mt-2">
+            @foreach (var option in Model.Options)
+            {
+                <li>@option.Name @if (option.ExtraPrice != null && option.ExtraPrice != 0)
+                    {
+                        <span class="text-sm text-gray-500">(+@option.ExtraPrice.Value.ToString("F2")₴)</span>
+                    }</li>
+            }
+        </ul>
+    }
+    else
+    {
+        <p><em>Опції відсутні</em></p>
+    }
+</div>
+
+<p class="mt-6">
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="text-green-600 hover:underline mr-4">Редагувати</a>
+    <a asp-action="Index" class="text-blue-600 hover:underline">Назад до списку</a>
+</p>

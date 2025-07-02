@@ -3,12 +3,14 @@
 @using Microsoft.AspNetCore.Mvc.Rendering
 
 @{
-    ViewData["Title"] = "Створити нову страву";
+    ViewData["Title"] = "Редагувати страву";
 }
 
-<h2>Створити нову страву</h2>
+<h2>Редагувати: @Model.Name</h2>
 
-<form asp-action="Create" method="post" class="needs-validation" novalidate>
+<form asp-action="Edit" method="post" class="needs-validation" novalidate>
+    <input type="hidden" asp-for="Id" />
+
     <div class="mb-3">
         <label asp-for="Name" class="form-label"></label>
         <input asp-for="Name" class="form-control" required />
@@ -39,7 +41,7 @@
         <span asp-validation-for="ImageUrl" class="text-danger"></span>
     </div>
 
-    <button type="submit" class="btn btn-success">Створити</button>
+    <button type="submit" class="btn btn-primary">Зберегти</button>
     <a href="@Url.Action("Index")" class="btn btn-secondary ms-2">Скасувати</a>
 </form>
 

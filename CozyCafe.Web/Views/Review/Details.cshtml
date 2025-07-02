@@ -1,0 +1,15 @@
+﻿@model CozyCafe.Models.Domain.ForUser.Review
+
+<h2>Деталі відгуку</h2>
+
+<div>
+    <h4>Рейтинг: @Model.Rating</h4>
+    <p>Коментар: @Model.Comment</p>
+    <p>Користувач: @Model.User?.FullName</p>
+    <p>Дата: @Model.CreatedAt.ToString("dd.MM.yyyy")</p>
+</div>
+
+<p>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Редагувати</a> |
+    <a asp-action="Index">Назад до списку</a>
+</p>

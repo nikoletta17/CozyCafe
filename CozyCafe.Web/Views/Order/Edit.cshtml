@@ -1,0 +1,33 @@
+﻿@model CozyCafe.Models.DTO.ForUser.OrderDto
+@using Microsoft.AspNetCore.Mvc.Rendering
+
+@{
+    ViewData["Title"] = "Редагування замовлення";
+}
+
+<h2>Редагування замовлення #@Model.Id</h2>
+
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="Id" />
+
+    <!-- Інші поля, наприклад Дата -->
+    <div class="mb-3">
+        <label asp-for="OrderedAt" class="form-label">Дата замовлення</label>
+        <input asp-for="OrderedAt" class="form-control" readonly />
+    </div>
+
+    <!-- Статус з правильним selected -->
+    <div class="mb-3">
+        <label asp-for="Status" class="form-label">Статус</label>
+        <select asp-for="Status" class="form-select">
+            <option value="Pending" selected="@(Model.Status == "Pending")">Очікується</option>
+            <option value="Confirmed" selected="@(Model.Status == "Confirmed")">Підтверджено</option>
+            <option value="InProgress" selected="@(Model.Status == "InProgress")">В процесі</option>
+            <option value="Completed" selected="@(Model.Status == "Completed")">Виконано</option>
+            <option value="Cancelled" selected="@(Model.Status == "Cancelled")">Скасовано</option>
+        </select>
+    </div>
+
+    <!-- Кнопка Зберегти -->
+    <button type="submit" class="btn btn-primary">Зберегти</button>
+</form>

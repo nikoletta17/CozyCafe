@@ -31,7 +31,24 @@ namespace CozyCafe.Web.Controllers
 
             ViewBag.Categories = new SelectList(categories, "Id", "Name");
 
+            var sortOptions = new List<SelectListItem>
+    {
+        new SelectListItem { Value = "", Text = "За замовчуванням" },
+        new SelectListItem { Value = "name", Text = "Назва" },
+        new SelectListItem { Value = "price_asc", Text = "Ціна ↑" },
+        new SelectListItem { Value = "price_desc", Text = "Ціна ↓" },
+    };
+
+            // Позначити вибране значення
+            foreach (var option in sortOptions)
+            {
+                option.Selected = option.Value == filter.SortBy;
+            }
+
+            ViewBag.SortOptions = sortOptions;
+
             return View((items, filter));
         }
+
     }
 }

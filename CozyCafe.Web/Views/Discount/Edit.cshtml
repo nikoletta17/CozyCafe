@@ -1,41 +1,38 @@
 ﻿@model CozyCafe.Models.DTO.Admin.DiscountDto
 
 @{
-    Layout = "_Layout";
-    ViewData["Title"] = "Edit Discount";
+    ViewData["Title"] = "Редагувати знижку";
 }
 
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display&display=swap" rel="stylesheet" />
+<h1>Редагувати знижку</h1>
 
-<div class="container my-5" style="font-family: 'Playfair Display', serif; max-width: 600px;">
-    <h1 class="mb-4 text-secondary">Edit Discount</h1>
+<form asp-action="Edit" method="post">
+    <input type="hidden" asp-for="Id" />
 
-    <form asp-action="Edit" method="post" class="shadow p-4 rounded-4" style="background-color: #f9f6f2;">
-        <input type="hidden" asp-for="Id" />
+    <div class="form-group">
+        <label asp-for="Code"></label>
+        <input asp-for="Code" class="form-control" />
+        <span asp-validation-for="Code" class="text-danger"></span>
+    </div>
 
-        <div class="mb-3">
-            <label asp-for="Code" class="form-label fw-semibold"></label>
-            <input asp-for="Code" class="form-control rounded-3" />
-            <span asp-validation-for="Code" class="text-danger"></span>
-        </div>
+    <div class="form-group">
+        <label asp-for="Percent"></label>
+        <input asp-for="Percent" type="number" min="0" max="100" class="form-control" />
+        <span asp-validation-for="Percent" class="text-danger"></span>
+    </div>
 
-        <div class="mb-3">
-            <label asp-for="Percent" class="form-label fw-semibold"></label>
-            <input asp-for="Percent" type="number" min="1" max="100" class="form-control rounded-3" />
-            <span asp-validation-for="Percent" class="text-danger"></span>
-        </div>
+    <div class="form-group">
+        <label asp-for="ValidTo"></label>
+        <input asp-for="ValidTo" type="date" class="form-control" />
+        <span asp-validation-for="ValidTo" class="text-danger"></span>
+    </div>
 
-        <div class="mb-3">
-            <label asp-for="ValidTo" class="form-label fw-semibold"></label>
-            <input asp-for="ValidTo" type="date" class="form-control rounded-3" />
-            <span asp-validation-for="ValidTo" class="text-danger"></span>
-        </div>
-
-        <button type="submit" class="btn btn-outline-dark rounded-4 fw-semibold px-4">Save</button>
-        <a asp-action="Index" class="btn btn-link text-muted ms-3">Cancel</a>
-    </form>
-</div>
+    <button type="submit" class="btn btn-primary">Зберегти</button>
+    <a asp-action="Index" class="btn btn-secondary">Скасувати</a>
+</form>
 
 @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }

@@ -2,6 +2,7 @@
 using AutoMapper;
 using CozyCafe.Application.Interfaces.ForServices.ForAdmin;
 using CozyCafe.Models.Domain.Admin;
+using CozyCafe.Models.DTO.Admin;
 using CozyCafe.Web.Controllers.Generic_Controller;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,9 +20,16 @@ namespace CozyCafe.Web.Controllers
 
         public async Task<IActionResult> ByParentCategory(int? parentCategoryId)
         {
-            var parentCategory = await _categoryService.GetByParentCategoryIdAsync(parentCategoryId);
-            var dtos = _mapper.Map<IEnumerable<Category>>(parentCategory);
+            // Отримуємо всі категорії з вказаним ParentCategoryId (може бути null для кореневих категорій)
+            var categories = await _categoryService.GetByParentCategoryIdAsync(parentCategoryId);
+
+            // Мапимо отримані доменні моделі у DTO для передачі у View
+            var dtos = _mapper.Map<IEnumerable<CategoryDto>>(categories);
+
+            // Повертаємо View "Index", передаючи у нього список категорій у вигляді DTO
             return View("Index", dtos);
         }
+
+
     }
 }

@@ -1,32 +1,35 @@
 ﻿@model IEnumerable<CozyCafe.Models.DTO.Admin.MenuItemOptionDto>
 
 @{
-    Layout = "_Layout";
-    ViewData["Title"] = "Options";
+    ViewData["Title"] = "Опції меню";
 }
 
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display&display=swap" rel="stylesheet" />
+<h1 class="text-3xl font-serif mb-6">Опції меню</h1>
 
-<div class="container my-5" style="font-family: 'Playfair Display', serif;">
-    <h1 class="mb-4 text-secondary">Options</h1>
+<table class="table-auto border-collapse border border-gray-300 w-full text-left">
+    <thead>
+        <tr class="bg-gray-100">
+            <th class="border border-gray-300 px-4 py-2">Назва</th>
+            <th class="border border-gray-300 px-4 py-2">Додаткова ціна</th>
+            <th class="border border-gray-300 px-4 py-2">Дії</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var option in Model)
+        {
+            <tr>
+                <td class="border border-gray-300 px-4 py-2">@option.Name</td>
+                <td class="border border-gray-300 px-4 py-2">@String.Format("{0:C}", option.ExtraPrice ?? 0)</td>
+                <td class="border border-gray-300 px-4 py-2 whitespace-nowrap">
+                    <a class="text-blue-600 hover:underline mr-4" asp-action="Details" asp-route-id="@option.Id">Перегляд</a>
+                    <a class="text-green-600 hover:underline mr-4" asp-action="Edit" asp-route-id="@option.Id">Редагувати</a>
+                    <a class="text-red-600 hover:underline" asp-action="Delete" asp-route-id="@option.Id">Видалити</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
 
-    @if (!Model.Any())
-    {
-        <p class="text-muted">No options found for this group.</p>
-    }
-    else
-    {
-        <ul class="list-group shadow rounded-4" style="background-color: #f9f6f2;">
-            @foreach (var option in Model)
-            {
-                <li class="list-group-item d-flex justify-content-between align-items-center border-0">
-                    <span class="fw-semibold text-dark">@option.Name</span>
-                    @if (option.ExtraPrice.HasValue && option.ExtraPrice.Value > 0)
-                    {
-                        <span class="badge bg-secondary rounded-pill">+@option.ExtraPrice.Value.ToString("C")</span>
-                    }
-                </li>
-            }
-        </ul>
-    }
+<div class="mt-6">
+    <a asp-action="Create" class="bg-emerald-600 hover:bg-emerald-700 text-white py-2 px-4 rounded font-semibold">Додати нову опцію</a>
 </div>

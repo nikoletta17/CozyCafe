@@ -10,6 +10,105 @@
     <link rel="stylesheet" href="~/CozyCafe.Web.styles.css" asp-append-version="true" />
 </head>
 <body>
+    <style>
+        body {
+            font-family: 'Playfair Display', serif;
+            background-color: #f9f6f1;
+            color: #3b3a30;
+        }
+
+        .order-container {
+            max-width: 900px;
+            margin: 2rem auto;
+            padding: 2rem 3rem;
+            background: #fff;
+            border: 1px solid #c2b280;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .order-item {
+            border-bottom: 1px solid #c2b280;
+            padding: 1rem 0;
+            display: flex;
+            justify-content: space-between;
+        }
+
+            .order-item:last-child {
+                border-bottom: none;
+            }
+
+        .order-item-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .order-item-quantity,
+        .order-item-price {
+            font-style: italic;
+            color: #7a7461;
+        }
+
+        .order-total {
+            text-align: right;
+            font-weight: 700;
+            font-size: 1.25rem;
+            margin-top: 1rem;
+            color: #3b3a30;
+        }
+
+        .status {
+            margin: 1rem 0;
+            font-weight: 700;
+            color: #c2b280;
+            font-size: 1.1rem;
+            text-align: center;
+        }
+
+        .form-section {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: #faf7f0;
+            border-radius: 10px;
+            border: 1px solid #c2b280;
+        }
+
+        label {
+            font-weight: 600;
+            margin-right: 0.5rem;
+        }
+
+        select, input[type="number"] {
+            border: 1px solid #c2b280;
+            border-radius: 6px;
+            padding: 0.3rem 0.6rem;
+            font-family: 'Playfair Display', serif;
+            font-size: 1rem;
+            margin-right: 1rem;
+        }
+
+        button {
+            background-color: #c2b280;
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            padding: 0.5rem 1.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+            button:hover {
+                background-color: #a9955f;
+            }
+    </style>
+
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">

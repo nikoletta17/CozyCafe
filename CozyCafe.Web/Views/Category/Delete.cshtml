@@ -1,0 +1,15 @@
+﻿@model CozyCafe.Models.DTO.Admin.CategoryDto
+
+<h2>Видалити категорію</h2>
+
+<h3>Ви впевнені, що хочете видалити цю категорію?</h3>
+
+<div>
+    <h4>@Model.Name</h4>
+</div>
+
+<form asp-action="DeleteConfirmed" method="post">
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Видалити</button>
+    <a asp-action="Index" class="btn btn-secondary">Скасувати</a>
+</form>

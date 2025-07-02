@@ -1,0 +1,28 @@
+﻿@model CozyCafe.Models.DTO.ForUser.OrderDto
+
+@{
+    ViewData["Title"] = $"Видалити замовлення #{Model.Id}";
+}
+
+<h2>Видалити замовлення №@Model.Id?</h2>
+
+<div>
+    <p>Ви дійсно хочете видалити це замовлення?</p>
+    <dl class="row">
+        <dt class="col-sm-3">Дата замовлення:</dt>
+        <dd class="col-sm-9">@Model.OrderedAt.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</dd>
+
+        <dt class="col-sm-3">Статус:</dt>
+        <dd class="col-sm-9">@Model.Status</dd>
+
+        <dt class="col-sm-3">Сума:</dt>
+        <dd class="col-sm-9">@Model.Total.ToString("C")</dd>
+    </dl>
+</div>
+
+<form asp-action="Delete" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" asp-for="Id" />
+    <button type="submit" class="btn btn-danger">Видалити</button>
+    <a asp-action="Index" class="btn btn-secondary ms-2">Скасувати</a>
+</form>

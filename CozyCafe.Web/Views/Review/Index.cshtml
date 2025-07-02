@@ -1,0 +1,35 @@
+﻿@model IEnumerable<CozyCafe.Models.Domain.ForUser.Review>
+
+<h2>Усі відгуки</h2>
+
+<p>
+    <a asp-action="Create">Додати новий відгук</a>
+</p>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Рейтинг</th>
+            <th>Коментар</th>
+            <th>Користувач</th>
+            <th>Дата</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var review in Model)
+        {
+            <tr>
+                <td>@review.Rating</td>
+                <td>@review.Comment</td>
+                <td>@review.User?.FullName</td>
+                <td>@review.CreatedAt.ToShortDateString()</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@review.Id">Перегляд</a> |
+                    <a asp-action="Edit" asp-route-id="@review.Id">Редагувати</a> |
+                    <a asp-action="Delete" asp-route-id="@review.Id">Видалити</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

@@ -1,198 +1,26 @@
 ﻿@model CozyCafe.Models.DTO.Admin.MenuItemDto
-@{
-    // Якщо потрібно, то можна приймати MenuItemDetailsViewModel,
-    // але оскільки немає, підглянемо варіант із ViewBag для опцій
-    var optionGroups = ViewBag.OptionGroups as List<CozyCafe.Models.DTO.Admin.MenuItemOptionGroupDto> ?? new List<CozyCafe.Models.DTO.Admin.MenuItemOptionGroupDto>();
 
-    ViewData["Title"] = Model.Name + " — CozyCafe";
+@{
+    ViewData["Title"] = "Деталі страви";
 }
 
-<style>
-    body {
-        font-family: 'Playfair Display', serif;
-        background-color: #f9f6f1;
-        color: #3b3a30;
-        max-width: 900px;
-        margin: 2rem auto;
-        padding: 1rem;
-    }
+<h2>@Model.Name</h2>
 
-    .details-container {
-        display: flex;
-        gap: 2rem;
-        flex-wrap: wrap;
-    }
-
-    .image-section {
-        flex: 1 1 300px;
-        border: 1px solid #c2b280;
-        border-radius: 10px;
-        overflow: hidden;
-    }
-
-        .image-section img {
-            width: 100%;
-            height: auto;
-            object-fit: cover;
-            display: block;
+<div class="row">
+    <div class="col-md-5">
+        @if (!string.IsNullOrEmpty(Model.ImageUrl))
+        {
+            <img src="@Model.ImageUrl" alt="@Model.Name" class="img-fluid rounded shadow-sm" />
         }
-
-    .info-section {
-        flex: 2 1 400px;
-        display: flex;
-        flex-direction: column;
-    }
-
-        .info-section h1 {
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-            font-size: 2.8rem;
-        }
-
-        .info-section .category {
-            font-style: italic;
-            color: #6b6a58;
-            margin-bottom: 1rem;
-            font-weight: 600;
-        }
-
-        .info-section .description {
-            font-size: 1.1rem;
-            margin-bottom: 1.5rem;
-            min-height: 80px;
-        }
-
-        .info-section .price {
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: #4b4a3f;
-            margin-bottom: 1.5rem;
-        }
-
-    .options-section {
-        margin-bottom: 2rem;
-    }
-
-    .option-group {
-        margin-bottom: 1rem;
-    }
-
-        .option-group h3 {
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-            border-bottom: 1px solid #c2b280;
-            padding-bottom: 0.2rem;
-        }
-
-    .option-item {
-        display: flex;
-        align-items: center;
-        margin-bottom: 0.3rem;
-    }
-
-        .option-item label {
-            margin-left: 0.5rem;
-            font-weight: 500;
-            cursor: pointer;
-        }
-
-        .option-item .extra-price {
-            margin-left: auto;
-            font-style: italic;
-            color: #6b6a58;
-        }
-
-    .add-to-cart-btn {
-        background-color: #4b4a3f;
-        color: #c2b280;
-        border: 2px solid #c2b280;
-        padding: 0.8rem 2rem;
-        font-weight: 700;
-        border-radius: 8px;
-        cursor: pointer;
-        font-size: 1.2rem;
-        width: max-content;
-        transition: background-color 0.3s ease;
-        user-select: none;
-    }
-
-        .add-to-cart-btn:hover {
-            background-color: #c2b280;
-            color: #4b4a3f;
-        }
-
-    .total-price {
-        font-size: 1.4rem;
-        font-weight: 700;
-        margin-bottom: 1.5rem;
-        color: #4b4a3f;
-    }
-</style>
-
-<div class="details-container">
-    <div class="image-section">
-        <img src="@Model.ImageUrl ?? " /images/default-dish.jpg"" alt="@Model.Name" />
     </div>
-    <div class="info-section">
-        <h1>@Model.Name</h1>
-        <div class="category">Категорія: @Model.CategoryName</div>
-        <div class="description">@Model.Description</div>
-        <div class="price" id="basePrice" data-price="@Model.Price">@Model.Price.ToString("C")</div>
+    <div class="col-md-7">
+        <h4>Опис</h4>
+        <p>@Model.Description</p>
 
-        <form id="addToCartForm" method="post" asp-controller="Cart" asp-action="AddToCart">
-            <input type="hidden" name="MenuItemId" value="@Model.Id" />
+        <p><strong>Категорія:</strong> @Model.CategoryName</p>
+        <p><strong>Ціна:</strong> @Model.Price.ToString("C")</p>
 
-            <div class="options-section">
-                @foreach (var group in optionGroups)
-                {
-                    <div class="option-group">
-                        <h3>@group.Name</h3>
-                        @foreach (var option in group.Options)
-                        {
-                            var optionPrice = option.ExtraPrice ?? 0m;
-                            <div class="option-item">
-                                <input type="checkbox"
-                                       id="option_@option.Id"
-                                       name="SelectedOptionIds"
-                                       value="@option.Id"
-                                       data-price="@optionPrice" />
-                                <label for="option_@option.Id">@option.Name</label>
-                                @if (optionPrice > 0)
-                                {
-                                    <span class="extra-price">+ @optionPrice.ToString("C")</span>
-                                }
-                            </div>
-                        }
-                    </div>
-                }
-            </div>
-
-            <div class="total-price" id="totalPrice">
-                Всього: @Model.Price.ToString("C")
-            </div>
-
-            <button type="submit" class="add-to-cart-btn">Додати в кошик</button>
-        </form>
+        <a href="@Url.Action("Edit", new { id = Model.Id })" class="btn btn-warning me-2">Редагувати</a>
+        <a href="@Url.Action("Index")" class="btn btn-secondary">Назад до меню</a>
     </div>
 </div>
-
-<script>
-    (() => {
-        const basePrice = parseFloat(document.getElementById('basePrice').dataset.price);
-        const checkboxes = document.querySelectorAll('input[name="SelectedOptionIds"]');
-        const totalPriceElem = document.getElementById('totalPrice');
-
-        function updateTotal() {
-            let total = basePrice;
-            checkboxes.forEach(cb => {
-                if(cb.checked) {
-                    const extra = parseFloat(cb.dataset.price) || 0;
-                    total += extra;
-                }
-            });
-            totalPriceElem.textContent = "Всього: " + total.toLocaleString('uk-UA', { style: 'currency', currency: 'UAH' });
-        }
-
-        checkboxes.forEach(cb => cb.addEventListener('change', updateTotal));
-    })();
-</script>
