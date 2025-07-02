@@ -11,9 +11,11 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace CozyCafe.Web.Controllers
+namespace CozyCafe.Web.Areas.User.Controllers
 {
-    [Authorize]
+    [Area("User")]
+    [Authorize] 
+    [Route("User/[controller]/[action]")]
     public class OrderController : Controller
     {
         private readonly IOrderService _orderService;

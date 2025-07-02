@@ -1,7 +1,7 @@
 ﻿using CozyCafe.Application.Interfaces.Generic_Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CozyCafe.Web.Controllers.Generic_Controller
+namespace CozyCafe.Web.Areas.User.Controllers.Generic_Controller
 {
     public class GenericController<T> : Controller where T : class
     {

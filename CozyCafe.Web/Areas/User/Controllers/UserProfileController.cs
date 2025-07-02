@@ -6,9 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
-namespace CozyCafe.Web.Controllers
+namespace CozyCafe.Web.Areas.User.Controllers
 {
-    [Authorize]
+    [Area("User")]
+    [Authorize] 
+    [Route("User/[controller]/[action]")]
     public class UserProfileController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;

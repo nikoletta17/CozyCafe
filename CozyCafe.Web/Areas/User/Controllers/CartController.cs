@@ -8,9 +8,11 @@ using CozyCafe.Models.Domain.ForUser;
 using Microsoft.AspNetCore.Authorization;
 
 
-namespace CozyCafe.Web.Controllers
+namespace CozyCafe.Web.Areas.User.Controllers
 {
-    [Authorize]
+    [Area("User")]
+    [Authorize] 
+    [Route("User/[controller]/[action]")]
     public class CartController : Controller
     {
         private readonly ICartService _cartService;

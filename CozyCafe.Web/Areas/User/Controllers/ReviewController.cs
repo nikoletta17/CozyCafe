@@ -3,14 +3,17 @@ using CozyCafe.Application.Interfaces.ForServices.ForUser;
 using CozyCafe.Application.Services.Generic_Service;
 using CozyCafe.Models.Domain.ForUser;
 using CozyCafe.Models.DTO.ForUser;
+using CozyCafe.Web.Areas.User.Controllers.Generic_Controller;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
 
-namespace CozyCafe.Web.Controllers.Generic_Controller
+namespace CozyCafe.Web.Areas.User.Controllers
 {
-    [Authorize]
+    [Area("User")]
+    [Authorize] 
+    [Route("User/[controller]/[action]")]
     public class ReviewController : GenericController<Review>
     {
         private readonly IReviewService _reviewService;

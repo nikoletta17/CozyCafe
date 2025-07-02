@@ -5,9 +5,12 @@ using System.Collections.Generic;
 using CozyCafe.Models.Domain.Admin;
 using CozyCafe.Web.Models;
 using System.Diagnostics;
+using Microsoft.AspNetCore.Authorization;
 
-namespace CozyCafe.Web.Controllers
+namespace CozyCafe.Web.Areas.User.Controllers
 {
+    [Area("User")]
+    [Route("User/[controller]/[action]")]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;

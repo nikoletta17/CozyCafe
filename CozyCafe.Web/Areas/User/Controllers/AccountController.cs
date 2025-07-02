@@ -3,9 +3,12 @@ using Microsoft.AspNetCore.Mvc;
 using System.Threading.Tasks;
 using CozyCafe.Models.ViewModels;
 using CozyCafe.Models.Domain.ForUser;
+using Microsoft.AspNetCore.Authorization;
 
-namespace CozyCafe.Web.Controllers
+namespace CozyCafe.Web.Areas.User.Controllers
 {
+    [Area("User")]
+    [Route("User/[controller]/[action]")]
     public class AccountController : Controller
     {
         private readonly UserManager<ApplicationUser> _userManager;

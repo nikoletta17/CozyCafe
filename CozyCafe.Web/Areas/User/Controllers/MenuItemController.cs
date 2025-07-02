@@ -3,12 +3,15 @@ using CozyCafe.Application.Interfaces.ForServices.ForAdmin;
 using CozyCafe.Application.Services.ForAdmin;
 using CozyCafe.Models.Domain.Admin;
 using CozyCafe.Models.DTO.Admin;
-using CozyCafe.Web.Controllers.Generic_Controller;
+using CozyCafe.Web.Areas.User.Controllers.Generic_Controller;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
-namespace CozyCafe.Web.Controllers
+namespace CozyCafe.Web.Areas.User.Controllers
 {
+    [Area("User")]
+    [Route("User/[controller]/[action]")]
     public class MenuItemController : GenericController<MenuItem>
     {
         private readonly IMenuItemService _menuItemService;

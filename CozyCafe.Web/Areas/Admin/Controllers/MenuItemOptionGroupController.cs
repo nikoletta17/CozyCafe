@@ -3,7 +3,7 @@ using CozyCafe.Application.Interfaces.ForServices.ForAdmin;
 using CozyCafe.Application.Services;
 using CozyCafe.Models.Domain.Admin;
 using CozyCafe.Models.DTO;
-using CozyCafe.Web.Controllers.Generic_Controller;
+using CozyCafe.Web.Areas.User.Controllers.Generic_Controller;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
