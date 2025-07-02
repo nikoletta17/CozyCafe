@@ -126,10 +126,10 @@ app.MapControllerRoute(
     name: "areas",
     pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
 
-// Дефолтний маршрут
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
 
 // Маршрути Razor Pages (для Identity UI)
 app.MapRazorPages();

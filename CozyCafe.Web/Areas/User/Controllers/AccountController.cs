@@ -48,8 +48,14 @@ namespace CozyCafe.Web.Areas.User.Controllers
             {
                 await _userManager.AddToRoleAsync(user, "User");
                 await _signInManager.SignInAsync(user, isPersistent: false);
-                return RedirectToAction("Index", "Home");
+
+                var roles = await _userManager.GetRolesAsync(user);
+                if (roles.Contains("Admin"))
+                    return RedirectToAction("Index", "Dashboard", new { area = "Admin" });
+                else
+                    return RedirectToAction("Index", "Home", new { area = "User" });
             }
+
 
             foreach (var err in result.Errors)
                 ModelState.AddModelError(string.Empty, err.Description);
@@ -75,7 +81,16 @@ namespace CozyCafe.Web.Areas.User.Controllers
                 model.Email, model.Password, model.RememberMe, lockoutOnFailure: false);
 
             if (result.Succeeded)
-                return RedirectToAction("Index", "Home");
+            {
+                var user = await _userManager.FindByEmailAsync(model.Email);
+                var roles = await _userManager.GetRolesAsync(user);
+
+                if (roles.Contains("Admin"))
+                    return RedirectToAction("Index", "Dashboard", new { area = "Admin" });
+                else
+                    return RedirectToAction("Index", "Home", new { area = "User" });
+            }
+
 
             ModelState.AddModelError("", "Invalid login attempt");
             return View(model);
