@@ -137,9 +137,13 @@
 </div>
 
 <!-- Кнопки-перемикачі категорій під промо -->
+@{
+    var hiddenCategories = new List<string> { "Основні страви", "Закуски", "Напої" };
+}
+
 <div class="filter-buttons">
     <a asp-area="User" asp-controller="MenuItem" asp-action="Index">Всі категорії</a>
-    @foreach (var category in Model)
+    @foreach (var category in Model.Where(c => !hiddenCategories.Contains(c.Name)))
     {
         <a asp-area="User" asp-controller="MenuItem" asp-action="Index" asp-route-CategoryId="@category.Id">
             @category.Name
