@@ -12,6 +12,10 @@
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/CozyCafe.Web.styles.css" asp-append-version="true" />
     <style>
+        html, body {
+            height: 100%;
+        }
+
         .cozy-btn {
             font-family: 'Playfair Display', serif;
             padding: 0.5rem 1.2rem;
@@ -52,8 +56,9 @@
                 color: #fff;
             }
     </style>
+
 </head>
-<body>
+<body style="display: flex; flex-direction: column; min-height: 100vh;">
     <header>
         <nav class="navbar navbar-expand-lg" style="background-color: #4b4a3f; border-bottom: 2px solid #c2b280;">
             <div class="container-fluid">
@@ -135,22 +140,30 @@
         </nav>
     </header>
 
-    <div class="container">
-        <main role="main" class="pb-3">
+    <main role="main" class="flex-grow-1 d-flex flex-column">
+        <div class="container pb-3">
             @RenderBody()
-        </main>
-    </div>
+        </div>
+    </main>
 
 
-    <footer class="text-center py-4 mt-auto" style="background-color: #4b4a3f; border-top: 2px solid #c2b280;">
-        <div class="container">
-            <p style="margin: 0; color: #c2b280; font-family: 'Playfair Display', serif;">
-                &copy; @DateTime.Now.Year CozyCafe — Стильно. Затишно. Смачно.
-            </p>
-            <p style="margin: 0; color: #c2b280; font-family: 'Playfair Display', serif;">
-                <a href="/Home/About" class="text-decoration-none" style="color: #c2b280;">Про нас</a> |
-                <a href="/Home/Contact" class="text-decoration-none" style="color: #c2b280;">Контакти</a>
-            </p>
+    <footer class="text-center py-3 mt-auto" style="background-color: #4b4a3f; border-top: 2px solid #c2b280;">
+        <div class="container-fluid" style="font-family: 'Playfair Display', serif; color: #c2b280; font-size: 1rem;">
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-center">
+                <p class="mb-2 mb-md-0">&copy; @DateTime.Now.Year <strong>CozyCafe</strong> — Стильно. Затишно. Смачно.</p>
+
+                <div class="mb-2 mb-md-0" style="display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: center;">
+                    <span>Про нас</span>
+                    <span>|</span>
+                    <span>Контакти</span>
+                    <span>|</span>
+                    <span>Пн–Нд: 09:00 – 22:00</span>
+                </div>
+
+                <p class="mb-0">
+                     +38 (097) 123-45-67 &nbsp; | &nbsp; +38 (063) 234-56-78 &nbsp; | &nbsp; +38 (050) 345-67-89
+                </p>
+            </div>
         </div>
     </footer>
 
