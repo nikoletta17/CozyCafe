@@ -1,4 +1,5 @@
 ﻿using CozyCafe.Application.Interfaces.ForServices.ForAdmin;
+using CozyCafe.Models.Domain.Admin;
 using CozyCafe.Models.DTO.Admin;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -24,50 +25,37 @@ namespace CozyCafe.Web.Areas.User.Controllers
         [HttpGet]
         public async Task<IActionResult> Index(MenuItemFilterModel filter)
         {
-            // Якщо користувач ввів назву категорії - знаходимо її Id для подальшої фільтрації
-            if (!string.IsNullOrWhiteSpace(filter.CategoryName))
+            if (!string.IsNullOrEmpty(filter.CategoryName))
             {
-                var allCategories = await _categoryService.GetAllAsync();
-                var matchedCategory = allCategories.FirstOrDefault(c => c.Name == filter.CategoryName);
-                if (matchedCategory != null)
+                var categories = await _categoryService.GetAllAsync();
+                var category = categories.FirstOrDefault(c => c.Name == filter.CategoryName);
+                if (category != null)
                 {
-                    filter.CategoryId = matchedCategory.Id;
-                }
-                else
-                {
-                    // Якщо категорія з такою назвою не знайдена - очистити CategoryId
-                    filter.CategoryId = null;
+                    filter.CategoryId = category.Id;
                 }
             }
 
-            // Отримуємо відфільтровані меню-елементи
-            var filteredItems = await _menuItemService.GetFilteredAsync(filter);
+            var items = await _menuItemService.GetFilteredAsync(filter);
+            var allCategories = await _categoryService.GetAllAsync();
 
-            // Для списку фільтрації категорій завантажуємо всі категорії
-            var categories = await _categoryService.GetAllAsync();
+            ViewBag.Categories = new SelectList(allCategories, "Id", "Name", filter.CategoryId);
 
-            // Передаємо категорії для фільтру у ViewBag як SelectList (Id - значення, Name - текст)
-            ViewBag.Categories = new SelectList(categories, "Id", "Name", filter.CategoryId);
-
-            // Опції сортування для випадаючого списку
+            // Сортування
             var sortOptions = new List<SelectListItem>
-            {
-                new SelectListItem { Value = "", Text = "За замовчуванням" },
-                new SelectListItem { Value = "name", Text = "Назва" },
-                new SelectListItem { Value = "price_asc", Text = "Ціна ↑" },
-                new SelectListItem { Value = "price_desc", Text = "Ціна ↓" },
-            };
-
-            // Встановлюємо вибрану опцію сортування
+    {
+        new SelectListItem { Value = "", Text = "За замовчуванням" },
+        new SelectListItem { Value = "name", Text = "Назва" },
+        new SelectListItem { Value = "price_asc", Text = "Ціна ↑" },
+        new SelectListItem { Value = "price_desc", Text = "Ціна ↓" },
+    };
             foreach (var option in sortOptions)
             {
                 option.Selected = option.Value == filter.SortBy;
             }
-
             ViewBag.SortOptions = sortOptions;
 
-            // Передаємо у View кортеж: список меню і модель фільтрації
-            return View((filteredItems, filter));
+            return View((items, filter));
         }
+
     }
 }

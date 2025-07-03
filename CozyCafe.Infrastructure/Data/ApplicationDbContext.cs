@@ -49,6 +49,7 @@ namespace CozyCafe.Infrastructure.Data
             ConfigureMenuItemOption(builder);
             ConfigureOrderItemOption(builder);
 
+           
             builder.Entity<MenuItem>(entity =>
             {
                 entity.Property(e => e.Price).HasColumnType("decimal(10,2)");
@@ -133,7 +134,27 @@ namespace CozyCafe.Infrastructure.Data
         Price = 160.00m,
         ImageUrl = "/images/deserts/dessert6.jpg",
         CategoryId = 1
-    }
+    },
+
+        new MenuItem
+    {
+        Id = 107,
+        Name = "Île flottante",
+        Description = "Ніжний заварний крем з білковими 'острівцями', що плавають на ванільному соусі.",
+        Price = 155.00m,
+        ImageUrl = "/images/deserts/dessert7.jpg",
+        CategoryId = 1
+    },
+
+           new MenuItem
+        {
+            Id = 108,
+            Name = "Croissant",
+            Description = "Традиційний французький слойонуватий круасан з ніжним масляним смаком.",
+            Price = 90.00m,
+            ImageUrl = "/images/deserts/dessert8.jpg",
+            CategoryId = 1
+        }
 };
 
             var mainDishes = new List<MenuItem>
@@ -363,6 +384,10 @@ namespace CozyCafe.Infrastructure.Data
         CategoryId = 3
     }
 };
+            builder.Entity<MenuItem>().HasData(desserts.ToArray());
+            builder.Entity<MenuItem>().HasData(mainDishes.ToArray());
+            builder.Entity<MenuItem>().HasData(appetizers.ToArray());
+            builder.Entity<MenuItem>().HasData(drinks.ToArray());
 
 
 

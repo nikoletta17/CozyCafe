@@ -4,6 +4,7 @@ using CozyCafe.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CozyCafe.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250703131213_AddVariablesToDb")]
+    partial class AddVariablesToDb
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -157,24 +160,6 @@ namespace CozyCafe.Infrastructure.Migrations
                             ImageUrl = "/images/deserts/dessert6.jpg",
                             Name = "Clafoutis",
                             Price = 160.00m
-                        },
-                        new
-                        {
-                            Id = 107,
-                            CategoryId = 1,
-                            Description = "Ніжний заварний крем з білковими 'острівцями', що плавають на ванільному соусі.",
-                            ImageUrl = "/images/deserts/dessert7.jpg",
-                            Name = "Île flottante",
-                            Price = 155.00m
-                        },
-                        new
-                        {
-                            Id = 108,
-                            CategoryId = 1,
-                            Description = "Традиційний французький слойонуватий круасан з ніжним масляним смаком.",
-                            ImageUrl = "/images/deserts/dessert8.jpg",
-                            Name = "Croissant",
-                            Price = 90.00m
                         },
                         new
                         {
