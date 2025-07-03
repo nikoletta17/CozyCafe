@@ -21,6 +21,32 @@
         text-shadow: 1px 1px 2px rgba(194, 178, 128, 0.6);
     }
 
+    /* Стилі кнопок категорій */
+    .filter-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+        margin-bottom: 3rem;
+    }
+
+        .filter-buttons a {
+            padding: 0.8rem 1.5rem;
+            border: 2px solid #4b4a3f;
+            background-color: transparent;
+            color: #4b4a3f;
+            font-weight: 600;
+            border-radius: 30px;
+            text-decoration: none;
+            transition: 0.3s ease;
+        }
+
+            .filter-buttons a:hover,
+            .filter-buttons a.active {
+                background-color: #4b4a3f;
+                color: #fff;
+            }
+
     form.filter-form {
         max-width: 600px;
         margin: 0 auto 3rem;
@@ -189,8 +215,21 @@
 
     }
 </style>
+
 <h2>Меню</h2>
 
+<!-- Кнопки категорій -->
+<div class="filter-buttons">
+    <a asp-controller="MenuItem" asp-action="Index" class="@(Model.Filter.CategoryId == null ? "active" : "")">Всі категорії</a>
+    @foreach (var cat in (SelectList)ViewBag.Categories)
+    {
+        var catIdStr = cat.Value;
+        var isActive = catIdStr == (Model.Filter.CategoryId?.ToString() ?? "") ? "active" : "";
+        <a asp-controller="MenuItem" asp-action="Index" asp-route-CategoryId="@catIdStr" class="@isActive">@cat.Text</a>
+    }
+</div>
+
+<!-- Форма фільтрації -->
 <form method="get" asp-controller="MenuItem" asp-action="Index" class="filter-form">
     <input type="text" name="SearchTerm" value="@Model.Filter.SearchTerm" placeholder="Пошук за назвою" />
     <select name="CategoryId" class="form-select">
@@ -214,6 +253,7 @@
     <button type="submit">Фільтрувати</button>
 </form>
 
+<!-- Карточки товарів -->
 <div class="cards-row">
     @if (Model.Items.Any())
     {
@@ -249,7 +289,7 @@
                     <h3 class="card-title">@item.Name</h3>
                     <p class="card-text">@item.Description</p>
                     <div class="card-price">@item.Price.ToString("C")</div>
-                    <a href="@Url.Action("AddToCart", "Cart", new { id = item.Id })" class="order-btn">Замовити</a>
+                    <a class="order-btn" asp-area="User" asp-controller="MenuItem" asp-action="Details" asp-route-id="@item.Id">Деталі</a>
                 </div>
             </div>
         }
@@ -263,10 +303,9 @@
                 <div class="card-body">
                     <h3 class="card-title">Десерт @i</h3>
                     <p class="card-text text-muted">Смачний десерт із колекції CozyCafe</p>
-                    <a href="#" class="order-btn" onclick="alert('Ця функція ще не реалізована'); return false;">Замовити</a>
+                    <button class="order-btn" onclick="alert('Ця функція ще не реалізована'); return false;">Замовити</button>
                 </div>
             </div>
         }
     }
 </div>
-

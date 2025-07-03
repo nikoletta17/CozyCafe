@@ -46,6 +46,49 @@
                 color: #4b4a3f;
             }
 
+    .promo-row {
+        display: flex;
+        justify-content: center;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+        margin: 2rem 0 3rem;
+    }
+
+    .promo-img {
+        width: 200px;
+        height: 140px;
+        object-fit: cover;
+        border-radius: 10px;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    }
+
+    /* Стилі для кнопок категорій під промо */
+    .filter-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+        margin-bottom: 4rem;
+    }
+
+        .filter-buttons a {
+            padding: 0.8rem 1.5rem;
+            border: 2px solid #4b4a3f;
+            background-color: transparent;
+            color: #4b4a3f;
+            font-weight: 600;
+            border-radius: 30px;
+            text-decoration: none;
+            transition: 0.3s ease;
+            cursor: pointer;
+        }
+
+            .filter-buttons a:hover {
+                background-color: #4b4a3f;
+                color: #fff;
+            }
+
+    /* Категорії-картки, якщо захочеш залишити */
     .categories {
         display: flex;
         justify-content: center;
@@ -76,51 +119,11 @@
             margin: 0;
             font-weight: 600;
         }
-
-    .promo-row {
-        display: flex;
-        justify-content: center;
-        gap: 1.5rem;
-        flex-wrap: wrap;
-        margin: 2rem 0;
-    }
-
-    .promo-img {
-        width: 200px;
-        height: 140px;
-        object-fit: cover;
-        border-radius: 10px;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-    }
-
-    .filter-buttons {
-        display: flex;
-        justify-content: center;
-        gap: 1rem;
-        flex-wrap: wrap;
-        margin-bottom: 3rem;
-    }
-
-        .filter-buttons a {
-            padding: 0.8rem 1.5rem;
-            border: 2px solid #4b4a3f;
-            background-color: transparent;
-            color: #4b4a3f;
-            font-weight: 600;
-            border-radius: 30px;
-            text-decoration: none;
-            transition: 0.3s ease;
-        }
-
-            .filter-buttons a:hover {
-                background-color: #4b4a3f;
-                color: #fff;
-            }
 </style>
 
 <div class="hero">
     <h1>Ласкаво просимо в CozyCafe</h1>
-    <a class="btn" href="/MenuItem/Index">Побачити меню</a>
+    <a class="btn" asp-area="User" asp-controller="MenuItem" asp-action="Index">Побачити меню</a>
 </div>
 
 <hr class="my-5" style="border-top: 4px solid #c2b280; width: 80%; margin: 2rem auto;" />
@@ -133,24 +136,25 @@
     <img src="/images/menu4.jpg" alt="Promo 4" class="promo-img" />
 </div>
 
-<!-- Кнопки категорій -->
-<!-- Кнопки категорій -->
+<!-- Кнопки-перемикачі категорій під промо -->
 <div class="filter-buttons">
-    <a class="btn" asp-area="User" asp-controller="MenuItem" asp-action="Index" asp-route-CategoryName="Десерти">Десерти</a>
-    <a class="btn" asp-area="User" asp-controller="MenuItem" asp-action="Index" asp-route-CategoryName="Основні страви">Основні страви</a>
-    <a class="btn" asp-area="User" asp-controller="MenuItem" asp-action="Index" asp-route-CategoryName="Закуски">Закуски</a>
-    <a class="btn" asp-area="User" asp-controller="MenuItem" asp-action="Index" asp-route-CategoryName="Напої">Напої</a>
-</div>
-
-
-
-<!-- Автоматичні категорії з БД -->
-<div class="categories">
+    <a asp-area="User" asp-controller="MenuItem" asp-action="Index">Всі категорії</a>
     @foreach (var category in Model)
     {
-        <div class="category-card" onclick="location.href='@Url.Action("Index", "MenuItem", new { CategoryId = category.Id })'">
-            <h3>@category.Name</h3>
-        </div>
+        <a asp-area="User" asp-controller="MenuItem" asp-action="Index" asp-route-CategoryId="@category.Id">
+            @category.Name
+        </a>
     }
 </div>
 
+<!-- Якщо хочеш залишити великі категорії-картки -->
+<!--
+<div class="categories">
+@foreach (var category in Model)
+{
+            <div class="category-card" onclick="location.href='@Url.Action("Index", "MenuItem", new { area = "User", CategoryId = category.Id })'">
+                <h3>@category.Name</h3>
+            </div>
+}
+</div>
+-->

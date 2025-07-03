@@ -35,7 +35,6 @@ namespace CozyCafe.Web.Areas.User.Controllers
             var dto = _mapper.Map<CartDto>(cart);
             return View(dto);
         }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddOrUpdateItem(int menuItemId, int quantity)
@@ -51,8 +50,10 @@ namespace CozyCafe.Web.Areas.User.Controllers
             };
 
             await _cartService.AddOrUpdateCartItemAsync(userId, newItem);
+
             return RedirectToAction(nameof(Index));
         }
+
 
         [HttpPost]
         [ValidateAntiForgeryToken]
