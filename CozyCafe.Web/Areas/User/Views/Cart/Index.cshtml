@@ -2,21 +2,210 @@
 
 @{
     ViewData["Title"] = "Кошик";
+
+    string FormatPrice(decimal price) => string.Format("{0:N2} ₴", price);
 }
+
+<style>
+    body {
+        font-family: 'Playfair Display', serif;
+        background-color: #f9f6f1;
+        color: #3b3a30;
+    }
+
+    h2 {
+        font-weight: 700;
+        font-size: 2.5rem;
+        margin-bottom: 2rem;
+        text-align: center;
+        color: #4b4a3f;
+        text-shadow: 1px 1px 2px rgba(194, 178, 128, 0.6);
+    }
+
+    .empty-message {
+        text-align: center;
+        font-style: italic;
+        color: #6b6758;
+        margin-top: 3rem;
+    }
+
+    .btn-clear-cart {
+        display: block;
+        margin: 0 auto 2rem auto;
+        padding: 0.5rem 1.5rem;
+        font-family: 'Playfair Display', serif;
+        font-weight: 700;
+        background-color: #4b4a3f;
+        border: 2px solid #c2b280;
+        color: #c2b280;
+        border-radius: 30px;
+        cursor: pointer;
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+        .btn-clear-cart:hover {
+            background-color: #c2b280;
+            color: #4b4a3f;
+        }
+
+    table {
+        width: 100%;
+        border-collapse: separate;
+        border-spacing: 0 15px;
+        font-family: 'Playfair Display', serif;
+        color: #4b4a3f;
+    }
+
+    thead th {
+        border-bottom: 2px solid #c2b280;
+        padding-bottom: 0.5rem;
+        font-weight: 700;
+        font-size: 1.1rem;
+        text-align: left;
+    }
+
+    tbody tr {
+        background-color: #fff;
+        border: 1.5px solid #c2b280;
+        border-radius: 10px;
+        box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+        transition: box-shadow 0.3s ease;
+    }
+
+        tbody tr:hover {
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+
+    tbody td {
+        padding: 1rem 1rem;
+        vertical-align: middle;
+    }
+
+        tbody td img {
+            max-width: 80px;
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        }
+
+    input[type="number"] {
+        width: 70px;
+        font-family: 'Playfair Display', serif;
+        font-weight: 600;
+        border: 2px solid #c2b280;
+        border-radius: 30px;
+        padding: 0.3rem 0.5rem;
+        color: #4b4a3f;
+        background-color: transparent;
+        transition: border-color 0.3s ease;
+        text-align: center;
+    }
+
+        input[type="number"]:focus {
+            border-color: #4b4a3f;
+            outline: none;
+        }
+
+    .btn-update, .btn-remove {
+        font-family: 'Playfair Display', serif;
+        font-weight: 700;
+        border-radius: 30px;
+        padding: 0.3rem 1rem;
+        cursor: pointer;
+        border: 2px solid #c2b280;
+        transition: background-color 0.3s ease, color 0.3s ease;
+        font-size: 0.9rem;
+    }
+
+    .btn-update {
+        background-color: #4b4a3f;
+        color: #c2b280;
+        margin-left: 0.5rem;
+    }
+
+        .btn-update:hover {
+            background-color: #c2b280;
+            color: #4b4a3f;
+        }
+
+    .btn-remove {
+        background-color: #c42f2f;
+        color: #fff;
+        border-color: #a02828;
+    }
+
+        .btn-remove:hover {
+            background-color: #a02828;
+        }
+
+    .total-price {
+        font-weight: 700;
+        font-size: 1.5rem;
+        text-align: right;
+        margin-top: 2rem;
+        color: #4b4a3f;
+        text-shadow: 1px 1px 2px rgba(194, 178, 128, 0.5);
+        font-family: 'Playfair Display', serif;
+    }
+
+    @@media (max-width: 768px) {
+        table, thead, tbody, tr, th, td {
+            display: block;
+        }
+
+            thead tr {
+                position: absolute;
+                top: -9999px;
+                left: -9999px;
+            }
+
+            tbody tr {
+                margin-bottom: 1.5rem;
+                border-radius: 10px;
+                box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+                padding: 1rem;
+            }
+
+            tbody td {
+                padding-left: 50%;
+                position: relative;
+            }
+
+                tbody td:before {
+                    position: absolute;
+                    top: 1rem;
+                    left: 1rem;
+                    width: 45%;
+                    white-space: nowrap;
+                    font-weight: 700;
+                    content: attr(data-label);
+                    color: #4b4a3f;
+                }
+
+        input[type="number"] {
+            width: 100%;
+        }
+
+        .btn-update {
+            margin-left: 0;
+            margin-top: 0.5rem;
+            width: 100%;
+        }
+    }
+</style>
 
 <h2>Ваш кошик</h2>
 
 @if (!Model.Items.Any())
 {
-    <p>Ваш кошик порожній.</p>
+    <p class="empty-message">Ваш кошик порожній.</p>
 }
 else
 {
-    <form asp-action="Clear" method="post" asp-controller="Cart" style="margin-bottom: 20px;">
-        <button type="submit" class="btn btn-danger">Очистити кошик</button>
+    <form asp-action="Clear" method="post" asp-controller="Cart" style="margin-bottom: 20px; text-align: center;">
+        <button type="submit" class="btn-clear-cart">Очистити кошик</button>
     </form>
 
-    <table class="table">
+    <table>
         <thead>
             <tr>
                 <th>Фото</th>
@@ -31,30 +220,30 @@ else
             @foreach (var item in Model.Items)
             {
                 <tr>
-                    <td>
+                    <td data-label="Фото">
                         @if (!string.IsNullOrEmpty(item.ImageUrl))
                         {
-                            <img src="@item.ImageUrl" alt="@item.MenuItemName" style="max-width: 80px;" />
+                            <img src="@item.ImageUrl" alt="@item.MenuItemName" />
                         }
                         else
                         {
                             <span>Нема фото</span>
                         }
                     </td>
-                    <td>@item.MenuItemName</td>
-                    <td>@item.Price.ToString("C")</td>
-                    <td>
-                        <form asp-action="UpdateItemQuantity" asp-controller="Cart" method="post" style="display:inline-block; width:120px;">
+                    <td data-label="Назва">@item.MenuItemName</td>
+                    <td data-label="Ціна">@FormatPrice(item.Price)</td>
+                    <td data-label="Кількість">
+                        <form asp-action="UpdateItemQuantity" asp-controller="Cart" method="post" style="display:flex; align-items:center;">
                             <input type="hidden" name="menuItemId" value="@item.MenuItemId" />
-                            <input type="number" name="quantity" value="@item.Quantity" min="1" class="form-control" style="width: 70px; display:inline-block;" />
-                            <button type="submit" class="btn btn-primary btn-sm">Оновити</button>
+                            <input type="number" name="quantity" value="@item.Quantity" min="1" />
+                            <button type="submit" class="btn-update">Оновити</button>
                         </form>
                     </td>
-                    <td>@(item.Price * item.Quantity).ToString("C")</td>
-                    <td>
+                    <td data-label="Сума">@FormatPrice(item.Price * item.Quantity)</td>
+                    <td data-label="">
                         <form asp-action="RemoveItem" asp-controller="Cart" method="post" style="display:inline;">
                             <input type="hidden" name="menuItemId" value="@item.MenuItemId" />
-                            <button type="submit" class="btn btn-danger btn-sm" title="Видалити">×</button>
+                            <button type="submit" class="btn-remove" title="Видалити">×</button>
                         </form>
                     </td>
                 </tr>
@@ -62,5 +251,5 @@ else
         </tbody>
     </table>
 
-    <h4>Всього: @Model.Total.ToString("C")</h4>
+    <div class="total-price">Всього: @FormatPrice(Model.Total)</div>
 }
