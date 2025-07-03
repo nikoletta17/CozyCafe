@@ -14,31 +14,50 @@ namespace CozyCafe.Infrastructure.Repositories.ForAdmin
     {
         public MenuItemRepository(ApplicationDbContext context) : base(context) { }
 
-        public async Task<IEnumerable<MenuItem>> GetFilteredAsync(MenuItemFilterModel filterModel)
+        public async Task<IEnumerable<MenuItem>> GetFilteredAsync(MenuItemFilterModel filter)
         {
             var query = _context.MenuItems
                 .Include(mi => mi.Category)
                 .AsQueryable();
 
-            if (!string.IsNullOrWhiteSpace(filterModel.SearchTerm))
-                query = query.Where(mi => mi.Name.Contains(filterModel.SearchTerm));
-
-            if (filterModel.CategoryId.HasValue)
-                query = query.Where(mi => mi.CategoryId == filterModel.CategoryId.Value);
-
-            if (filterModel.MinPrice.HasValue)
-                query = query.Where(mi => mi.Price >= filterModel.MinPrice.Value);
-
-            if (filterModel.MaxPrice.HasValue)
-                query = query.Where(mi => mi.Price <= filterModel.MaxPrice.Value);
-
-            query = filterModel.SortBy switch
+            if (!string.IsNullOrEmpty(filter.SearchTerm))
             {
-                "price_asc" => query.OrderBy(mi => mi.Price),
-                "price_desc" => query.OrderByDescending(mi => mi.Price),
-                "name" => query.OrderBy(mi => mi.Name),
-                _ => query.OrderBy(mi => mi.Id)
-            };
+                query = query.Where(x => x.Name.Contains(filter.SearchTerm));
+            }
+
+            if (filter.CategoryId.HasValue)
+            {
+                query = query.Where(x => x.CategoryId == filter.CategoryId);
+            }
+
+            if (!string.IsNullOrEmpty(filter.CategoryName))
+            {
+                query = query.Where(x => x.Category.Name == filter.CategoryName);
+            }
+
+            if (filter.MinPrice.HasValue)
+            {
+                query = query.Where(x => x.Price >= filter.MinPrice.Value);
+            }
+
+            if (filter.MaxPrice.HasValue)
+            {
+                query = query.Where(x => x.Price <= filter.MaxPrice.Value);
+            }
+
+            // Сортування
+            switch (filter.SortBy)
+            {
+                case "name":
+                    query = query.OrderBy(x => x.Name);
+                    break;
+                case "price_asc":
+                    query = query.OrderBy(x => x.Price);
+                    break;
+                case "price_desc":
+                    query = query.OrderByDescending(x => x.Price);
+                    break;
+            }
 
             return await query.ToListAsync();
         }

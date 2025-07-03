@@ -134,12 +134,14 @@
 </div>
 
 <!-- Кнопки категорій -->
+<!-- Кнопки категорій -->
 <div class="filter-buttons">
-    <a asp-area="User" asp-controller="MenuItem" asp-action="Index" asp-route-category="Десерти">Десерти</a>
-    <a asp-area="User" asp-controller="MenuItem" asp-action="Index" asp-route-category="Основні страви">Основні страви</a>
-    <a asp-area="User" asp-controller="MenuItem" asp-action="Index" asp-route-category="Закуски">Закуски</a>
-    <a asp-area="User" asp-controller="MenuItem" asp-action="Index" asp-route-category="Напої"> Напої</a>
+    <a class="btn" asp-area="User" asp-controller="MenuItem" asp-action="Index" asp-route-CategoryName="Десерти"> Десерти</a>
+    <a class="btn" asp-area="User" asp-controller="MenuItem" asp-action="Index" asp-route-CategoryName="Основні страви"> Основні страви</a>
+    <a class="btn" asp-area="User" asp-controller="MenuItem" asp-action="Index" asp-route-CategoryName="Закуски"> Закуски</a>
+    <a class="btn" asp-area="User" asp-controller="MenuItem" asp-action="Index" asp-route-CategoryName="Напої"> Напої</a>
 </div>
+
 
 <!-- Автоматичні категорії з БД -->
 <div class="categories">
