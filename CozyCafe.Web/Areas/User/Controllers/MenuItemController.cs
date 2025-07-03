@@ -25,22 +25,32 @@ namespace CozyCafe.Web.Areas.User.Controllers
             _menuItemService = service;
             _mapper = mapper;
         }
-
         [HttpGet]
-        public async Task<IActionResult> Index(MenuItemFilterModel filter)
+        public async Task<IActionResult> Index(MenuItemFilterModel filter, string? CategoryName)
         {
-            var items = await _menuItemService.GetFilteredAsync(filter);
             var categories = await _categoryService.GetAllAsync();
+
+            // Якщо прийшов CategoryName, знайдемо відповідну категорію та поставимо її Id у фільтр
+            if (!string.IsNullOrEmpty(CategoryName))
+            {
+                var category = categories.FirstOrDefault(c => c.Name == CategoryName);
+                if (category != null)
+                {
+                    filter.CategoryId = category.Id;
+                }
+            }
+
+            var items = await _menuItemService.GetFilteredAsync(filter);
 
             ViewBag.Categories = new SelectList(categories, "Id", "Name");
 
             var sortOptions = new List<SelectListItem>
-    {
-        new SelectListItem { Value = "", Text = "За замовчуванням" },
-        new SelectListItem { Value = "name", Text = "Назва" },
-        new SelectListItem { Value = "price_asc", Text = "Ціна ↑" },
-        new SelectListItem { Value = "price_desc", Text = "Ціна ↓" },
-    };
+            {
+                new SelectListItem { Value = "", Text = "За замовчуванням" },
+                new SelectListItem { Value = "name", Text = "Назва" },
+                new SelectListItem { Value = "price_asc", Text = "Ціна ↑" },
+                new SelectListItem { Value = "price_desc", Text = "Ціна ↓" },
+            };
 
             // Позначити вибране значення
             foreach (var option in sortOptions)
@@ -52,6 +62,7 @@ namespace CozyCafe.Web.Areas.User.Controllers
 
             return View((items, filter));
         }
+
 
     }
 }

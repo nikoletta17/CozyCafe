@@ -1,14 +1,198 @@
 ﻿@model (IEnumerable<CozyCafe.Models.DTO.Admin.MenuItemDto> Items, CozyCafe.Models.DTO.Admin.MenuItemFilterModel Filter)
-
 @using Microsoft.AspNetCore.Mvc.Rendering
+
+@{
+    ViewData["Title"] = "Меню — CozyCafe";
+}
+
+<style>
+    body {
+        font-family: 'Playfair Display', serif;
+        background-color: #f9f6f1;
+        color: #3b3a30;
+    }
+
+    h2 {
+        font-weight: 700;
+        font-size: 2.5rem;
+        margin-bottom: 1.5rem;
+        text-align: center;
+        color: #4b4a3f;
+        text-shadow: 1px 1px 2px rgba(194, 178, 128, 0.6);
+    }
+
+    form.filter-form {
+        max-width: 600px;
+        margin: 0 auto 3rem;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        justify-content: center;
+    }
+
+        form.filter-form input[type="text"],
+        form.filter-form select,
+        form.filter-form input[type="number"],
+        form.filter-form .form-select {
+            flex: 1 1 140px;
+            padding: 0.5rem 0.8rem;
+            border: 2px solid #c2b280;
+            border-radius: 30px;
+            font-family: 'Playfair Display', serif;
+            font-weight: 600;
+            color: #4b4a3f;
+            background-color: transparent;
+            transition: border-color 0.3s ease;
+            outline: none;
+        }
+
+            form.filter-form input[type="text"]:focus,
+            form.filter-form select:focus,
+            form.filter-form input[type="number"]:focus,
+            form.filter-form .form-select:focus {
+                border-color: #4b4a3f;
+            }
+
+        form.filter-form button {
+            padding: 0.6rem 2rem;
+            background-color: #4b4a3f;
+            border: 2px solid #c2b280;
+            color: #c2b280;
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            flex: 0 0 auto;
+        }
+
+            form.filter-form button:hover {
+                background-color: #c2b280;
+                color: #4b4a3f;
+            }
+
+    .cards-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 2rem;
+        justify-content: center;
+        margin-bottom: 4rem;
+    }
+
+    .card {
+        background-color: #fff;
+        width: 18rem;
+        height: 28rem;
+        border: 1.5px solid #c2b280;
+        border-radius: 10px;
+        box-shadow: 0 3px 8px rgba(0,0,0,0.15);
+        display: flex;
+        flex-direction: column;
+        transition: box-shadow 0.3s ease;
+        cursor: pointer;
+        overflow: hidden;
+        font-family: 'Playfair Display', serif;
+        color: #4b4a3f;
+    }
+
+        .card:hover {
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+
+    .card-img-top {
+        height: 200px;
+        width: 100%;
+        object-fit: cover;
+        border-bottom: 2px solid #c2b280;
+    }
+
+    .card-body {
+        padding: 1rem 1.25rem;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        text-align: center;
+    }
+
+    .card-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        text-shadow: 1px 1px 2px rgba(194,178,128,0.5);
+    }
+
+    .card-text {
+        font-size: 1rem;
+        color: #6b6758;
+        flex-grow: 1;
+        margin-bottom: 0.75rem;
+    }
+
+    .card-price {
+        font-weight: 700;
+        font-size: 1.25rem;
+        margin-bottom: 0.75rem;
+        color: #4b4a3f;
+    }
+
+    .order-btn {
+        font-family: 'Playfair Display', serif;
+        padding: 0.5rem 1.5rem;
+        background-color: #4b4a3f;
+        border: 2px solid #c2b280;
+        color: #c2b280;
+        border-radius: 30px;
+        font-weight: 700;
+        text-decoration: none;
+        transition: background-color 0.3s ease, color 0.3s ease;
+        display: inline-block;
+        margin: 0 auto;
+        width: fit-content;
+        white-space: nowrap;
+        cursor: pointer;
+    }
+
+        .order-btn:hover {
+            background-color: #c2b280;
+            color: #4b4a3f;
+        }
+
+    @@media (max-width: 768px) {
+        form.filter-form {
+            flex-direction: column;
+            max-width: 100%;
+        }
+
+    form.filter-form input,
+    form.filter-form select,
+    form.filter-form button {
+        width: 100% !important;
+        flex: none;
+    }
+
+    .cards-row {
+        gap: 1rem;
+    }
+
+    .card {
+        width: 100%;
+        max-width: 350px;
+        height: auto;
+    }
+
+    .card-img-top {
+        height: 180px;
+    }
+
+    }
+</style>
 
 <h2>Меню</h2>
 
-<form method="get" asp-controller="MenuItem" asp-action="Index" class="mb-3">
-
-    <input type="text" name="SearchTerm" value="@Model.Filter.SearchTerm" placeholder="Пошук за назвою" class="form-control mb-2" />
-
-    <select name="CategoryId" class="form-select mb-2">
+<form method="get" asp-controller="MenuItem" asp-action="Index" class="filter-form">
+    <input type="text" name="SearchTerm" value="@Model.Filter.SearchTerm" placeholder="Пошук за назвою" />
+    <select name="CategoryId" class="form-select">
         <option value="">Всі категорії</option>
         @foreach (var cat in (SelectList)ViewBag.Categories)
         {
@@ -18,32 +202,46 @@
         }
     </select>
 
-    <input type="number" name="MinPrice" step="0.01" value="@(Model.Filter.MinPrice ?? 0)" placeholder="Мінімальна ціна" class="form-control mb-2" />
-    <input type="number" name="MaxPrice" step="0.01" value="@(Model.Filter.MaxPrice ?? 0)" placeholder="Максимальна ціна" class="form-control mb-2" />
+    <label style="align-self:center; font-weight:600; color:#4b4a3f; margin-right:4px;">Мінімальна ціна</label>
+    <input type="number" name="MinPrice" step="0.01" value="@(Model.Filter.MinPrice ?? 0)" placeholder="0" />
 
-    @Html.DropDownList("SortBy", (IEnumerable<SelectListItem>)ViewBag.SortOptions, "Сортувати за", new { @class = "form-select mb-2" })
+    <label style="align-self:center; font-weight:600; color:#4b4a3f; margin-right:4px;">Максимальна ціна</label>
+    <input type="number" name="MaxPrice" step="0.01" value="@(Model.Filter.MaxPrice ?? 0)" placeholder="0" />
 
-    <button type="submit" class="btn btn-primary">Фільтрувати</button>
+    @Html.DropDownList("SortBy", (IEnumerable<SelectListItem>)ViewBag.SortOptions, "Сортувати за", new { @class = "form-select" })
+
+    <button type="submit">Фільтрувати</button>
 </form>
 
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Назва</th>
-            <th>Опис</th>
-            <th>Ціна</th>
-            <th>Категорія</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model.Items)
+<div class="cards-row">
+    @if (Model.Items.Any())
+    {
+        int counter = 1;
+        foreach (var item in Model.Items)
         {
-            <tr>
-                <td>@item.Name</td>
-                <td>@item.Description</td>
-                <td>@item.Price.ToString("C")</td>
-                <td>@item.CategoryName</td>
-            </tr>
+            <div class="card" title="@item.Name">
+                <img src="@Url.Content(item.ImageUrl ?? $"~/images/deserts/dessert{counter++}.jpg")" alt="@item.Name" class="card-img-top" />
+                <div class="card-body">
+                    <h3 class="card-title">@item.Name</h3>
+                    <p class="card-text">@item.Description</p>
+                    <div class="card-price">@item.Price.ToString("C")</div>
+                    <a href="@Url.Action("AddToCart", "Cart", new { id = item.Id })" class="order-btn">Замовити</a>
+                </div>
+            </div>
         }
-    </tbody>
-</table>
+    }
+    else
+    {
+        for (int i = 1; i <= 8; i++)
+        {
+            <div class="card">
+                <img src="@Url.Content($"~/images/deserts/dessert{i}.jpg")" alt="Десерт @i" class="card-img-top" />
+                <div class="card-body">
+                    <h3 class="card-title">Десерт @i</h3>
+                    <p class="card-text text-muted">Смачний десерт із колекції CozyCafe</p>
+                    <a href="#" class="order-btn" onclick="alert('Ця функція ще не реалізована'); return false;">Замовити</a>
+                </div>
+            </div>
+        }
+    }
+</div>
