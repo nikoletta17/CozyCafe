@@ -189,7 +189,6 @@
 
     }
 </style>
-
 <h2>Меню</h2>
 
 <form method="get" asp-controller="MenuItem" asp-action="Index" class="filter-form">
@@ -218,10 +217,11 @@
 <div class="cards-row">
     @if (Model.Items.Any())
     {
-        int counter = 1;
-
-        foreach (var item in Model.Items)
+        var itemsList = Model.Items.ToList();
+        for (int i = 0; i < itemsList.Count; i++)
         {
+            var item = itemsList[i];
+
             string defaultImageFolder = "deserts";
             string defaultImageNamePrefix = "dessert";
 
@@ -230,9 +230,18 @@
                 defaultImageFolder = "main-dish";
                 defaultImageNamePrefix = "dish";
             }
-            // Додай інші категорії за потреби
+            else if (item.CategoryName == "Закуски")
+            {
+                defaultImageFolder = "snacks";
+                defaultImageNamePrefix = "snack";
+            }
+            else if (item.CategoryName == "Напої")
+            {
+                defaultImageFolder = "drinks";
+                defaultImageNamePrefix = "drink";
+            }
 
-            string defaultImagePath = $"~/images/{defaultImageFolder}/{defaultImageNamePrefix}{counter}.jpg";
+            string defaultImagePath = $"~/images/{defaultImageFolder}/{defaultImageNamePrefix}{i + 1}.jpg";
 
             <div class="card" title="@item.Name">
                 <img src="@Url.Content(item.ImageUrl ?? defaultImagePath)" alt="@item.Name" class="card-img-top" />
@@ -243,13 +252,10 @@
                     <a href="@Url.Action("AddToCart", "Cart", new { id = item.Id })" class="order-btn">Замовити</a>
                 </div>
             </div>
-
-            counter++;
         }
     }
     else
     {
-        // Запасні картки, якщо немає продуктів
         for (int i = 1; i <= 8; i++)
         {
             <div class="card">
@@ -263,3 +269,4 @@
         }
     }
 </div>
+

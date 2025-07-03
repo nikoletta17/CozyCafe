@@ -1,5 +1,4 @@
 ﻿using CozyCafe.Application.Interfaces.ForServices.ForAdmin;
-using CozyCafe.Models.Domain.Admin;
 using CozyCafe.Models.DTO.Admin;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -25,22 +24,32 @@ namespace CozyCafe.Web.Areas.User.Controllers
         [HttpGet]
         public async Task<IActionResult> Index(MenuItemFilterModel filter)
         {
-            var allCategories = await _categoryService.GetAllAsync();
-
-            // Якщо прийшла назва категорії, підставити її в CategoryId для фільтрації та селекту
-            if (!string.IsNullOrEmpty(filter.CategoryName) && !filter.CategoryId.HasValue)
+            // Якщо користувач ввів назву категорії - знаходимо її Id для подальшої фільтрації
+            if (!string.IsNullOrWhiteSpace(filter.CategoryName))
             {
-                var cat = allCategories.FirstOrDefault(c => c.Name == filter.CategoryName);
-                if (cat != null)
+                var allCategories = await _categoryService.GetAllAsync();
+                var matchedCategory = allCategories.FirstOrDefault(c => c.Name == filter.CategoryName);
+                if (matchedCategory != null)
                 {
-                    filter.CategoryId = cat.Id;
+                    filter.CategoryId = matchedCategory.Id;
+                }
+                else
+                {
+                    // Якщо категорія з такою назвою не знайдена - очистити CategoryId
+                    filter.CategoryId = null;
                 }
             }
 
-            var items = await _menuItemService.GetFilteredAsync(filter);
+            // Отримуємо відфільтровані меню-елементи
+            var filteredItems = await _menuItemService.GetFilteredAsync(filter);
 
-            ViewBag.Categories = new SelectList(allCategories, "Id", "Name", filter.CategoryId);
+            // Для списку фільтрації категорій завантажуємо всі категорії
+            var categories = await _categoryService.GetAllAsync();
 
+            // Передаємо категорії для фільтру у ViewBag як SelectList (Id - значення, Name - текст)
+            ViewBag.Categories = new SelectList(categories, "Id", "Name", filter.CategoryId);
+
+            // Опції сортування для випадаючого списку
             var sortOptions = new List<SelectListItem>
             {
                 new SelectListItem { Value = "", Text = "За замовчуванням" },
@@ -49,6 +58,7 @@ namespace CozyCafe.Web.Areas.User.Controllers
                 new SelectListItem { Value = "price_desc", Text = "Ціна ↓" },
             };
 
+            // Встановлюємо вибрану опцію сортування
             foreach (var option in sortOptions)
             {
                 option.Selected = option.Value == filter.SortBy;
@@ -56,7 +66,8 @@ namespace CozyCafe.Web.Areas.User.Controllers
 
             ViewBag.SortOptions = sortOptions;
 
-            return View((items, filter));
+            // Передаємо у View кортеж: список меню і модель фільтрації
+            return View((filteredItems, filter));
         }
     }
 }
