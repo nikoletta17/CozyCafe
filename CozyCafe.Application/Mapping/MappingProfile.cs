@@ -12,8 +12,13 @@ namespace CozyCafe.Application.Mapping
         public MappingProfile()
         {
             // Cart
-            CreateMap<Cart, CartDto>();
-            CreateMap<CartItem, CartItemDto>();
+            CreateMap<Cart, CartDto>()
+           .ForMember(dest => dest.Items, opt => opt.MapFrom(src => src.Items));
+
+            CreateMap<CartItem, CartItemDto>()
+                .ForMember(dest => dest.MenuItemName, opt => opt.MapFrom(src => src.MenuItem!.Name))
+                .ForMember(dest => dest.Price, opt => opt.MapFrom(src => src.MenuItem!.Price))
+                .ForMember(dest => dest.ImageUrl, opt => opt.MapFrom(src => src.MenuItem!.ImageUrl));
 
             // MenuItem
             CreateMap<MenuItem, MenuItemDto>();

@@ -137,9 +137,17 @@
 
     <main role="main" class="flex-grow-1 d-flex flex-column">
         <div class="container pb-3">
+            @if (TempData["Message"] != null)
+            {
+                <div class="alert alert-success mt-3" role="alert" style="font-family: 'Playfair Display', serif; color: #155724; background-color: #d4edda; border-color: #c3e6cb; border-radius: 8px; padding: 1rem; margin-bottom: 1rem;">
+                    @TempData["Message"]
+                </div>
+            }
+
             @RenderBody()
         </div>
     </main>
+
 
     <footer class="text-center py-3 mt-auto" style="background-color: #4b4a3f; border-top: 2px solid #c2b280;">
         <div class="container-fluid" style="font-family: 'Playfair Display', serif; color: #c2b280; font-size: 1rem;">

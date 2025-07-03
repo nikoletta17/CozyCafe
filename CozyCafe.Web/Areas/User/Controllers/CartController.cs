@@ -51,7 +51,9 @@ namespace CozyCafe.Web.Areas.User.Controllers
 
             await _cartService.AddOrUpdateCartItemAsync(userId, newItem);
 
-            return RedirectToAction(nameof(Index));
+            TempData["Message"] = "Страву додано до кошика!";
+            return RedirectToAction("Index", "MenuItem", new { area = "User" });
+            
         }
 
 
