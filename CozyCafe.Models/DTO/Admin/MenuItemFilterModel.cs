@@ -8,11 +8,12 @@ namespace CozyCafe.Models.DTO.Admin
 {
     public class MenuItemFilterModel
     {
-        public string? SearchTerm { get; set; }       // Пошук за назвою
-        public int? CategoryId { get; set; }          // Фільтр за категорією
-        public string? CategoryName { get; set; }
-        public decimal? MinPrice { get; set; }        // Мінімальна ціна
-        public decimal? MaxPrice { get; set; }        // Максимальна ціна
-        public string? SortBy { get; set; }           // name, price_asc, price_desc
+        public string? SearchTerm { get; set; }
+        public int? CategoryId { get; set; }
+        public string? CategoryName { get; set; }  // Ось ця
+        public decimal? MinPrice { get; set; }
+        public decimal? MaxPrice { get; set; }
+        public string? SortBy { get; set; }
     }
+
 }

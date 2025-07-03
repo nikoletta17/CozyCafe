@@ -20,19 +20,20 @@ namespace CozyCafe.Infrastructure.Repositories.ForAdmin
                 .Include(mi => mi.Category)
                 .AsQueryable();
 
-            if (!string.IsNullOrEmpty(filter.SearchTerm))
+            if (!string.IsNullOrWhiteSpace(filter.SearchTerm))
             {
                 query = query.Where(x => x.Name.Contains(filter.SearchTerm));
             }
 
+            // Фільтруємо категорію по Id, якщо задано
             if (filter.CategoryId.HasValue)
             {
-                query = query.Where(x => x.CategoryId == filter.CategoryId);
+                query = query.Where(x => x.CategoryId == filter.CategoryId.Value);
             }
-
-            if (!string.IsNullOrEmpty(filter.CategoryName))
+            // Інакше за назвою категорії, якщо задано (запасний варіант)
+            else if (!string.IsNullOrWhiteSpace(filter.CategoryName))
             {
-                query = query.Where(x => x.Category.Name == filter.CategoryName);
+                query = query.Where(x => x.Category != null && x.Category.Name == filter.CategoryName);
             }
 
             if (filter.MinPrice.HasValue)
@@ -45,7 +46,6 @@ namespace CozyCafe.Infrastructure.Repositories.ForAdmin
                 query = query.Where(x => x.Price <= filter.MaxPrice.Value);
             }
 
-            // Сортування
             switch (filter.SortBy)
             {
                 case "name":
@@ -57,10 +57,12 @@ namespace CozyCafe.Infrastructure.Repositories.ForAdmin
                 case "price_desc":
                     query = query.OrderByDescending(x => x.Price);
                     break;
+                default:
+                    query = query.OrderBy(x => x.Id);
+                    break;
             }
 
             return await query.ToListAsync();
         }
-
     }
 }

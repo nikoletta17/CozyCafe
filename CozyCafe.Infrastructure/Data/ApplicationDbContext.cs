@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 using CozyCafe.Models.Domain.Admin;
 using CozyCafe.Models.Domain.Common;
 using CozyCafe.Models.Domain.ForUser;
+using CozyCafe.Models.DTO.Admin;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -46,6 +48,312 @@ namespace CozyCafe.Infrastructure.Data
             ConfigureMenuItemOptionGroup(builder);
             ConfigureMenuItemOption(builder);
             ConfigureOrderItemOption(builder);
+
+            builder.Entity<Category>().HasData(
+    new Category { Id = 1, Name = "Десерти" },
+    new Category { Id = 2, Name = "Основні страви" },
+    new Category { Id = 3, Name = "Закуски" },
+    new Category { Id = 4, Name = "Напої" }
+);
+
+
+            var desserts = new List<MenuItemDto>
+            {
+                new MenuItemDto
+                {
+                    Id = 1,
+                    Name = "Tarte Tatin",
+                    Description = "Класичний французький перевернутий яблучний пиріг із карамеллю.",
+                    Price = 150.00m,
+                    ImageUrl = "/images/deserts/dessert1.jpg",
+                    CategoryName = "Десерти"
+                },
+                new MenuItemDto
+                {
+                    Id = 2,
+                    Name = "Mille-feuille",
+                    Description = "Листковий торт із кремом патисьєр та ніжною текстурою.",
+                    Price = 180.00m,
+                    ImageUrl = "/images/deserts/dessert2.jpg",
+                    CategoryName = "Десерти"
+                },
+                new MenuItemDto
+                {
+                    Id = 3,
+                    Name = "Macaron",
+                    Description = "Ніжне мигдалеве печиво з кремовою начинкою різних смаків.",
+                    Price = 40.00m,
+                    ImageUrl = "/images/deserts/dessert3.jpg",
+                    CategoryName = "Десерти"
+                },
+                new MenuItemDto
+                {
+                    Id = 4,
+                    Name = "Fondant au chocolat",
+                    Description = "Шоколадний торт з рідкою гарячою начинкою всередині.",
+                    Price = 200.00m,
+                    ImageUrl = "/images/deserts/dessert4.jpg",
+                    CategoryName = "Десерти"
+                },
+                new MenuItemDto
+                {
+                    Id = 5,
+                    Name = "Crème brûlée",
+                    Description = "Запечений крем з карамелізованою хрусткою скоринкою.",
+                    Price = 170.00m,
+                    ImageUrl = "/images/deserts/dessert5.jpg",
+                    CategoryName = "Десерти"
+                },
+                new MenuItemDto
+                {
+                    Id = 6,
+                    Name = "Clafoutis",
+                    Description = "Французька запіканка з вишнями, ніжна і ароматна.",
+                    Price = 160.00m,
+                    ImageUrl = "/images/deserts/dessert6.jpg",
+                    CategoryName = "Десерти"
+                }
+            };
+
+                var mainDishes = new List<MenuItemDto>
+            {
+                // Рибні
+                new MenuItemDto
+                {
+                    Id = 101,
+                    Name = "Bouillabaisse",
+                    Description = "Традиційний французький рибний суп з прянощами та морепродуктами.",
+                    Price = 320.00m,
+                    ImageUrl = "/images/main-dish/main1.jpg",
+                    CategoryName = "Основні страви"
+                },
+                new MenuItemDto
+                {
+                    Id = 102,
+                    Name = "Truite Meunière",
+                    Description = "Філе форелі, обсмажене з вершковим соусом та лимоном.",
+                    Price = 280.00m,
+                    ImageUrl = "/images/main-dish/main2.jpg",
+                    CategoryName = "Основні страви"
+                },
+                new MenuItemDto
+                {
+                    Id = 103,
+                    Name = "Sole Meunière",
+                    Description = "Солень зі смаженим лимонним соусом, класика французької кухні.",
+                    Price = 350.00m,
+                    ImageUrl = "/images/main-dish/main3.jpg",
+                    CategoryName = "Основні страви"
+                },
+                new MenuItemDto
+                {
+                    Id = 104,
+                    Name = "Salmon en Papillote",
+                    Description = "Філе лосося, запечене у пергаменті з овочами та травами.",
+                    Price = 340.00m,
+                    ImageUrl = "/images/main-dish/main4.jpg",
+                    CategoryName = "Основні страви"
+                },
+
+                // М’ясні
+                new MenuItemDto
+                {
+                    Id = 105,
+                    Name = "Coq au Vin",
+                    Description = "Курка, тушкована в червоному вині з грибами та цибулею.",
+                    Price = 300.00m,
+                    ImageUrl = "/images/main-dish/main5.jpg",
+                    CategoryName = "Основні страви"
+                },
+                new MenuItemDto
+                {
+                    Id = 106,
+                    Name = "Boeuf Bourguignon",
+                    Description = "Тушкована яловичина з вином, овочами та ароматними травами.",
+                    Price = 380.00m,
+                    ImageUrl = "/images/main-dish/main6.jpg",
+                    CategoryName = "Основні страви"
+                },
+                new MenuItemDto
+                {
+                    Id = 107,
+                    Name = "Duck à l'Orange",
+                    Description = "Качка з апельсиновим соусом — класичне поєднання солодкого та солоного.",
+                    Price = 390.00m,
+                    ImageUrl = "/images/main-dish/main7.jpg",
+                    CategoryName = "Основні страви"
+                },
+                new MenuItemDto
+                {
+                    Id = 108,
+                    Name = "Ratatouille with Lamb",
+                    Description = "Запечена овочева рататуй з ніжним ягням.",
+                    Price = 370.00m,
+                    ImageUrl = "/images/main-dish/main8.jpg",
+                    CategoryName = "Основні страви"
+                }
+            };
+
+            var drinks = new List<MenuItemDto>
+{
+    // Безалкогольні
+    new MenuItemDto
+    {
+        Id = 201,
+        Name = "Citron Pressé",
+        Description = "Свіжий лимонад з м’ятою та льодом.",
+        Price = 60.00m,
+        ImageUrl = "/images/drinks/drink1.jpg",
+        CategoryName = "Напої"
+    },
+    new MenuItemDto
+    {
+        Id = 202,
+        Name = "Orangina",
+        Description = "Газований апельсиновий напій — класика Франції.",
+        Price = 50.00m,
+        ImageUrl = "/images/drinks/drink2.jpg",
+        CategoryName = "Напої"
+    },
+    new MenuItemDto
+    {
+        Id = 203,
+        Name = "Pommeau",
+        Description = "Фруктовий сидр з яблук, солодкий та освіжаючий.",
+        Price = 70.00m,
+        ImageUrl = "/images/drinks/drink3.jpg",
+        CategoryName = "Напої"
+    },
+    new MenuItemDto
+    {
+        Id = 204,
+        Name = "Café au lait",
+        Description = "Французька кава з гарячим молоком.",
+        Price = 45.00m,
+        ImageUrl = "/images/drinks/drink4.jpg",
+        CategoryName = "Напої"
+    },
+
+    // Алкогольні
+    new MenuItemDto
+    {
+        Id = 205,
+        Name = "Champagne",
+        Description = "Ігристе вино з регіону Шампань, класика святкових моментів.",
+        Price = 250.00m,
+        ImageUrl = "/images/drinks/drink5.jpg",
+        CategoryName = "Напої"
+    },
+    new MenuItemDto
+    {
+        Id = 206,
+        Name = "Kir Royale",
+        Description = "Коктейль із шампанського та чорносмородинового лікеру.",
+        Price = 280.00m,
+        ImageUrl = "/images/drinks/drink6.jpg",
+        CategoryName = "Напої"
+    },
+    new MenuItemDto
+    {
+        Id = 207,
+        Name = "Pastis",
+        Description = "Анісовий алкогольний напій, популярний у південній Франції.",
+        Price = 180.00m,
+        ImageUrl = "/images/drinks/drink7.jpg",
+        CategoryName = "Напої"
+    },
+    new MenuItemDto
+    {
+        Id = 208,
+        Name = "Cognac",
+        Description = "Витриманий французький бренді з багатим ароматом.",
+        Price = 300.00m,
+        ImageUrl = "/images/drinks/drink8.jpg",
+        CategoryName = "Напої"
+    }
+};
+
+            var appetizers = new List<MenuItemDto>
+{
+    // Салати
+    new MenuItemDto
+    {
+        Id = 301,
+        Name = "Salade Niçoise",
+        Description = "Традиційний французький салат з тунцем, яйцями та оливками.",
+        Price = 150.00m,
+        ImageUrl = "/images/appetizers/appetizer1.jpg",
+        CategoryName = "Закуски"
+    },
+    new MenuItemDto
+    {
+        Id = 302,
+        Name = "Salade Lyonnaise",
+        Description = "Салат з беконом, яйцем пашот та гірчичною заправкою.",
+        Price = 160.00m,
+        ImageUrl = "/images/appetizers/appetizer2.jpg",
+        CategoryName = "Закуски"
+    },
+    new MenuItemDto
+    {
+        Id = 303,
+        Name = "Salade de Chèvre Chaud",
+        Description = "Салат із теплою козячою бринзою на тості.",
+        Price = 170.00m,
+        ImageUrl = "/images/appetizers/appetizer3.jpg",
+        CategoryName = "Закуски"
+    },
+    new MenuItemDto
+    {
+        Id = 304,
+        Name = "Salade de Carottes Râpées",
+        Description = "Простий морквяний салат з лимонною заправкою.",
+        Price = 120.00m,
+        ImageUrl = "/images/appetizers/appetizer4.jpg",
+        CategoryName = "Закуски"
+    },
+
+    // Супи
+    new MenuItemDto
+    {
+        Id = 305,
+        Name = "Soupe à l'oignon",
+        Description = "Французький цибульний суп з грінками та сиром.",
+        Price = 140.00m,
+        ImageUrl = "/images/appetizers/appetizer5.jpg",
+        CategoryName = "Закуски"
+    },
+    new MenuItemDto
+    {
+        Id = 306,
+        Name = "Bouillon Blanc",
+        Description = "Легкий курячий бульйон з ароматними травами.",
+        Price = 130.00m,
+        ImageUrl = "/images/appetizers/appetizer6.jpg",
+        CategoryName = "Закуски"
+    },
+    new MenuItemDto
+    {
+        Id = 307,
+        Name = "Potage Saint-Germain",
+        Description = "Зелений гороховий крем-суп.",
+        Price = 150.00m,
+        ImageUrl = "/images/appetizers/appetizer7.jpg",
+        CategoryName = "Закуски"
+    },
+    new MenuItemDto
+    {
+        Id = 308,
+        Name = "Velouté de Potiron",
+        Description = "Гарбузовий крем-суп з ніжним смаком.",
+        Price = 160.00m,
+        ImageUrl = "/images/appetizers/appetizer8.jpg",
+        CategoryName = "Закуски"
+    }
+};
+
+
+
         }
 
         //Add relationships between entities

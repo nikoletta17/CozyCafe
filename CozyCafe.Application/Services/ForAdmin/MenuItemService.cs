@@ -32,7 +32,7 @@ namespace CozyCafe.Application.Services.ForAdmin
                 Description = mi.Description,
                 Price = mi.Price,
                 ImageUrl = mi.ImageUrl,
-                CategoryName = mi.Category!.Name
+                CategoryName = mi.Category?.Name ?? ""
             });
         }
 

@@ -1,48 +1,45 @@
-﻿using AutoMapper;
-using CozyCafe.Application.Interfaces.ForServices.ForAdmin;
-using CozyCafe.Application.Services.ForAdmin;
+﻿using CozyCafe.Application.Interfaces.ForServices.ForAdmin;
 using CozyCafe.Models.Domain.Admin;
 using CozyCafe.Models.DTO.Admin;
-using CozyCafe.Web.Areas.User.Controllers.Generic_Controller;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace CozyCafe.Web.Areas.User.Controllers
 {
     [Area("User")]
     [Route("User/[controller]/[action]")]
-    public class MenuItemController : GenericController<MenuItem>
+    public class MenuItemController : Controller
     {
         private readonly IMenuItemService _menuItemService;
         private readonly ICategoryService _categoryService;
-        private readonly IMapper _mapper;
 
-        public MenuItemController(IMenuItemService service, IMapper mapper, ICategoryService categoryService)
-            : base(service)
+        public MenuItemController(IMenuItemService menuItemService, ICategoryService categoryService)
         {
+            _menuItemService = menuItemService;
             _categoryService = categoryService;
-            _menuItemService = service;
-            _mapper = mapper;
         }
-        [HttpGet]
-        public async Task<IActionResult> Index(MenuItemFilterModel filter, string? CategoryName)
-        {
-            var categories = await _categoryService.GetAllAsync();
 
-            // Якщо прийшов CategoryName, знайдемо відповідну категорію та поставимо її Id у фільтр
-            if (!string.IsNullOrEmpty(CategoryName))
+        [HttpGet]
+        public async Task<IActionResult> Index(MenuItemFilterModel filter)
+        {
+            var allCategories = await _categoryService.GetAllAsync();
+
+            // Якщо прийшла назва категорії, підставити її в CategoryId для фільтрації та селекту
+            if (!string.IsNullOrEmpty(filter.CategoryName) && !filter.CategoryId.HasValue)
             {
-                var category = categories.FirstOrDefault(c => c.Name == CategoryName);
-                if (category != null)
+                var cat = allCategories.FirstOrDefault(c => c.Name == filter.CategoryName);
+                if (cat != null)
                 {
-                    filter.CategoryId = category.Id;
+                    filter.CategoryId = cat.Id;
                 }
             }
 
             var items = await _menuItemService.GetFilteredAsync(filter);
 
-            ViewBag.Categories = new SelectList(categories, "Id", "Name");
+            ViewBag.Categories = new SelectList(allCategories, "Id", "Name", filter.CategoryId);
 
             var sortOptions = new List<SelectListItem>
             {
@@ -52,7 +49,6 @@ namespace CozyCafe.Web.Areas.User.Controllers
                 new SelectListItem { Value = "price_desc", Text = "Ціна ↓" },
             };
 
-            // Позначити вибране значення
             foreach (var option in sortOptions)
             {
                 option.Selected = option.Value == filter.SortBy;
@@ -62,7 +58,5 @@ namespace CozyCafe.Web.Areas.User.Controllers
 
             return View((items, filter));
         }
-
-
     }
 }

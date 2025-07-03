@@ -159,10 +159,12 @@
         }
 
     @@media (max-width: 768px) {
-        form.filter-form {
-            flex-direction: column;
-            max-width: 100%;
-        }
+        form .filter-form
+
+    {
+        flex-direction: column;
+        max-width: 100%;
+    }
 
     form.filter-form input,
     form.filter-form select,
@@ -217,10 +219,23 @@
     @if (Model.Items.Any())
     {
         int counter = 1;
+
         foreach (var item in Model.Items)
         {
+            string defaultImageFolder = "deserts";
+            string defaultImageNamePrefix = "dessert";
+
+            if (item.CategoryName == "Основні страви" || item.CategoryName == "Main Dish")
+            {
+                defaultImageFolder = "main-dish";
+                defaultImageNamePrefix = "dish";
+            }
+            // Додай інші категорії за потреби
+
+            string defaultImagePath = $"~/images/{defaultImageFolder}/{defaultImageNamePrefix}{counter}.jpg";
+
             <div class="card" title="@item.Name">
-                <img src="@Url.Content(item.ImageUrl ?? $"~/images/deserts/dessert{counter++}.jpg")" alt="@item.Name" class="card-img-top" />
+                <img src="@Url.Content(item.ImageUrl ?? defaultImagePath)" alt="@item.Name" class="card-img-top" />
                 <div class="card-body">
                     <h3 class="card-title">@item.Name</h3>
                     <p class="card-text">@item.Description</p>
@@ -228,10 +243,13 @@
                     <a href="@Url.Action("AddToCart", "Cart", new { id = item.Id })" class="order-btn">Замовити</a>
                 </div>
             </div>
+
+            counter++;
         }
     }
     else
     {
+        // Запасні картки, якщо немає продуктів
         for (int i = 1; i <= 8; i++)
         {
             <div class="card">
