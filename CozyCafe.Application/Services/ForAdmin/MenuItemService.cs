@@ -1,21 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using CozyCafe.Application.Interfaces.ForRerository.ForAdmin;
 using CozyCafe.Application.Interfaces.ForServices.ForAdmin;
-using CozyCafe.Application.Interfaces.Generic_Interfaces;
 using CozyCafe.Application.Services.Generic_Service;
 using CozyCafe.Models.Domain.Admin;
 using CozyCafe.Models.DTO.Admin;
-using Microsoft.EntityFrameworkCore;
 
 namespace CozyCafe.Application.Services.ForAdmin
 {
     public class MenuItemService : Service<MenuItem>, IMenuItemService
     {
         private readonly IMenuItemRepository _menuItemRepository;
+
         public MenuItemService(IMenuItemRepository menuItemRepository) : base(menuItemRepository)
         {
             _menuItemRepository = menuItemRepository;
@@ -36,6 +34,20 @@ namespace CozyCafe.Application.Services.ForAdmin
             });
         }
 
+        public async Task<MenuItemDto?> GetByIdAsync(int id)
+        {
+            var item = await _menuItemRepository.GetByIdWithCategoryAsync(id);
+            if (item == null) return null;
 
+            return new MenuItemDto
+            {
+                Id = item.Id,
+                Name = item.Name,
+                Description = item.Description,
+                Price = item.Price,
+                ImageUrl = item.ImageUrl,
+                CategoryName = item.Category?.Name ?? "Без категорії"
+            };
+        }
     }
 }

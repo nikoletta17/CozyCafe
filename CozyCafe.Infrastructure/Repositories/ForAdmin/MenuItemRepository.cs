@@ -14,6 +14,13 @@ namespace CozyCafe.Infrastructure.Repositories.ForAdmin
     {
         public MenuItemRepository(ApplicationDbContext context) : base(context) { }
 
+        public async Task<MenuItem?> GetByIdWithCategoryAsync(int id)
+        {
+            return await _context.MenuItems
+                .Include(m => m.Category)
+                .FirstOrDefaultAsync(m => m.Id == id);
+        }
+
         public async Task<IEnumerable<MenuItem>> GetFilteredAsync(MenuItemFilterModel filter)
         {
             var query = _context.MenuItems

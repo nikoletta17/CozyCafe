@@ -391,7 +391,31 @@ namespace CozyCafe.Infrastructure.Data
 
 
 
+
+            builder.Entity<MenuItemOptionGroup>().HasData(
+    new MenuItemOptionGroup
+    {
+        Id = 1,
+        Name = "Соуси",
+        MenuItemId = 406 // Bouillon Blanc
+    },
+    new MenuItemOptionGroup
+    {
+        Id = 2,
+        Name = "Додатки",
+        MenuItemId = 108 // Croissant
+    }
+);
+
+            builder.Entity<MenuItemOption>().HasData(
+                new MenuItemOption { Id = 1, Name = "Без соусу", OptionGroupId = 1 },
+                new MenuItemOption { Id = 2, Name = "Гострий соус", ExtraPrice = 5.00m, OptionGroupId = 1 },
+                new MenuItemOption { Id = 3, Name = "Сир", ExtraPrice = 10.00m, OptionGroupId = 2 },
+                new MenuItemOption { Id = 4, Name = "Мигдаль", ExtraPrice = 7.50m, OptionGroupId = 2 }
+            );
+
         }
+
 
         //Add relationships between entities
         private void ConfigureCategory(ModelBuilder builder)

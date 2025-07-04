@@ -3,52 +3,85 @@ using CozyCafe.Models.DTO.Admin;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Mvc;
 
-[Area("User")]
-[Route("User/[controller]/[action]")]
-public class MenuItemController : Controller
+namespace CozyCafe.Web.Areas.User.Controllers
 {
-    private readonly IMenuItemService _menuItemService;
-    private readonly ICategoryService _categoryService;
-
-    public MenuItemController(IMenuItemService menuItemService, ICategoryService categoryService)
+    [Area("User")]
+    [Route("User/[controller]/[action]")]
+    public class MenuItemController : Controller
     {
-        _menuItemService = menuItemService;
-        _categoryService = categoryService;
-    }
+        private readonly IMenuItemService _menuItemService;
+        private readonly ICategoryService _categoryService;
+        private readonly IMenuItemOptionGroupService _optionGroupService;
 
-    [HttpGet]
-    public async Task<IActionResult> Index(MenuItemFilterModel filter)
-    {
-        if (!string.IsNullOrEmpty(filter.CategoryName))
+        public MenuItemController(
+            IMenuItemService menuItemService,
+            ICategoryService categoryService,
+            IMenuItemOptionGroupService optionGroupService)
         {
-            var categories = await _categoryService.GetAllAsync();
-            var category = categories.FirstOrDefault(c => c.Name == filter.CategoryName);
-            if (category != null)
+            _menuItemService = menuItemService;
+            _categoryService = categoryService;
+            _optionGroupService = optionGroupService;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Index(MenuItemFilterModel filter)
+        {
+            if (!string.IsNullOrEmpty(filter.CategoryName))
             {
-                filter.CategoryId = category.Id;
+                var categories = await _categoryService.GetAllAsync();
+                var category = categories.FirstOrDefault(c => c.Name == filter.CategoryName);
+                if (category != null)
+                {
+                    filter.CategoryId = category.Id;
+                }
             }
+
+            var items = await _menuItemService.GetFilteredAsync(filter);
+            var allCategories = await _categoryService.GetAllAsync();
+
+            ViewBag.Categories = new SelectList(allCategories, "Id", "Name", filter.CategoryId);
+
+            var sortOptions = new List<SelectListItem>
+            {
+                new SelectListItem { Value = "", Text = "За замовчуванням" },
+                new SelectListItem { Value = "name", Text = "Назва" },
+                new SelectListItem { Value = "price_asc", Text = "Ціна ↑" },
+                new SelectListItem { Value = "price_desc", Text = "Ціна ↓" },
+            };
+
+            foreach (var option in sortOptions)
+            {
+                option.Selected = option.Value == filter.SortBy;
+            }
+
+            ViewBag.SortOptions = sortOptions;
+
+            return View((items, filter));
         }
 
-        var items = await _menuItemService.GetFilteredAsync(filter);
-        var allCategories = await _categoryService.GetAllAsync();
-
-        ViewBag.Categories = new SelectList(allCategories, "Id", "Name", filter.CategoryId);
-
-        var sortOptions = new List<SelectListItem>
+        [HttpGet("{id}")]
+        public async Task<IActionResult> Details(int id)
         {
-            new SelectListItem { Value = "", Text = "За замовчуванням" },
-            new SelectListItem { Value = "name", Text = "Назва" },
-            new SelectListItem { Value = "price_asc", Text = "Ціна ↑" },
-            new SelectListItem { Value = "price_desc", Text = "Ціна ↓" },
-        };
+            var item = await _menuItemService.GetByIdAsync(id);
+            if (item == null)
+                return NotFound();
 
-        foreach (var option in sortOptions)
-        {
-            option.Selected = option.Value == filter.SortBy;
+            var groups = await _optionGroupService.GetByMenuItemIdAsync(id);
+            var optionGroupDtos = groups.Select(g => new MenuItemOptionGroupDto
+            {
+                Id = g.Id,
+                Name = g.Name,
+                Options = g.Options.Select(o => new MenuItemOptionDto
+                {
+                    Id = o.Id,
+                    Name = o.Name,
+                    ExtraPrice = o.ExtraPrice
+                }).ToList()
+            }).ToList();
+
+            ViewBag.OptionGroups = optionGroupDtos;
+            return View("Details", item);
         }
 
-        ViewBag.SortOptions = sortOptions;
-
-        return View((items, filter));
     }
 }

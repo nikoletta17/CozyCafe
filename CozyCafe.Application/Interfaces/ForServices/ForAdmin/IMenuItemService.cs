@@ -9,5 +9,7 @@ namespace CozyCafe.Application.Interfaces.ForServices.ForAdmin
     public interface IMenuItemService : IService<MenuItem>
     {
         Task<IEnumerable<MenuItemDto>> GetFilteredAsync(MenuItemFilterModel filterModel);
+        Task<MenuItemDto?> GetByIdAsync(int id);
+
     }
 }

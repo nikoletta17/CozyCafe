@@ -1,7 +1,7 @@
 ﻿@model CozyCafe.Models.DTO.Admin.MenuItemDto
-
 @{
     ViewData["Title"] = "Деталі страви";
+    var optionGroups = (List<CozyCafe.Models.DTO.Admin.MenuItemOptionGroupDto>)ViewBag.OptionGroups;
 }
 
 <h2>@Model.Name</h2>
@@ -12,6 +12,10 @@
         {
             <img src="@Model.ImageUrl" alt="@Model.Name" class="img-fluid rounded shadow-sm" />
         }
+        else
+        {
+            <img src="~/images/default-dish.jpg" alt="Фото відсутнє" class="img-fluid rounded shadow-sm" />
+        }
     </div>
     <div class="col-md-7">
         <h4>Опис</h4>
@@ -20,7 +24,27 @@
         <p><strong>Категорія:</strong> @Model.CategoryName</p>
         <p><strong>Ціна:</strong> @Model.Price.ToString("C")</p>
 
-        <a href="@Url.Action("Edit", new { id = Model.Id })" class="btn btn-warning me-2">Редагувати</a>
-        <a href="@Url.Action("Index")" class="btn btn-secondary">Назад до меню</a>
+        @if (optionGroups.Any())
+        {
+            <h4>Інгредієнти / Опції</h4>
+            @foreach (var group in optionGroups)
+            {
+                <h5>@group.Name</h5>
+                <ul>
+                    @foreach (var option in group.Options)
+                    {
+                        <li>
+                            @option.Name
+                            @if (option.ExtraPrice.HasValue)
+                            {
+                                <span>(+@option.ExtraPrice.Value.ToString("C"))</span>
+                            }
+                        </li>
+                    }
+                </ul>
+            }
+        }
+
+        <a href="@Url.Action("Index")" class="btn btn-secondary mt-3">← Назад до меню</a>
     </div>
 </div>
