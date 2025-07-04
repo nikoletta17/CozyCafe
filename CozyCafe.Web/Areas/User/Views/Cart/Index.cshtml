@@ -193,6 +193,7 @@
     }
 </style>
 
+<br />
 <h2>Ваш кошик</h2>
 
 @if (!Model.Items.Any())
@@ -252,4 +253,11 @@ else
     </table>
 
     <div class="total-price">Всього: @FormatPrice(Model.Total)</div>
+
+    <div style="text-align: right; margin-top: 0.5rem;">
+        <a href="@Url.Action("Create", "Order", new { area = "User" })" class="btn-clear-cart" style="display: inline-block; text-align: center;">
+            Замовити
+        </a>
+    </div>
+
 }

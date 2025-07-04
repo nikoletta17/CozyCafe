@@ -4,8 +4,6 @@
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 
-
-
 <!DOCTYPE html>
 <html lang="uk">
 <head>
@@ -27,17 +25,23 @@
             padding: 0.5rem 1.2rem;
             background-color: #4b4a3f;
             border: 2px solid #c2b280;
-            color: #c2b280 !important; /* <- важливо */
+            color: #c2b280 !important;
             text-decoration: none;
             border-radius: 8px;
             transition: all 0.3s ease;
             margin-right: 0.5rem;
+            cursor: pointer;
+            display: inline-block;
         }
-
 
             .cozy-btn:hover {
                 background-color: #c2b280;
-                color: #4b4a3f;
+                color: #4b4a3f !important;
+            }
+
+            .cozy-btn.auth-btn:hover {
+                background-color: #4b4a3f !important;
+                color: #fff !important;
             }
 
         .cozy-nav-link {
@@ -62,9 +66,79 @@
             .navbar-icon:hover {
                 color: #fff;
             }
+
+        .dropdown-menu {
+            background-color: #4b4a3f;
+            border: 2px solid #c2b280;
+            border-radius: 10px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+            min-width: 220px;
+            padding: 0.5rem 0;
+        }
+
+            .dropdown-menu .dropdown-item {
+                font-family: 'Playfair Display', serif;
+                font-weight: 600;
+                background-color: transparent;
+                color: #c2b280 !important;
+                padding: 0.5rem 1.2rem;
+                text-align: center;
+                transition: all 0.3s ease;
+            }
+
+                .dropdown-menu .dropdown-item:hover {
+                    background-color: #c2b280;
+                    color: #4b4a3f !important;
+                }
+
+        .dropdown-toggle::after {
+            filter: invert(70%) sepia(20%) saturate(600%) hue-rotate(30deg);
+        }
+
+        .cozy-btn {
+            font-family: 'Playfair Display', serif;
+            padding: 0.5rem 1.2rem;
+            background-color: #4b4a3f;
+            border: 2px solid #c2b280;
+            color: #c2b280 !important;
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            margin-right: 0.5rem;
+            cursor: pointer;
+            display: inline-block;
+        }
+
+            .cozy-btn:hover {
+                background-color: #c2b280;
+                color: #4b4a3f !important;
+            }
+
+        .cozy-nav-link {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            color: #c2b280 !important;
+            margin-right: 1rem;
+            transition: color 0.3s ease;
+            font-size: 1.3rem;
+        }
+
+            .cozy-nav-link:hover {
+                color: #fff !important;
+            }
+
+        .navbar-icon {
+            font-size: 1.3rem;
+            color: #c2b280;
+        }
+
+            .navbar-icon:hover {
+                color: #fff;
+            }
     </style>
 </head>
-<body style="display: flex; flex-direction: column; min-height: 100vh;">
+
+<body class="d-flex flex-column min-vh-100">
     <header>
         <nav class="navbar navbar-expand-lg" style="background-color: #4b4a3f; border-bottom: 2px solid #c2b280;">
             <div class="container-fluid">
@@ -73,29 +147,27 @@
                     CozyCafe
                 </a>
 
-
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                     <span class="navbar-toggler-icon" style="filter: invert(1);"></span>
                 </button>
 
                 <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
-                    <!-- Ліва частина -->
                     <ul class="navbar-nav">
                         <li class="nav-item">
                             <a href="@Url.Action("Index", "Home", new { area = "User" })" class="cozy-nav-link nav-link">Головна</a>
                         </li>
                         <li class="nav-item">
-                            <a class="cozy-nav-link nav-link" asp-area="User" asp-controller="Review" asp-action="Create">Відгуки</a>
+                            <a href="@Url.Action("Create", "Review", new { area = "User" })" class="cozy-nav-link nav-link">Відгуки</a>
                         </li>
                         @if (User.Identity?.IsAuthenticated ?? false)
                         {
                             <li class="nav-item">
-                                <a class="cozy-nav-link nav-link" asp-area="User" asp-controller="Order" asp-action="Index">Замовлення</a>
+                                <a href="@Url.Action("Index", "Order", new { area = "User" })" class="cozy-nav-link nav-link">Замовлення</a>
                             </li>
                             @if (User.IsInRole("Admin"))
                             {
                                 <li class="nav-item">
-                                    <a class="cozy-nav-link nav-link fw-bold" style="color: #ffc107;" asp-area="Admin" asp-controller="Dashboard" asp-action="Index">
+                                    <a href="@Url.Action("Index", "Dashboard", new { area = "Admin" })" class="cozy-nav-link nav-link fw-bold" style="color: #ffc107;">
                                         ⚙️ Адмін-панель
                                     </a>
                                 </li>
@@ -103,55 +175,39 @@
                         }
                     </ul>
 
-                    <!-- Права частина -->
                     <ul class="navbar-nav align-items-center">
                         @if (User.Identity?.IsAuthenticated ?? false)
                         {
-                            <li class="nav-item me-3">
-                                <a class="cozy-nav-link nav-link" asp-area="User" asp-controller="Cart" asp-action="Index">
-                                    <span class="navbar-icon">🛒</span> Кошик
+                            <li class="nav-item">
+                                <a href="@Url.Action("Index", "Cart", new { area = "User" })" class="cozy-nav-link nav-link">
+                                    🛒 Кошик
                                 </a>
                             </li>
                             <li class="nav-item dropdown me-3">
-                                <a class="cozy-nav-link nav-link dropdown-toggle" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <a class="cozy-nav-link nav-link dropdown-toggle" href="#" id="profileDropdown" role="button"
+                                   data-bs-toggle="dropdown" aria-expanded="false">
                                     👤 @User.Identity.Name
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
-                                    <li>
-                                        <a class="dropdown-item" href="@Url.Action("Edit", "UserProfile", new { area = "User" })">Редагувати профіль</a>
-
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item" href="@Url.Action("ChangePassword", "UserProfile", new { area = "User" })">
-                                            Змінити пароль
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item text-danger" href="@Url.Action("DeleteAccount", "UserProfile", new { area = "User" })">
-                                            Видалити акаунт
-                                        </a>
-                                    </li>
+                                    <li><a class="dropdown-item" href="@Url.Action("Edit", "UserProfile", new { area = "User" })">Редагувати профіль</a></li>
+                                    <li><a class="dropdown-item" href="@Url.Action("ChangePassword", "UserProfile", new { area = "User" })">Змінити пароль</a></li>
+                                    <li><a class="dropdown-item text-danger" href="@Url.Action("DeleteAccount", "UserProfile", new { area = "User" })">Видалити акаунт</a></li>
                                 </ul>
                             </li>
                             <li class="nav-item">
-                                <form action="@Url.Action("Logout", "Account", new { area = "User" })" method="post" class="d-inline">
-                                    <button type="submit" class="cozy-btn" style="font-size: 1.25rem;">Вийти</button>
+                                <form asp-area="User" asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
+                                    <button type="submit" class="cozy-btn auth-btn" style="font-size: 1.25rem;">Вийти</button>
                                 </form>
                             </li>
                         }
                         else
                         {
                             <li class="nav-item me-2">
-                                <a class="cozy-btn" style="font-size: 1.25rem;" href="@Url.Action("Login", "Account", new { area = "User" })">
-                                    Увійти
-                                </a>
+                                <a class="cozy-btn auth-btn" style="font-size: 1.25rem;" href="@Url.Action("Login", "Account", new { area = "User" })">Увійти</a>
                             </li>
                             <li class="nav-item">
-                                <a class="cozy-btn" style="font-size: 1.25rem;" href="@Url.Action("Register", "Account", new { area = "User" })">
-                                    Реєстрація
-                                </a>
+                                <a class="cozy-btn auth-btn" style="font-size: 1.25rem;" href="@Url.Action("Register", "Account", new { area = "User" })">Реєстрація</a>
                             </li>
-
                         }
                     </ul>
                 </div>
@@ -159,42 +215,29 @@
         </nav>
     </header>
 
-    <main role="main" class="flex-grow-1 d-flex flex-column">
+    <main class="flex-grow-1">
         <div class="container pb-3">
             @if (TempData["Message"] != null)
             {
-                <div class="alert alert-success mt-3" role="alert" style="font-family: 'Playfair Display', serif; color: #155724; background-color: #d4edda; border-color: #c3e6cb; border-radius: 8px; padding: 1rem; margin-bottom: 1rem;">
-                    @TempData["Message"]
-                </div>
+                <div class="alert alert-success mt-3">@TempData["Message"]</div>
             }
-
             @RenderBody()
         </div>
     </main>
 
     <footer class="text-center py-3 mt-auto" style="background-color: #4b4a3f; border-top: 2px solid #c2b280;">
-        <div class="container-fluid" style="font-family: 'Playfair Display', serif; color: #c2b280; font-size: 1rem;">
+        <div class="container-fluid" style="font-family: 'Playfair Display', serif; color: #c2b280;">
             <div class="d-flex flex-column flex-md-row justify-content-between align-items-center">
                 <p class="mb-2 mb-md-0">&copy; @DateTime.Now.Year <strong>CozyCafe</strong> — Стильно. Затишно. Смачно.</p>
-
-                <div class="mb-2 mb-md-0" style="display: flex; gap: 0.5rem; flex-wrap: wrap; justify-content: center;">
-                    <span>Про нас</span>
-                    <span>|</span>
-                    <span>Контакти</span>
-                    <span>|</span>
-                    <span>Пн–Нд: 09:00 – 22:00</span>
+                <div class="mb-2 mb-md-0 d-flex flex-wrap justify-content-center" style="gap: 0.5rem;">
+                    <span>Про нас</span><span>|</span><span>Контакти</span><span>|</span><span>Пн–Нд: 09:00 – 22:00</span>
                 </div>
-
-                <p class="mb-0">
-                    +38 (097) 123-45-67 &nbsp; | &nbsp; +38 (063) 234-56-78 &nbsp; | &nbsp; +38 (050) 345-67-89
-                </p>
+                <p class="mb-0">+38 (097) 123-45-67 | +38 (063) 234-56-78 | +38 (050) 345-67-89</p>
             </div>
         </div>
     </footer>
 
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
