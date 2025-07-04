@@ -118,21 +118,25 @@
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
                                     <li>
-                                        <a class="dropdown-item" asp-area="User" asp-controller="UserProfile" asp-action="Edit">Редагувати профіль</a>
+                                        <a class="dropdown-item" href="@Url.Action("Edit", "UserProfile", new { area = "User" })">Редагувати профіль</a>
+
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" asp-area="User" asp-controller="UserProfile" asp-action="ChangePassword">Змінити пароль</a>
+                                        <a class="dropdown-item" href="@Url.Action("ChangePassword", "UserProfile", new { area = "User" })">
+                                            Змінити пароль
+                                        </a>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item text-danger" asp-area="User" asp-controller="UserProfile" asp-action="DeleteAccount">Видалити акаунт</a>
+                                        <a class="dropdown-item text-danger" href="@Url.Action("DeleteAccount", "UserProfile", new { area = "User" })">
+                                            Видалити акаунт
+                                        </a>
                                     </li>
                                 </ul>
                             </li>
                             <li class="nav-item">
-                                <form action="/User/Account/Logout" method="post" class="d-inline">
+                                <form action="@Url.Action("Logout", "Account", new { area = "User" })" method="post" class="d-inline">
                                     <button type="submit" class="cozy-btn" style="font-size: 1.25rem;">Вийти</button>
                                 </form>
-
                             </li>
                         }
                         else
