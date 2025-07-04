@@ -1,34 +1,119 @@
 ﻿@model CozyCafe.Models.ViewModels.RegisterViewModel
 
 @{
+    ViewData["Title"] = "Реєстрація";
 }
 
-<h2>Register</h2>
+<style>
+    .form-container {
+        background: linear-gradient(135deg, #f4ede3 40%, #e0d5c0);
+        padding: 3rem 1rem;
+        min-height: 80vh;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+    }
 
-<form asp-action="Register" method="post">
-    <div asp-validation-summary="All"></div>
-    <div class="form-group">
-        <label asp-for="Email"></label>
-        <input asp-for="Email" class="form-control" />
-        <span asp-validation-for="Email" class="text-danger"></span>
+    .form-box {
+        max-width: 550px;
+        width: 100%;
+        background-color: #f9f6f1;
+        border: 2px solid #c2b280;
+        border-radius: 16px;
+        padding: 2.5rem;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        backdrop-filter: blur(4px);
+    }
+
+        .form-box h2 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            color: #4b4a3f;
+            text-align: center;
+            margin-bottom: 1.5rem;
+            transition: all 0.4s ease-in-out;
+        }
+
+            .form-box h2:hover {
+                background: linear-gradient(90deg, #4b4a3f, #c2b280);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+            }
+
+    .form-control {
+        border-radius: 10px;
+        border: 1px solid #c2b280;
+        padding: 0.6rem;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+        .form-control:focus {
+            border-color: #4b4a3f;
+            box-shadow: 0 0 8px rgba(75, 74, 63, 0.5);
+            outline: none;
+        }
+
+    .form-label {
+        font-weight: 600;
+        color: #4b4a3f;
+        font-family: 'Playfair Display', serif;
+    }
+
+    .register-btn {
+        background-color: #4b4a3f;
+        border: 2px solid #c2b280;
+        color: #c2b280;
+        font-weight: bold;
+        font-size: 1.2rem;
+        padding: 0.6rem 2rem;
+        border-radius: 12px;
+        font-family: 'Playfair Display', serif;
+        transition: all 0.3s ease;
+    }
+
+        .register-btn:hover {
+            background-color: #c2b280;
+            color: #4b4a3f;
+        }
+</style>
+
+<div class="form-container">
+    <div class="form-box">
+        <h2>📝 @ViewData["Title"]</h2>
+
+        <form asp-action="Register" method="post">
+            <div asp-validation-summary="All" class="text-danger mb-3" style="font-family: 'Playfair Display', serif;"></div>
+
+            <div class="mb-4">
+                <label asp-for="Email" class="form-label"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-4">
+                <label asp-for="FullName" class="form-label"></label>
+                <input asp-for="FullName" class="form-control" />
+                <span asp-validation-for="FullName" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-4">
+                <label asp-for="Password" class="form-label"></label>
+                <input asp-for="Password" class="form-control" />
+                <span asp-validation-for="Password" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-4">
+                <label asp-for="ConfirmPassword" class="form-label"></label>
+                <input asp-for="ConfirmPassword" class="form-control" />
+                <span asp-validation-for="ConfirmPassword" class="text-danger small"></span>
+            </div>
+
+            <div class="text-center">
+                <button type="submit" class="register-btn">Зареєструватися</button>
+            </div>
+        </form>
     </div>
-    <div class="form-group">
-        <label asp-for="FullName"></label>
-        <input asp-for="FullName" class="form-control" />
-        <span asp-validation-for="FullName" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="Password"></label>
-        <input asp-for="Password" class="form-control" />
-        <span asp-validation-for="Password" class="text-danger"></span>
-    </div>
-    <div class="form-group">
-        <label asp-for="ConfirmPassword"></label>
-        <input asp-for="ConfirmPassword" class="form-control" />
-        <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
-    </div>
-    <button type="submit" class="btn btn-primary">Register</button>
-</form>
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
