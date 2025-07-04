@@ -4,21 +4,20 @@
     ViewData["Title"] = "Видалити акаунт";
 }
 
-<h2>@ViewData["Title"]</h2>
+<h2 class="text-danger">@ViewData["Title"]</h2>
 
-<p class="text-danger">Увага! Видалення акаунта необоротне. Введіть пароль, щоб підтвердити.</p>
+<p>⚠Ця дія незворотна! Ваш акаунт буде повністю видалено.</p>
 
 <form asp-action="DeleteAccount" method="post">
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <div asp-validation-summary="All" class="text-danger"></div>
 
-    <div class="mb-3">
-        <label asp-for="Password" class="form-label"></label>
-        <input asp-for="Password" class="form-control" type="password" />
+    <div class="form-group">
+        <label asp-for="Password"></label>
+        <input asp-for="Password" class="form-control" />
         <span asp-validation-for="Password" class="text-danger"></span>
     </div>
 
     <button type="submit" class="btn btn-danger">Видалити акаунт</button>
-    <a asp-action="Index" asp-controller="Home" class="btn btn-secondary ms-2">Відмінити</a>
 </form>
 
 @section Scripts {

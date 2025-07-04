@@ -21,14 +21,16 @@ namespace CozyCafe.Web.Areas.User.Controllers
             _signInManager = signInManager;
         }
 
-        // GET: /Account/Register
+        // Доступно без авторизації
+        [AllowAnonymous]
         [HttpGet]
         public IActionResult Register()
         {
             return View();
         }
 
-        // POST: /Account/Register
+        // Доступно без авторизації
+        [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> Register(RegisterViewModel model)
         {
@@ -56,21 +58,22 @@ namespace CozyCafe.Web.Areas.User.Controllers
                     return RedirectToAction("Index", "Home", new { area = "User" });
             }
 
-
             foreach (var err in result.Errors)
                 ModelState.AddModelError(string.Empty, err.Description);
 
             return View(model);
         }
 
-        // GET: /Account/Login
+        // Доступно без авторизації
+        [AllowAnonymous]
         [HttpGet]
         public IActionResult Login()
         {
             return View();
         }
 
-        // POST: /Account/Login
+        // Доступно без авторизації
+        [AllowAnonymous]
         [HttpPost]
         public async Task<IActionResult> Login(LoginViewModel model)
         {
@@ -91,17 +94,17 @@ namespace CozyCafe.Web.Areas.User.Controllers
                     return RedirectToAction("Index", "Home", new { area = "User" });
             }
 
-
             ModelState.AddModelError("", "Invalid login attempt");
             return View(model);
         }
 
-        // POST: /Account/Logout
+        // Цю дію можна виконати лише якщо користувач авторизований
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction("Index", "Home", new { area = "User" });
         }
     }
 }

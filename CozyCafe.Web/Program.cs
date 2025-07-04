@@ -131,6 +131,7 @@ app.MapControllerRoute(
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
 
+
 // Маршрути Razor Pages (для Identity UI)
 app.MapRazorPages();
 
