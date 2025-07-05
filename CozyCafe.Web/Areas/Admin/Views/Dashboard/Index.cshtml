@@ -2,62 +2,148 @@
 
 @{
     ViewData["Title"] = "Панель адміністратора";
+    Layout = "~/Views/Shared/_Layout.cshtml"; // або _AdminLayout.cshtml, якщо маєш окремий
 }
 
-<h1>Панель адміністратора</h1>
+<style>
+    .admin-panel {
+        font-family: 'Playfair Display', serif;
+        background-color: #f9f6f1;
+        color: #3b3a30;
+        padding: 2rem;
+    }
 
-<div class="row">
-    <div class="col-md-3">
-        <div class="card text-white bg-primary mb-3">
-            <div class="card-header">Замовлень</div>
-            <div class="card-body">
-                <h2 class="card-title">@Model.TotalOrders</h2>
+    .admin-header {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+        .admin-header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+    .stat-card {
+        background-color: #fff;
+        border: 2px solid #c2b280;
+        border-radius: 20px;
+        padding: 1.5rem;
+        text-align: center;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        transition: transform 0.3s ease;
+    }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+    .stat-title {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #4b4a3f;
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-value {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: #3b3a30;
+    }
+
+    .top-menu-table {
+        margin-top: 3rem;
+        background-color: #fff;
+        border: 1px solid #c2b280;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+        .top-menu-table table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .top-menu-table th,
+        .top-menu-table td {
+            padding: 1rem;
+            border-bottom: 1px solid #ddd;
+            text-align: center;
+        }
+
+        .top-menu-table th {
+            background-color: #f0eada;
+            font-weight: 600;
+        }
+
+        .top-menu-table tr:last-child td {
+            border-bottom: none;
+        }
+
+    .no-data {
+        margin-top: 2rem;
+        text-align: center;
+        color: #888;
+        font-style: italic;
+    }
+</style>
+
+<div class="admin-panel">
+    <div class="admin-header">
+        <h1>Панель адміністратора</h1>
+        <p>Коротка статистика закладу</p>
+    </div>
+
+    <div class="row text-center mb-4">
+        <div class="col-md-4 mb-3">
+            <div class="stat-card">
+                <div class="stat-title">Замовлень</div>
+                <div class="stat-value">@Model.TotalOrders</div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="stat-card">
+                <div class="stat-title">Загальний дохід</div>
+                <div class="stat-value">@Model.TotalRevenue.ToString("C")</div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-3">
+            <div class="stat-card">
+                <div class="stat-title">Користувачів</div>
+                <div class="stat-value">@Model.TotalUsers</div>
             </div>
         </div>
     </div>
 
-    <div class="col-md-3">
-        <div class="card text-white bg-success mb-3">
-            <div class="card-header">Загальний дохід</div>
-            <div class="card-body">
-                <h2 class="card-title">@Model.TotalRevenue.ToString("C")</h2>
-            </div>
-        </div>
-    </div>
+    <h2 class="text-center mb-3">Топ меню за кількістю продажів</h2>
 
-    <div class="col-md-3">
-        <div class="card text-white bg-info mb-3">
-            <div class="card-header">Користувачів</div>
-            <div class="card-body">
-                <h2 class="card-title">@Model.TotalUsers</h2>
-            </div>
+    @if (Model.TopMenuItems.Any())
+    {
+        <div class="top-menu-table">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Назва меню</th>
+                        <th>Продано (од.)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.TopMenuItems)
+                    {
+                        <tr>
+                            <td>@item.Name</td>
+                            <td>@item.QuantitySold</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
         </div>
-    </div>
+    }
+    else
+    {
+        <div class="no-data">
+            Дані відсутні.
+        </div>
+    }
 </div>
-
-<h2>Топ меню за кількістю продажів</h2>
-
-@if (Model.TopMenuItems.Any())
-{
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>Назва меню</th>
-                <th>Продано (од.)</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var item in Model.TopMenuItems)
-            {
-                <tr>
-                    <td>@item.Name</td>
-                    <td>@item.QuantitySold</td>
-                </tr>
-            }
-        </tbody>
-    </table>
-}
-else
-{
-    <p>Дані відсутні.</p>
-}

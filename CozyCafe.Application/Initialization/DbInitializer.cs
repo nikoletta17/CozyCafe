@@ -7,7 +7,7 @@ using CozyCafe.Models.Domain.ForUser;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace CozyCafe.Application.Services.Initialization
+namespace CozyCafe.Application.Initialization
 {
     public class DbInitializer
     {
@@ -28,7 +28,7 @@ namespace CozyCafe.Application.Services.Initialization
         {
             var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
 
-            var adminEmail = "admin@cozycafe.com";
+            var adminEmail = "Admin@cozycafe.com";
             var adminPassword = "Admin123!"; 
 
             if (await userManager.FindByEmailAsync(adminEmail) == null)

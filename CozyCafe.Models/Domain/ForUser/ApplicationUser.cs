@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
+
 namespace CozyCafe.Models.Domain.ForUser
 {
     public class ApplicationUser : IdentityUser

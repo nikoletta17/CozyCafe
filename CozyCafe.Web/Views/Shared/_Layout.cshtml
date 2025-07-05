@@ -169,7 +169,7 @@
                             {
                                 <li class="nav-item">
                                     <a href="@Url.Action("Index", "Dashboard", new { area = "Admin" })" class="cozy-nav-link nav-link fw-bold" style="color: #ffc107;">
-                                        ⚙️ Адмін-панель
+                                         Адмін-панель
                                     </a>
                                 </li>
                             }
@@ -185,10 +185,20 @@
                                 </a>
                             </li>
                             <li class="nav-item dropdown me-3">
+                                @{
+                                    string displayName = "Користувач";
+                                    if (User.Identity?.IsAuthenticated ?? false)
+                                    {
+                                        var currentUser = await UserManager.GetUserAsync(User);
+                                        displayName = currentUser?.FullName ?? User.Identity.Name;
+                                    }
+                                }
+
                                 <a class="cozy-nav-link nav-link dropdown-toggle" href="#" id="profileDropdown" role="button"
                                    data-bs-toggle="dropdown" aria-expanded="false">
-                                    👤 @User.Identity.Name
+                                    @displayName
                                 </a>
+
                                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
                                     <li><a class="dropdown-item" href="@Url.Action("Edit", "UserProfile", new { area = "User" })">Редагувати профіль</a></li>
                                     <li><a class="dropdown-item" href="@Url.Action("ChangePassword", "UserProfile", new { area = "User" })">Змінити пароль</a></li>

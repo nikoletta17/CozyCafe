@@ -5,7 +5,6 @@ using CozyCafe.Infrastructure.Repositories.Generic_Repository;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using CozyCafe.Application.Mapping;
-using CozyCafe.Application.Services.Initialization;
 using CozyCafe.Models.Domain.ForUser;
 using CozyCafe.Application.Services.ForAdmin;
 using CozyCafe.Application.Services.ForUser;
@@ -15,6 +14,7 @@ using CozyCafe.Application.Interfaces.ForServices.ForUser;
 using CozyCafe.Application.Interfaces.ForServices.ForAdmin;
 using CozyCafe.Infrastructure.Repositories.ForAdmin;
 using CozyCafe.Infrastructure.Repositories.ForUser;
+using CozyCafe.Application.Initialization;
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -89,7 +89,7 @@ namespace CozyCafe.Web.Areas.User.Controllers
                 var roles = await _userManager.GetRolesAsync(user);
 
                 if (roles.Contains("Admin"))
-                    return RedirectToAction("Index", "Dashboard", new { area = "Admin" });
+                    return RedirectToAction("Index", "Home", new { area = "User" });
                 else
                     return RedirectToAction("Index", "Home", new { area = "User" });
             }
