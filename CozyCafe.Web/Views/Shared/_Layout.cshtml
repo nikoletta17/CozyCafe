@@ -157,8 +157,9 @@
                             <a href="@Url.Action("Index", "Home", new { area = "User" })" class="cozy-nav-link nav-link">Головна</a>
                         </li>
                         <li class="nav-item">
-                            <a href="@Url.Action("Create", "Review", new { area = "User" })" class="cozy-nav-link nav-link">Відгуки</a>
+                            <a href="@Url.Action("All", "Review", new { area = "User" })" class="cozy-nav-link nav-link">Відгуки</a>
                         </li>
+
                         @if (User.Identity?.IsAuthenticated ?? false)
                         {
                             <li class="nav-item">

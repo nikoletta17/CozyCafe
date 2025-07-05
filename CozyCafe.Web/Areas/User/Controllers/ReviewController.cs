@@ -114,6 +114,14 @@ namespace CozyCafe.Web.Areas.User.Controllers
 
             return RedirectToAction("ByMenuItem", new { menuItemId = dto.MenuItemId });
         }
-       
+
+        [AllowAnonymous] // Якщо хочеш, щоб навіть неавторизовані бачили відгуки
+        public async Task<IActionResult> All()
+        {
+            var reviews = await _reviewService.GetAllAsync();
+            var dto = _mapper.Map<IEnumerable<ReviewDto>>(reviews);
+            return View("AllReviews", dto); // або "Index" — залежно від назви твого View
+        }
+
     }
 }
