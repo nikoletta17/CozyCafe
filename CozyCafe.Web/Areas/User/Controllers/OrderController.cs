@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using CozyCafe.Application.Interfaces.ForServices.ForAdmin;
 using CozyCafe.Application.Interfaces.ForServices.ForUser;
+using CozyCafe.Application.Services.ForAdmin;
 using CozyCafe.Models.Domain.Common;
 using CozyCafe.Models.DTO.ForUser;
 using Microsoft.AspNetCore.Authorization;
@@ -21,13 +22,23 @@ namespace CozyCafe.Web.Areas.User.Controllers
         private readonly IOrderService _orderService;
         private readonly IMapper _mapper;
         private readonly IMenuItemService _menuItemService;
+        private readonly IDiscountService _discountService;
+        private readonly IMenuItemOptionService _menuItemOptionService;
 
-        public OrderController(IOrderService orderService, IMapper mapper, IMenuItemService menuItemService)
+        public OrderController(
+            IOrderService orderService,
+            IMapper mapper,
+            IMenuItemService menuItemService,
+            IDiscountService discountService,
+            IMenuItemOptionService menuItemOptionService)
         {
             _orderService = orderService;
             _mapper = mapper;
             _menuItemService = menuItemService;
+            _discountService = discountService;
+            _menuItemOptionService = menuItemOptionService;
         }
+
 
         // GET: /Order/Index — всі замовлення (для адміністратора, наприклад)
         public async Task<IActionResult> Index()
@@ -55,23 +66,91 @@ namespace CozyCafe.Web.Areas.User.Controllers
         [HttpGet]
         public IActionResult Create()
         {
-            return View();
+            return View(new CreateOrderDto
+            {
+                Items = new List<CreateOrderItemDto>() // додано
+            });
         }
+
+
 
         // POST: /Order/Create — створити замовлення
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Order order)
+        public async Task<IActionResult> Create(CreateOrderDto dto)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                order.OrderedAt = DateTime.UtcNow;
-                order.Status = Order.OrderStatus.Pending;
-                await _orderService.AddAsync(order);
-                return RedirectToAction(nameof(Index));
+                return View(dto);
             }
-            return View(order);
+
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (userId == null)
+                return Unauthorized();
+
+            var order = new Order
+            {
+                UserId = userId,
+                OrderedAt = DateTime.UtcNow,
+                Status = Order.OrderStatus.Pending,
+                Items = new List<OrderItem>()
+            };
+
+            // Якщо є знижка — знайти по DiscountCode
+            if (!string.IsNullOrEmpty(dto.DiscountCode))
+            {
+                var discount = await _discountService.GetByCodeAsync(dto.DiscountCode); // реалізуй цей метод
+                if (discount != null)
+                {
+                    order.DiscountId = discount.Id;
+                }
+            }
+
+            decimal total = 0;
+
+            foreach (var dtoItem in dto.Items)
+            {
+                var menuItem = await _menuItemService.GetByIdAsync(dtoItem.MenuItemId);
+                if (menuItem == null)
+                    continue;
+
+                var orderItem = new OrderItem
+                {
+                    MenuItemId = dtoItem.MenuItemId,
+                    Quantity = dtoItem.Quantity,
+                    Price = menuItem.Price * dtoItem.Quantity,
+                    SelectedOptions = new List<OrderItemOption>()
+                };
+
+                total += orderItem.Price;
+
+                foreach (var optionId in dtoItem.SelectedOptionIds)
+                {
+                    var option = await _menuItemOptionService.GetByIdAsync(optionId);
+                    if (option != null)
+                    {
+                        total += option.ExtraPrice ?? 0;
+
+                        orderItem.SelectedOptions.Add(new OrderItemOption
+                        {
+                            MenuItemOptionId = option.Id
+                        });
+                    }
+                }
+
+                order.Items.Add(orderItem);
+            }
+
+            order.Total = total;
+
+            await _orderService.AddAsync(order);
+
+            return RedirectToAction("Index", "Home"); // або інша сторінка
         }
+
+
+
+
 
         // GET: /Order/Edit/5 — форма редагування
         [HttpGet]
