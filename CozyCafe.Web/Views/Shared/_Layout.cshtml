@@ -195,10 +195,14 @@
                                 </ul>
                             </li>
                             <li class="nav-item">
-                                <form asp-area="User" asp-controller="Account" asp-action="Logout" method="post" class="d-inline">
-                                    <button type="submit" class="cozy-btn auth-btn" style="font-size: 1.25rem;">Вийти</button>
+                                <form method="post" action="@Url.Action("Logout", "Account", new { area = "User" })" class="d-inline">
+                                    @Html.AntiForgeryToken()
+                                    <button type="submit" class="cozy-btn auth-btn" style="font-size: 1.25rem;">
+                                        Вийти
+                                    </button>
                                 </form>
                             </li>
+
                         }
                         else
                         {
