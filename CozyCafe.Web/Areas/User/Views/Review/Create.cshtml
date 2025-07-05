@@ -1,25 +1,117 @@
 ﻿@model CozyCafe.Models.DTO.ForUser.CreateReviewDto
 
-<h2>Додати відгук</h2>
-
-<form asp-action="Create" method="post">
-    <input type="hidden" asp-for="MenuItemId" />
-    <div>
-        <label asp-for="Rating"></label>
-        <input asp-for="Rating" type="number" min="1" max="5" />
-        <span asp-validation-for="Rating" class="text-danger"></span>
-    </div>
-    <div>
-        <label asp-for="Comment"></label>
-        <textarea asp-for="Comment"></textarea>
-        <span asp-validation-for="Comment" class="text-danger"></span>
-    </div>
-    <button type="submit">Надіслати</button>
-</form>
-
-@section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+<style>
+    body {
+        font-family: 'Playfair Display', serif;
+        background-color: #f9f6f1;
+        color: #3b3a30;
     }
-}
 
+    .review-form {
+        max-width: 600px;
+        margin: 2rem auto 4rem;
+        background: #fff;
+        border: 2px solid #c2b280;
+        border-radius: 12px;
+        padding: 2rem 3rem;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+        .review-form h2 {
+            font-weight: 700;
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            color: #4b4a3f;
+        }
+
+        .review-form label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #4b4a3f;
+        }
+
+        .review-form select,
+        .review-form input[type="number"],
+        .review-form textarea {
+            width: 100%;
+            padding: 0.6rem 0.8rem;
+            border: 1.5px solid #c2b280;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-family: 'Playfair Display', serif;
+            color: #3b3a30;
+            transition: border-color 0.3s ease;
+        }
+
+            .review-form select:focus,
+            .review-form input[type="number"]:focus,
+            .review-form textarea:focus {
+                border-color: #4b4a3f;
+                outline: none;
+            }
+
+        .review-form textarea {
+            resize: vertical;
+        }
+
+    .text-danger {
+        color: #c0392b;
+        font-weight: 600;
+        margin-top: 0.3rem;
+        display: block;
+    }
+
+    .review-form button[type="submit"] {
+        display: block;
+        width: 100%;
+        padding: 0.8rem 0;
+        margin-top: 1.8rem;
+        background-color: #4b4a3f;
+        color: #c2b280;
+        font-size: 1.3rem;
+        font-weight: 700;
+        border: 2px solid #c2b280;
+        border-radius: 30px;
+        cursor: pointer;
+        transition: background-color 0.3s ease, color 0.3s ease;
+        font-family: 'Playfair Display', serif;
+    }
+
+        .review-form button[type="submit"]:hover {
+            background-color: #c2b280;
+            color: #4b4a3f;
+        }
+</style>
+
+<div class="review-form">
+    <h2>Додати відгук</h2>
+
+    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+    <form asp-action="Create" method="post">
+
+        <div class="form-group">
+            <label asp-for="MenuItemId"></label>
+            <select asp-for="MenuItemId" asp-items="ViewBag.MenuItems">
+                <option value="">-- Оберіть страву --</option>
+            </select>
+            <span asp-validation-for="MenuItemId" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Rating"></label>
+            <input asp-for="Rating" type="number" min="1" max="5" />
+            <span asp-validation-for="Rating" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Comment"></label>
+            <textarea asp-for="Comment" rows="4"></textarea>
+            <span asp-validation-for="Comment" class="text-danger"></span>
+        </div>
+
+        <button type="submit">Надіслати</button>
+    </form>
+</div>

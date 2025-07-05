@@ -1,21 +1,184 @@
 ﻿@model IEnumerable<CozyCafe.Models.DTO.ForUser.ReviewDto>
+@{
+    var menuItemId = ViewBag.MenuItemId ?? 0;
+}
 
+<style>
+    body {
+        font-family: 'Playfair Display', serif;
+        background-color: #f9f6f1;
+        color: #3b3a30;
+    }
+
+    h2 {
+        font-weight: 700;
+        font-size: 2.7rem;
+        color: #4b4a3f;
+        margin-bottom: 2rem;
+        text-align: center;
+        letter-spacing: 1px;
+    }
+
+    .btn-primary {
+        background-color: #4b4a3f;
+        border: 2px solid #c2b280; /* твоя рамка, без синьої */
+        color: #c2b280;
+        font-family: 'Playfair Display', serif;
+        font-weight: 700;
+        padding: 0.65rem 2rem;
+        border-radius: 30px;
+        text-decoration: none;
+        display: inline-block;
+        transition: background-color 0.3s ease, color 0.3s ease;
+        margin: 0 auto 2.5rem auto;
+        box-shadow: 0 3px 8px rgba(75,74,63,0.4);
+        cursor: pointer;
+        outline: none; /* прибираємо рамку при фокусі */
+    }
+
+
+    .btn-wrapper {
+        text-align: center;
+    }
+
+    .btn-primary:focus,
+    .btn-primary:active,
+    .btn-primary:visited {
+        outline: none;
+        box-shadow: none;
+        border-color: #c2b280; /* щоб не було синьої рамки */
+    }
+
+    .btn-primary:hover {
+        background-color: #c2b280;
+        color: #4b4a3f;
+        box-shadow: 0 5px 15px rgba(194,178,128,0.7);
+        border-color: #c2b280;
+    }
+
+    .reviews-list {
+        max-width: 720px;
+        margin: 0 auto 5rem;
+        background: #fff;
+        border: 2px solid #c2b280;
+        border-radius: 15px;
+        padding: 2.5rem 3rem;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+        list-style: none;
+    }
+
+        .reviews-list li {
+            padding: 1.8rem 0;
+            border-bottom: 1px solid #d6cda8;
+            border-radius: 10px;
+            text-align: center;
+            background-color: #f1eddc; /* Колір світлого фону завжди */
+            /* прибираємо підсвітку при наведенні */
+            transition: none;
+        }
+
+            .reviews-list li:last-child {
+                border-bottom: none;
+            }
+
+    .review-header {
+        font-weight: 700;
+        color: #4b4a3f;
+        font-size: 2.2rem; /* більший шрифт, як заголовок */
+        letter-spacing: 0.05em;
+        margin-bottom: 0.7rem;
+        font-family: 'Playfair Display', serif;
+    }
+
+    .review-date-rating {
+        font-weight: 400;
+        font-size: 1rem;
+        color: #7a755c;
+        font-style: italic;
+        margin-bottom: 1rem;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 12px;
+    }
+
+    .rating-box {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 0.25rem 0.9rem;
+        border: 2px solid #c2b280;
+        border-radius: 15px;
+        background-color: #f9f6f1;
+        font-weight: 700;
+        font-size: 1.1rem;
+        color: #4b4a3f;
+        box-shadow: 0 2px 6px rgba(194,178,128,0.4);
+        min-width: 90px;
+        user-select: none;
+        cursor: default;
+        transition: none;
+    }
+
+        .rating-box:hover,
+        .rating-box:focus,
+        .rating-box:active {
+            background-color: #f9f6f1 !important;
+            border-color: #c2b280 !important;
+            box-shadow: 0 2px 6px rgba(194,178,128,0.4) !important;
+            color: #4b4a3f !important;
+            outline: none !important;
+        }
+
+    .review-comment {
+        font-style: italic;
+        color: #4b4a3f; /* колір як заголовок */
+        line-height: 1.8;
+        font-size: 1.3rem; /* крупніший текст */
+        max-width: 650px;
+        margin: 0 auto;
+        padding: 0 1rem;
+        border-radius: 10px;
+        background-color: #faf7e7;
+        box-shadow: inset 0 0 10px rgba(194,178,128,0.2);
+    }
+
+    p.no-reviews {
+        max-width: 700px;
+        margin: 3rem auto;
+        text-align: center;
+        font-style: italic;
+        font-size: 1.15rem;
+        color: #7a755c;
+    }
+</style>
+<br />
 <h2>Відгуки за обраним меню</h2>
+
+<div class="btn-wrapper">
+    <a asp-action="Create"
+       asp-route-menuItemId="@menuItemId"
+       class="btn-primary">Залишити відгук</a>
+</div>
 
 @if (!Model.Any())
 {
-    <p>Відгуків ще немає.</p>
+    <p class="no-reviews">Відгуків ще немає.</p>
 }
 else
 {
-    <ul>
+    <ul class="reviews-list">
         @foreach (var review in Model)
         {
             <li>
-                <strong>@review.UserFullName</strong> (@review.CreatedAt.ToShortDateString()) — Рейтинг: @review.Rating<br />
+                <span class="review-header">@review.UserFullName</span>
+                <div class="review-date-rating">
+                    <span>@review.CreatedAt.ToShortDateString()</span>
+                    <span class="rating-box">Рейтинг: @review.Rating</span>
+                </div>
                 @if (!string.IsNullOrEmpty(review.Comment))
                 {
-                    <p>@review.Comment</p>
+                    <p class="review-comment">@review.Comment</p>
                 }
             </li>
         }
