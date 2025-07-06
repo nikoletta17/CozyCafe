@@ -24,19 +24,22 @@ namespace CozyCafe.Web.Areas.User.Controllers
         private readonly IMenuItemService _menuItemService;
         private readonly IDiscountService _discountService;
         private readonly IMenuItemOptionService _menuItemOptionService;
+        private readonly ICartService _cartService;
 
         public OrderController(
             IOrderService orderService,
             IMapper mapper,
             IMenuItemService menuItemService,
             IDiscountService discountService,
-            IMenuItemOptionService menuItemOptionService)
+            IMenuItemOptionService menuItemOptionService,
+            ICartService cartService) // додано
         {
             _orderService = orderService;
             _mapper = mapper;
             _menuItemService = menuItemService;
             _discountService = discountService;
             _menuItemOptionService = menuItemOptionService;
+            _cartService = cartService;
         }
 
 
@@ -79,14 +82,16 @@ namespace CozyCafe.Web.Areas.User.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CreateOrderDto dto)
         {
-            if (!ModelState.IsValid)
-            {
-                return View(dto);
-            }
-
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             if (userId == null)
                 return Unauthorized();
+
+            var cart = await _cartService.GetByUserIdAsync(userId);
+            if (cart == null || cart.Items == null || !cart.Items.Any())
+            {
+                ModelState.AddModelError("", "Кошик порожній");
+                return View(dto);
+            }
 
             var order = new Order
             {
@@ -96,10 +101,10 @@ namespace CozyCafe.Web.Areas.User.Controllers
                 Items = new List<OrderItem>()
             };
 
-            // Якщо є знижка — знайти по DiscountCode
+            // Пошук знижки
             if (!string.IsNullOrEmpty(dto.DiscountCode))
             {
-                var discount = await _discountService.GetByCodeAsync(dto.DiscountCode); // реалізуй цей метод
+                var discount = await _discountService.GetByCodeAsync(dto.DiscountCode);
                 if (discount != null)
                 {
                     order.DiscountId = discount.Id;
@@ -108,42 +113,29 @@ namespace CozyCafe.Web.Areas.User.Controllers
 
             decimal total = 0;
 
-            foreach (var dtoItem in dto.Items)
+            foreach (var cartItem in cart.Items)
             {
-                var menuItem = await _menuItemService.GetByIdAsync(dtoItem.MenuItemId);
+                var menuItem = await _menuItemService.GetByIdAsync(cartItem.MenuItemId);
                 if (menuItem == null)
                     continue;
 
                 var orderItem = new OrderItem
                 {
-                    MenuItemId = dtoItem.MenuItemId,
-                    Quantity = dtoItem.Quantity,
-                    Price = menuItem.Price * dtoItem.Quantity,
-                    SelectedOptions = new List<OrderItemOption>()
+                    MenuItemId = cartItem.MenuItemId,
+                    Quantity = cartItem.Quantity,
+                    Price = menuItem.Price * cartItem.Quantity,
+                    SelectedOptions = new List<OrderItemOption>() // Якщо треба, додай логіку для опцій
                 };
 
                 total += orderItem.Price;
-
-                foreach (var optionId in dtoItem.SelectedOptionIds)
-                {
-                    var option = await _menuItemOptionService.GetByIdAsync(optionId);
-                    if (option != null)
-                    {
-                        total += option.ExtraPrice ?? 0;
-
-                        orderItem.SelectedOptions.Add(new OrderItemOption
-                        {
-                            MenuItemOptionId = option.Id
-                        });
-                    }
-                }
-
                 order.Items.Add(orderItem);
             }
+
 
             order.Total = total;
 
             await _orderService.AddAsync(order);
+            await _cartService.ClearCartAsync(userId); // Очистити кошик після замовлення
 
             return RedirectToAction("Index", "Home"); // або інша сторінка
         }
