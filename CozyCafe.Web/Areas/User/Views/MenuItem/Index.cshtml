@@ -250,11 +250,16 @@
         }
     </select>
 
-    <label style="align-self:center; font-weight:600; color:#4b4a3f; margin-right:4px;">Мінімальна ціна</label>
-    <input type="number" name="MinPrice" step="0.01" value="@(Model.Filter.MinPrice ?? 0)" placeholder="0" />
+    <div style="display:flex; align-items:center; gap:6px;">
+        <label for="MinPrice" style="font-weight:600; color:#4b4a3f;">Мін. ціна</label>
+        <input type="number" name="MinPrice" step="0.01" value="@(Model.Filter.MinPrice ?? 0)" placeholder="0" />
+    </div>
 
-    <label style="align-self:center; font-weight:600; color:#4b4a3f; margin-right:4px;">Максимальна ціна</label>
-    <input type="number" name="MaxPrice" step="0.01" value="@(Model.Filter.MaxPrice ?? 0)" placeholder="0" />
+    <div style="display:flex; align-items:center; gap:6px;">
+        <label for="MaxPrice" style="font-weight:600; color:#4b4a3f;">Макс. ціна</label>
+        <input type="number" name="MaxPrice" step="0.01" value="@(Model.Filter.MaxPrice ?? 0)" placeholder="0" />
+    </div>
+
 
     @Html.DropDownList("SortBy", (IEnumerable<SelectListItem>)ViewBag.SortOptions, "Сортувати за", new { @class = "form-select" })
 
