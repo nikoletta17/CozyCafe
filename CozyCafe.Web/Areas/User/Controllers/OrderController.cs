@@ -145,6 +145,7 @@ namespace CozyCafe.Web.Areas.User.Controllers
 
 
         // GET: /Order/Edit/5 — форма редагування
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
@@ -155,6 +156,7 @@ namespace CozyCafe.Web.Areas.User.Controllers
         }
 
         // POST: /Order/Edit/5 — оновити замовлення
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, Order order)
@@ -171,6 +173,7 @@ namespace CozyCafe.Web.Areas.User.Controllers
         }
 
         // GET: /Order/Delete/5 — підтвердження видалення
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
@@ -183,6 +186,7 @@ namespace CozyCafe.Web.Areas.User.Controllers
         }
 
         // POST: /Order/Delete/5 — видалення замовлення
+        [Authorize(Roles = "Admin")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -214,16 +218,25 @@ namespace CozyCafe.Web.Areas.User.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> AddItem(int orderId, int MenuItemId, int Quantity)
         {
+            var menuItem = await _menuItemService.GetByIdAsync(MenuItemId);
+            if (menuItem == null)
+                return NotFound();
+
             var item = new OrderItem
             {
                 MenuItemId = MenuItemId,
-                Quantity = Quantity
+                Quantity = Quantity,
+                Price = menuItem.Price * Quantity,
+                SelectedOptions = new List<OrderItemOption>() // якщо потрібні будуть у майбутньому
             };
+
             await _orderService.AddOrderItemAsync(orderId, item);
             return RedirectToAction("Details", new { id = orderId });
         }
 
+
         // POST: Оновити статус замовлення
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateStatus(int orderId, string newStatus)
