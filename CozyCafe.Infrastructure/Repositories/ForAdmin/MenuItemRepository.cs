@@ -33,10 +33,11 @@ namespace CozyCafe.Infrastructure.Repositories.ForAdmin
             }
 
             // Фільтруємо категорію по Id, якщо задано
-            if (filter.CategoryId.HasValue)
+            if (filter.CategoryId.HasValue && filter.CategoryId.Value > 0)
             {
                 query = query.Where(x => x.CategoryId == filter.CategoryId.Value);
             }
+
             // Інакше за назвою категорії, якщо задано (запасний варіант)
             else if (!string.IsNullOrWhiteSpace(filter.CategoryName))
             {

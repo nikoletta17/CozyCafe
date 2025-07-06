@@ -36,6 +36,24 @@ namespace CozyCafe.Web.Areas.User.Controllers
                 }
             }
 
+            // Захист від неправильного CategoryId (наприклад, 0)
+            // Захист від невалідних значень фільтрації
+            if (filter.CategoryId.HasValue && filter.CategoryId.Value == 0)
+            {
+                filter.CategoryId = null;
+            }
+
+            if (filter.MinPrice.HasValue && filter.MinPrice == 0)
+            {
+                filter.MinPrice = null;
+            }
+
+            if (filter.MaxPrice.HasValue && filter.MaxPrice == 0)
+            {
+                filter.MaxPrice = null;
+            }
+
+
             var items = await _menuItemService.GetFilteredAsync(filter);
             var allCategories = await _categoryService.GetAllAsync();
 
@@ -55,7 +73,7 @@ namespace CozyCafe.Web.Areas.User.Controllers
             }
 
             ViewBag.SortOptions = sortOptions;
-
+            Console.WriteLine($"FILTER — CategoryId: {filter.CategoryId}, SearchTerm: {filter.SearchTerm}, MinPrice: {filter.MinPrice}, MaxPrice: {filter.MaxPrice}, SortBy: {filter.SortBy}");
             return View((items, filter));
         }
 
