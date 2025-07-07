@@ -48,14 +48,13 @@ namespace CozyCafe.Application.Mapping
 
             // Discount & Category
             CreateMap<Category, CategoryDto>();
-            CreateMap<Discount, DiscountDto>();
+           
 
             // Orders (Admin)
             CreateMap<Order, AdminOrderDto>()
                 .ForMember(dest => dest.UserFullName, opt => opt.MapFrom(src => src.User.FullName))
                 .ForMember(dest => dest.UserEmail, opt => opt.MapFrom(src => src.User.Email))
                 .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString()))
-                .ForMember(dest => dest.DiscountCode, opt => opt.MapFrom(src => src.Discount != null ? src.Discount.Code : null))
                 .ForMember(dest => dest.Items, opt => opt.MapFrom(src => src.Items));
 
             CreateMap<OrderItem, AdminOrderItemDto>()

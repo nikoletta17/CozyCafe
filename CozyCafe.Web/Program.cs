@@ -30,7 +30,6 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<ICartRepository, CartRepository>();
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
-builder.Services.AddScoped<IDiscountRepository, DiscountRepository>();
 builder.Services.AddScoped<IMenuItemOptionGroupRepository, MenuItemOptionGroupRepository>();
 builder.Services.AddScoped<IMenuItemOptionRepository, MenuItemOptionRepository>();
 builder.Services.AddScoped<IMenuItemRepository, MenuItemRepository>();
@@ -45,7 +44,6 @@ builder.Services.AddScoped<IDashboardRepository, DashboardRepository>();
 builder.Services.AddScoped(typeof(IService<>), typeof(Service<>));
 builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
-builder.Services.AddScoped<IDiscountService, DiscountService>();
 builder.Services.AddScoped<IMenuItemOptionGroupService, MenuItemOptionGroupService>();
 builder.Services.AddScoped<IMenuItemOptionService, MenuItemOptionService>();
 builder.Services.AddScoped<IMenuItemService, MenuItemService>();

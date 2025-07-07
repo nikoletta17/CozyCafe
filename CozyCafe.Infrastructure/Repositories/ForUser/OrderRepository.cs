@@ -21,7 +21,6 @@ namespace CozyCafe.Infrastructure.Repositories.ForUser
         {
             return await _dbSet
                .Include(o => o.User)
-               .Include(o => o.Discount)
                .Include(o => o.Items)                
                    .ThenInclude(i => i.MenuItem)    
                .Where(o => o.UserId == userId)
@@ -31,7 +30,6 @@ namespace CozyCafe.Infrastructure.Repositories.ForUser
         public async Task<Order?> GetFullOrderAsync(int orderId)
         {
             return await _dbSet
-                .Include(o => o.Discount)
                 .Include(o => o.User)
                 .Include(o => o.Items)
                     .ThenInclude(i => i.MenuItem)

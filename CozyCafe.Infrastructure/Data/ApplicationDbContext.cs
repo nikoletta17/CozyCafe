@@ -29,7 +29,6 @@ namespace CozyCafe.Infrastructure.Data
         public DbSet<Order> Orders { get; set; }
         public DbSet<OrderItem> OrderItems { get; set; }
         public DbSet<Review> Reviews { get; set; }
-        public DbSet<Discount> Discounts { get; set; }
         public DbSet<MenuItemOptionGroup> MenuItemOptionGroups { get; set; }
         public DbSet<MenuItemOption> MenuItemOptions { get; set; }
         public DbSet<OrderItemOption> OrderItemOptions { get; set; }
@@ -457,12 +456,7 @@ namespace CozyCafe.Infrastructure.Data
 
         private void ConfigureOrder(ModelBuilder builder)
         {
-            builder.Entity<Order>()
-               .HasOne(o => o.Discount)
-               .WithMany(d => d.Orders)
-               .HasForeignKey(o => o.DiscountId)
-               .OnDelete(DeleteBehavior.SetNull);
-
+         
             builder.Entity<Order>()
                 .Property(o => o.Status)
                 .HasConversion<string>(); // Щоб зберігати enum як string у БД

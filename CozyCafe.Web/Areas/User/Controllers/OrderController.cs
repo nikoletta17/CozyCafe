@@ -22,7 +22,6 @@ namespace CozyCafe.Web.Areas.User.Controllers
         private readonly IOrderService _orderService;
         private readonly IMapper _mapper;
         private readonly IMenuItemService _menuItemService;
-        private readonly IDiscountService _discountService;
         private readonly IMenuItemOptionService _menuItemOptionService;
         private readonly ICartService _cartService;
 
@@ -30,14 +29,12 @@ namespace CozyCafe.Web.Areas.User.Controllers
             IOrderService orderService,
             IMapper mapper,
             IMenuItemService menuItemService,
-            IDiscountService discountService,
             IMenuItemOptionService menuItemOptionService,
             ICartService cartService) // додано
         {
             _orderService = orderService;
             _mapper = mapper;
             _menuItemService = menuItemService;
-            _discountService = discountService;
             _menuItemOptionService = menuItemOptionService;
             _cartService = cartService;
         }
@@ -101,15 +98,6 @@ namespace CozyCafe.Web.Areas.User.Controllers
                 Items = new List<OrderItem>()
             };
 
-            // Пошук знижки
-            if (!string.IsNullOrEmpty(dto.DiscountCode))
-            {
-                var discount = await _discountService.GetByCodeAsync(dto.DiscountCode);
-                if (discount != null)
-                {
-                    order.DiscountId = discount.Id;
-                }
-            }
 
             decimal total = 0;
 
@@ -139,9 +127,6 @@ namespace CozyCafe.Web.Areas.User.Controllers
 
             return RedirectToAction("Index", "Home"); // або інша сторінка
         }
-
-
-
 
 
         // GET: /Order/Edit/5 — форма редагування

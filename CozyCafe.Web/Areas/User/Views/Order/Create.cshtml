@@ -1,32 +1,112 @@
 ﻿@model CozyCafe.Models.DTO.ForUser.CreateOrderDto
 
-<form asp-action="Create" method="post">
-    @Html.AntiForgeryToken()
+@{
+    ViewData["Title"] = "Оформлення замовлення";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
 
-    <div>
-        <label>Discount Code</label>
-        <input asp-for="DiscountCode" class="form-control" />
-        <span asp-validation-for="DiscountCode" class="text-danger"></span>
-    </div>
+<style>
+    .order-container {
+        background-color: #f9f6f1;
+        border: 2px solid #c2b280;
+        border-radius: 20px;
+        padding: 2rem;
+        max-width: 700px;
+        margin: 2rem auto;
+        font-family: 'Playfair Display', serif;
+        color: #3b3a30;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
 
-    <div id="orderItems">
-        @for (int i = 0; i < Model.Items.Count; i++)
-        {
-            <div class="order-item mb-3">
-                <label>Menu Item ID</label>
-                <input asp-for="Items[@i].MenuItemId" class="form-control" />
+    .order-item {
+        background: white;
+        border: 2px solid #c2b280;
+        border-radius: 15px;
+        padding: 1.2rem 1.5rem;
+        margin-bottom: 1.5rem;
+        box-shadow: 0 3px 8px rgba(0,0,0,0.12);
+    }
 
-                <label>Quantity</label>
-                <input asp-for="Items[@i].Quantity" class="form-control" />
+    label {
+        font-weight: 600;
+        color: #4b4a3f;
+        margin-bottom: 0.3rem;
+        display: block;
+    }
 
-                <label>Option IDs (через кому)</label>
-                <input name="Items[@i].SelectedOptionIds" class="form-control" />
-            </div>
+    input.form-control {
+        border: 1.8px solid #c2b280;
+        border-radius: 8px;
+        font-family: 'Playfair Display', serif;
+        color: #3b3a30;
+        padding: 0.5rem 0.7rem;
+        margin-bottom: 1rem;
+        transition: border-color 0.25s ease;
+    }
+
+        input.form-control:focus {
+            outline: none;
+            border-color: #4b4a3f;
+            box-shadow: 0 0 5px #4b4a3f55;
         }
-    </div>
 
-    <button type="submit" class="btn btn-success">Створити</button>
-</form>
+    .thank-you-message {
+        background-color: #dbe3d1;
+        border: 2px solid #a5b281;
+        border-radius: 16px;
+        padding: 1rem 1.5rem;
+        font-size: 1.1rem;
+        color: #3b3a30;
+        margin-bottom: 1.5rem;
+        text-align: center;
+        font-weight: 600;
+        box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+    }
+
+    button[type="submit"] {
+    @* Використовуємо вже існуючий клас cozy-btn із Layout *@
+        font-family: 'Playfair Display', serif;
+        padding: 0.6rem 2rem;
+        border-radius: 20px;
+        font-weight: 700;
+        font-size: 1.15rem;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        cursor: pointer;
+        margin: 0 auto;
+        display: block;
+    }
+</style>
+
+<div class="order-container">
+    <h1 class="text-center mb-4">Оформлення замовлення</h1>
+
+    <form asp-action="Create" method="post">
+        @Html.AntiForgeryToken()
+
+        <div id="orderItems">
+            @for (int i = 0; i < Model.Items.Count; i++)
+            {
+                <div class="order-item">
+                    <label asp-for="Items[@i].MenuItemId">Menu Item ID</label>
+                    <input asp-for="Items[@i].MenuItemId" class="form-control" />
+
+                    <label asp-for="Items[@i].Quantity">Quantity</label>
+                    <input asp-for="Items[@i].Quantity" class="form-control" />
+
+                    <label>Option IDs (через кому)</label>
+                    <input name="Items[@i].SelectedOptionIds" class="form-control" />
+                </div>
+            }
+        </div>
+
+        <div class="thank-you-message">
+            Дякуємо, що обрали CozyCafe! Ваше замовлення — це найкращий спосіб зробити день смачнішим.<br />
+            Ми цінуємо вашу довіру і з нетерпінням готуємо ваші улюблені страви!
+        </div>
+
+        <button type="submit" class="cozy-btn">Створити</button>
+    </form>
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

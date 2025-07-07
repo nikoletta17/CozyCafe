@@ -16,9 +16,6 @@ namespace CozyCafe.Models.Domain.Common
 
         public ApplicationUser? User { get; set; }
 
-        public int? DiscountId { get; set; }
-        public Discount? Discount { get; set; }
-
         public ICollection<OrderItem> Items { get; set; } = new List<OrderItem>();
 
         [Required]

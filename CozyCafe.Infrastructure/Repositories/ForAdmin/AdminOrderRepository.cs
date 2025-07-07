@@ -22,7 +22,6 @@ namespace CozyCafe.Infrastructure.Repositories.ForAdmin
         {
             return await _context.Orders
                 .Include(o => o.User)
-                .Include(o => o.Discount)
                 .Include(o => o.Items)
                     .ThenInclude(i => i.MenuItem)
                 .Include(o => o.Items)
@@ -35,7 +34,6 @@ namespace CozyCafe.Infrastructure.Repositories.ForAdmin
         {
             return await _context.Orders
                 .Include(o => o.User)
-                .Include(o => o.Discount)
                 .Include(o => o.Items)
                     .ThenInclude(i => i.MenuItem)
                 .Include(o => o.Items)
@@ -48,7 +46,6 @@ namespace CozyCafe.Infrastructure.Repositories.ForAdmin
         {
             var query = _context.Orders
                 .Include(o => o.User)
-                .Include(o => o.Discount)
                 .Include(o => o.Items)
                     .ThenInclude(i => i.MenuItem)
                 .Include(o => o.Items)
