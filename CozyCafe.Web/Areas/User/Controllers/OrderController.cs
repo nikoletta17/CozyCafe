@@ -242,10 +242,11 @@ namespace CozyCafe.Web.Areas.User.Controllers
         // POST: Видалити опцію з пункту замовлення
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> RemoveOption(int orderId, int orderItemId, int optionId)
+        public async Task<IActionResult> RemoveItem(int orderId, int orderItemId)
         {
-            await _orderService.RemoveOrderItemOptionAsync(orderId, orderItemId, optionId);
+            await _orderService.RemoveOrderItemAsync(orderId, orderItemId);
             return RedirectToAction("Details", new { id = orderId });
         }
+
     }
 }

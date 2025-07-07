@@ -1,16 +1,19 @@
 ﻿@model CozyCafe.Models.DTO.ForUser.OrderDto
 @using Microsoft.AspNetCore.Mvc.Rendering
+
 @{
     ViewData["Title"] = "Деталі замовлення";
+    string FormatPrice(decimal price) => string.Format("{0:N2} ₴", price);
 }
 
-<h2 class="mb-4" style="font-family: 'Playfair Display', serif; color: #4B3B2B;">Деталі замовлення #@Model.Id</h2>
+<h2 class="mb-4" style="font-family: 'Playfair Display', serif; color: #4B3B2B;">
+    Деталі замовлення #@Model.Id
+</h2>
 
 <div class="mb-3 text-muted">
     <strong>Дата замовлення:</strong> @Model.OrderedAt.ToLocalTime().ToString("dd MMM yyyy HH:mm")<br />
     <strong>Статус:</strong> @Model.Status<br />
-    <strong>Знижковий код:</strong> @(string.IsNullOrEmpty(Model.DiscountCode) ? "-" : Model.DiscountCode)<br />
-    <strong>Загальна сума:</strong> @Model.Total.ToString("C")
+    <strong>Загальна сума:</strong> @FormatPrice(Model.Total)
 </div>
 
 <hr class="mb-4" />
@@ -22,6 +25,7 @@
             <th>Назва</th>
             <th>Кількість</th>
             <th>Ціна</th>
+            <th>Дія</th>
         </tr>
     </thead>
     <tbody>
@@ -30,7 +34,15 @@
             <tr>
                 <td>@item.MenuItemName</td>
                 <td>@item.Quantity</td>
-                <td>@item.Price.ToString("C")</td>
+                <td>@FormatPrice(item.Price)</td>
+                <td>
+                    <form asp-action="RemoveItem" method="post" style="display:inline;">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="orderId" value="@Model.Id" />
+                        <input type="hidden" name="orderItemId" value="@item.Id" />
+                        <button type="submit" class="btn btn-sm btn-danger">Видалити</button>
+                    </form>
+                </td>
             </tr>
         }
     </tbody>
@@ -40,6 +52,7 @@
 
 <h4 style="font-family: 'Playfair Display', serif; color: #4B3B2B;">Додати позицію</h4>
 <form asp-action="AddItem" method="post" class="row g-3 align-items-center mb-4">
+    @Html.AntiForgeryToken()
     <input type="hidden" name="orderId" value="@Model.Id" />
     <div class="col-auto">
         <select name="MenuItemId" class="form-select" required>
@@ -58,13 +71,12 @@
     </div>
 </form>
 
-<hr />
 @if (User.IsInRole("Admin"))
 {
     <hr />
-
     <h4 style="font-family: 'Playfair Display', serif; color: #4B3B2B;">Оновити статус замовлення</h4>
     <form asp-action="UpdateStatus" method="post" class="mb-5" style="max-width: 350px;">
+        @Html.AntiForgeryToken()
         <input type="hidden" name="orderId" value="@Model.Id" />
         <select name="newStatus" class="form-select mb-3" required>
             <option value="" disabled selected>Оберіть статус</option>
