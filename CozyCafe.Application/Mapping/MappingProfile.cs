@@ -49,7 +49,6 @@ namespace CozyCafe.Application.Mapping
             // Discount & Category
             CreateMap<Category, CategoryDto>();
            
-
             // Orders (Admin)
             CreateMap<Order, AdminOrderDto>()
                 .ForMember(dest => dest.UserFullName, opt => opt.MapFrom(src => src.User.FullName))
