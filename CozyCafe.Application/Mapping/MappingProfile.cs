@@ -28,18 +28,27 @@ namespace CozyCafe.Application.Mapping
             CreateMap<MenuItemOption, MenuItemOptionDto>();
             CreateMap<MenuItemOptionGroup, MenuItemOptionGroupDto>();
 
-            // Orders (User)
-            CreateMap<Order, OrderDto>();
-            CreateMap<OrderItem, OrderItemDto>()
-                     .ForMember(d => d.MenuItemId, opt => opt.MapFrom(s => s.MenuItemId))
-                     .ForMember(d => d.MenuItemName, opt => opt.MapFrom(s => s.MenuItem.Name));
+            // Domain -> DTO
+            CreateMap<Order, OrderDto>()
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => src.Status.ToString()));
 
+            CreateMap<OrderItem, OrderItemDto>()
+                .ForMember(d => d.MenuItemId, opt => opt.MapFrom(s => s.MenuItemId))
+                .ForMember(d => d.MenuItemName, opt => opt.MapFrom(s => s.MenuItem.Name));
 
             CreateMap<OrderItemOption, OrderItemOptionDto>()
-                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id)); // додаємо Id
+                .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id));
 
+            // DTO -> Domain
+            CreateMap<OrderDto, Order>()
+                .ForMember(dest => dest.Status, opt => opt.MapFrom(src => Enum.Parse<Order.OrderStatus>(src.Status)))
+                .ForMember(dest => dest.Items, opt => opt.Ignore()); // <-- Ігноруємо Items, бо їх нема у формі
+
+
+            // Створення
             CreateMap<CreateOrderDto, Order>();
             CreateMap<CreateOrderItemDto, OrderItem>();
+
 
             // Reviews
             CreateMap<CreateReviewDto, Review>();

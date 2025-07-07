@@ -10,6 +10,7 @@ namespace CozyCafe.Models.DTO.ForUser
         public decimal Total { get; set; }
         public required string Status { get; set; }
         public string? DiscountCode { get; set; }
+        public required string UserId { get; set; }
         public List<OrderItemDto> Items { get; set; } = new();
     }
 

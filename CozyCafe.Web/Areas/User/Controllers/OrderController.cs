@@ -135,27 +135,40 @@ namespace CozyCafe.Web.Areas.User.Controllers
         public async Task<IActionResult> Edit(int id)
         {
             var order = await _orderService.GetByIdAsync(id);
-            if (order == null)
-                return NotFound();
-            return View(order);
+            if (order == null) return NotFound();
+
+            var dto = _mapper.Map<OrderDto>(order);
+
+            // Якщо AutoMapper не мапить UserId, то явно присвой:
+            dto.UserId = order.UserId;
+
+            return View(dto);
         }
+
+
 
         // POST: /Order/Edit/5 — оновити замовлення
         [Authorize(Roles = "Admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Order order)
+    
+        public async Task<IActionResult> Edit(int id, OrderDto dto)
         {
-            if (id != order.Id)
+            if (id != dto.Id)
                 return BadRequest();
 
-            if (ModelState.IsValid)
-            {
-                await _orderService.UpdateAsync(order);
-                return RedirectToAction(nameof(Index));
-            }
-            return View(order);
+            if (!ModelState.IsValid)
+                return View(dto);
+
+            await _orderService.UpdateOrderStatusAsync(id, dto.Status); // ✅
+            Console.WriteLine($"Новий статус: {dto.Status}");
+
+
+            return RedirectToAction(nameof(Index));
         }
+
+
+
 
         // GET: /Order/Delete/5 — підтвердження видалення
         [Authorize(Roles = "Admin")]
