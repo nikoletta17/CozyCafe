@@ -319,16 +319,13 @@
     }
     else
     {
-        for (int i = 1; i <= 8; i++)
-        {
-            <div class="card">
-                <img src="@Url.Content($"~/images/deserts/dessert{i}.jpg")" alt="Десерт @i" class="card-img-top" />
-                <div class="card-body">
-                    <h3 class="card-title">Десерт @i</h3>
-                    <p class="card-text text-muted">Смачний десерт із колекції CozyCafe</p>
-                    <button class="order-btn" onclick="alert('Ця функція ще не реалізована'); return false;">Замовити</button>
-                </div>
-            </div>
-        }
+        <div style="text-align:center; margin-top: 3rem;">
+            <h4 style="color: #6b6758; font-family: 'Playfair Display', serif;">
+                На жаль, за вашим запитом товари не знайдено.
+            </h4>
+            <p style="color: #a09888;">
+                Спробуйте змінити фільтри або скинути пошук.
+            </p>
+        </div>
     }
 </div>
