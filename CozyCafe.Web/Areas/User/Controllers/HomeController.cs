@@ -6,6 +6,8 @@ using CozyCafe.Models.Domain.Admin;
 using CozyCafe.Web.Models;
 using System.Diagnostics;
 using Microsoft.AspNetCore.Authorization;
+using CozyCafe.Application.Interfaces.Logging;
+
 
 namespace CozyCafe.Web.Areas.User.Controllers
 {
@@ -13,10 +15,10 @@ namespace CozyCafe.Web.Areas.User.Controllers
     [Route("User/[controller]/[action]")]
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly ILoggerService _logger;
         private readonly ICategoryService _categoryService;
 
-        public HomeController(ILogger<HomeController> logger, ICategoryService categoryService)
+        public HomeController(ILoggerService logger, ICategoryService categoryService)
         {
             _logger = logger;
             _categoryService = categoryService;
@@ -24,6 +26,7 @@ namespace CozyCafe.Web.Areas.User.Controllers
 
         public async Task<IActionResult> Index()
         {
+            _logger.LogInfo("Це тестовий лог в Index");
             IEnumerable<Category> categories = await _categoryService.GetAllAsync();
             return View(categories);
         }

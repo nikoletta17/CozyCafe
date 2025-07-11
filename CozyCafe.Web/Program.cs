@@ -15,6 +15,9 @@ using CozyCafe.Application.Interfaces.ForServices.ForAdmin;
 using CozyCafe.Infrastructure.Repositories.ForAdmin;
 using CozyCafe.Infrastructure.Repositories.ForUser;
 using CozyCafe.Application.Initialization;
+using CozyCafe.Application.Interfaces.Logging;
+using CozyCafe.Infrastructure.Services.Logging;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -52,6 +55,7 @@ builder.Services.AddScoped<IReviewService, ReviewService>();
 builder.Services.AddScoped<IDashboardService, DashboardService>();
 builder.Services.AddScoped<IAdminOrderService, AdminOrderService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ILoggerService, LoggerService>();
 
 #endregion
 
@@ -92,8 +96,14 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
 builder.Services.AddControllersWithViews();
 
 // Логування в консоль
-builder.Logging.ClearProviders();
-builder.Logging.AddConsole();
+//builder.Logging.ClearProviders();
+//builder.Logging.AddConsole();
+var logger = new LoggerConfiguration()
+    .WriteTo.Console()
+    .WriteTo.File("Logs/log-.txt", rollingInterval: RollingInterval.Day) // лог у файл по днях
+    .CreateLogger();
+
+builder.Host.UseSerilog(logger); // використвуємо Serilog
 
 var app = builder.Build();
 
