@@ -231,8 +231,21 @@ else
                             <span>Нема фото</span>
                         }
                     </td>
-                    <td data-label="Назва">@item.MenuItemName</td>
-                    <td data-label="Ціна">@FormatPrice(item.Price)</td>
+                    <td data-label="Назва">
+                        @item.MenuItemName
+
+                        @if (item.SelectedOptionNames?.Any() == true)
+                        {
+                            <ul>
+                                @foreach (var opt in item.SelectedOptionNames)
+                                {
+                                    <li>@opt</li>
+                                }
+                            </ul>
+                        }
+                    </td>
+
+                    <td data-label="Ціна">@FormatPrice(item.UnitPrice)</td>
                     <td data-label="Кількість">
                         <form asp-action="UpdateItemQuantity" asp-controller="Cart" method="post" style="display:flex; align-items:center;">
                             <input type="hidden" name="menuItemId" value="@item.MenuItemId" />
@@ -240,7 +253,7 @@ else
                             <button type="submit" class="btn-update">Оновити</button>
                         </form>
                     </td>
-                    <td data-label="Сума">@FormatPrice(item.Price * item.Quantity)</td>
+                    <td data-label="Сума">@FormatPrice(item.Price)</td>
                     <td data-label="">
                         <form asp-action="RemoveItem" asp-controller="Cart" method="post" style="display:inline;">
                             <input type="hidden" name="menuItemId" value="@item.MenuItemId" />
@@ -253,6 +266,7 @@ else
     </table>
 
     <div class="total-price">Всього: @FormatPrice(Model.Total)</div>
+
 
     <div style="text-align: right; margin-top: 0.5rem;">
         <a href="@Url.Action("Create", "Order", new { area = "User" })" class="btn-clear-cart" style="display: inline-block; text-align: center;">

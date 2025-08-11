@@ -4,6 +4,7 @@ using CozyCafe.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace CozyCafe.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250810101521_AddCartItemOptions")]
+    partial class AddCartItemOptions
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -422,27 +425,6 @@ namespace CozyCafe.Infrastructure.Migrations
                     b.HasData(
                         new
                         {
-                            Id = 1101,
-                            ExtraPrice = 10.00m,
-                            Name = "Сметана",
-                            OptionGroupId = 1001
-                        },
-                        new
-                        {
-                            Id = 1102,
-                            ExtraPrice = 15.00m,
-                            Name = "Круті сухарики",
-                            OptionGroupId = 1001
-                        },
-                        new
-                        {
-                            Id = 1103,
-                            ExtraPrice = 5.00m,
-                            Name = "Зелень",
-                            OptionGroupId = 1001
-                        },
-                        new
-                        {
                             Id = 1,
                             Name = "Без соусу",
                             OptionGroupId = 1
@@ -493,12 +475,6 @@ namespace CozyCafe.Infrastructure.Migrations
                     b.ToTable("MenuItemOptionGroups");
 
                     b.HasData(
-                        new
-                        {
-                            Id = 1001,
-                            MenuItemId = 407,
-                            Name = "Додаткові добавки"
-                        },
                         new
                         {
                             Id = 1,

@@ -1,30 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CozyCafe.Application.Interfaces.ForRerository.ForUser;
+﻿using CozyCafe.Application.Interfaces.ForRerository.ForUser;
 using CozyCafe.Application.Interfaces.ForServices.ForUser;
 using CozyCafe.Application.Services.Generic_Service;
 using CozyCafe.Models.Domain.ForUser;
+using Microsoft.Extensions.Logging;
 
-namespace CozyCafe.Application.Services.ForUser
+public class ReviewService : Service<Review>, IReviewService
 {
-    public class ReviewService: Service<Review>, IReviewService
-    {
-        private readonly IReviewRepository _reviewRepository;
-        public ReviewService(IReviewRepository reviewRepository): base(reviewRepository)
-        {
-            _reviewRepository = reviewRepository;
-        }
+    private readonly IReviewRepository _reviewRepository;
+    private readonly ILogger<ReviewService> _logger;
 
-        public async Task<IEnumerable<Review>> GetByMenuItemIdAsync(int menuItemId)
-        {
-            return await _reviewRepository.GetByMenuItemIdAsync(menuItemId);
-        }
-        public async Task<IEnumerable<Review>> GetByUserIdAsync(string userId)
-        {
-            return await _reviewRepository.GetByUserIdAsync(userId);
-        }
+    public ReviewService(IReviewRepository reviewRepository, ILogger<ReviewService> logger) : base(reviewRepository)
+    {
+        _reviewRepository = reviewRepository;
+        _logger = logger;
+    }
+
+    public async Task<IEnumerable<Review>> GetByMenuItemIdAsync(int menuItemId)
+    {
+        _logger.LogInformation("Отримання відгуків для меню {MenuItemId}", menuItemId);
+        var reviews = await _reviewRepository.GetByMenuItemIdAsync(menuItemId);
+        _logger.LogInformation("Знайдено {Count} відгуків для меню {MenuItemId}", reviews.Count(), menuItemId);
+        return reviews;
+    }
+
+    public async Task<IEnumerable<Review>> GetByUserIdAsync(string userId)
+    {
+        _logger.LogInformation("Отримання відгуків користувача {UserId}", userId);
+        var reviews = await _reviewRepository.GetByUserIdAsync(userId);
+        _logger.LogInformation("Знайдено {Count} відгуків користувача {UserId}", reviews.Count(), userId);
+        return reviews;
     }
 }

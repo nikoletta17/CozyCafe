@@ -19,7 +19,7 @@ namespace CozyCafe.Models.Domain.Common
         public ICollection<OrderItem> Items { get; set; } = new List<OrderItem>();
 
         [Required]
-        [Range(0.01, 999999)]
+        [Range(0, 999999)]
         public decimal Total { get; set; }
 
         public enum OrderStatus

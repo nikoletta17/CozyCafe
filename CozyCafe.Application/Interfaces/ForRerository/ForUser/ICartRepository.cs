@@ -11,5 +11,6 @@ namespace CozyCafe.Application.Interfaces.ForRerository.ForUser
     public interface ICartRepository: IRepository<Cart>
     {
         Task<Cart?> GetByUserIdAsync(string userId);
+        IQueryable<Cart> Query();
     }
 }

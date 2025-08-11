@@ -11,5 +11,7 @@ namespace CozyCafe.Application.Interfaces.ForServices.ForAdmin
     public interface IMenuItemOptionService: IService<MenuItemOption>
     {
         Task<IEnumerable<MenuItemOption>> GetByGroupIdAsync(int groupId);
+        Task<IEnumerable<MenuItemOption>> GetByIdsAsync(IEnumerable<int> ids);
+
     }
 }

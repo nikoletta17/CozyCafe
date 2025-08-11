@@ -12,5 +12,6 @@ namespace CozyCafe.Application.Interfaces.ForServices.ForAdmin
     {
         Task<IEnumerable<MenuItemOptionGroup>> GetAllWithOptionsAsync();
         Task<IEnumerable<MenuItemOptionGroup>> GetByMenuItemIdAsync(int menuItemId);
+
     }
 }

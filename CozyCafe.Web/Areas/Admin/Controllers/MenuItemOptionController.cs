@@ -1,10 +1,9 @@
 ﻿using AutoMapper;
-using CozyCafe.Application.Interfaces.ForServices.ForAdmin;
 using CozyCafe.Models.Domain.Admin;
-using CozyCafe.Models.DTO.Admin;
 using CozyCafe.Web.Areas.User.Controllers.Generic_Controller;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+
 
 namespace CozyCafe.Web.Controllers
 {
@@ -15,19 +14,32 @@ namespace CozyCafe.Web.Controllers
     {
         private readonly IMenuItemOptionService _menuItemOptionService;
         private readonly IMapper _mapper;
-        public MenuItemOptionController(IMenuItemOptionService menuItemOptionService, IMapper mapper)
+        private readonly ILogger<MenuItemOptionController> _logger;
+
+        public MenuItemOptionController(IMenuItemOptionService menuItemOptionService, IMapper mapper, ILogger<MenuItemOptionController> logger)
             : base(menuItemOptionService)
         {
             _menuItemOptionService = menuItemOptionService;
             _mapper = mapper;
+            _logger = logger;
         }
 
         public async Task<IActionResult> ByGroup(int groupId)
         {
-            var options = await _menuItemOptionService.GetByGroupIdAsync(groupId);
-            var dtos = _mapper.Map<IEnumerable<MenuItemOptionDto>>(options);
-            return View("Index", dtos);
-        }
+            _logger.LogInformation("Отримання опцій меню за групою Id={GroupId}", groupId);
 
+            try
+            {
+                var options = await _menuItemOptionService.GetByGroupIdAsync(groupId);
+                var dtos = _mapper.Map<IEnumerable<MenuItemOptionDto>>(options);
+                _logger.LogInformation("Опції меню за групою Id={GroupId} успішно отримані", groupId);
+                return View("Index", dtos);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Помилка при отриманні опцій меню за групою Id={GroupId}", groupId);
+                return StatusCode(500, "Внутрішня помилка сервера");
+            }
+        }
     }
 }

@@ -1,58 +1,64 @@
 ﻿using AutoMapper;
-using CozyCafe.Application.Interfaces.ForServices.ForAdmin;
-using CozyCafe.Application.Interfaces.ForServices.ForUser;
-using CozyCafe.Application.Services.Generic_Service;
-using CozyCafe.Models.Domain.ForUser;
-using CozyCafe.Models.DTO.Admin;
 using CozyCafe.Models.DTO.ForUser;
 using CozyCafe.Web.Areas.User.Controllers.Generic_Controller;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
-
 namespace CozyCafe.Web.Areas.User.Controllers
 {
     [Area("User")]
-    [Authorize] 
+    [Authorize]
     [Route("User/[controller]/[action]")]
     public class ReviewController : GenericController<Review>
     {
         private readonly IReviewService _reviewService;
         private readonly IMapper _mapper;
         private readonly IMenuItemService _menuItemService;
+        private readonly ILogger<ReviewController> _logger;
 
-        public ReviewController(IReviewService reviewService, IMapper mapper, IMenuItemService menuItemService) : base(reviewService)
+        public ReviewController(IReviewService reviewService, IMapper mapper, IMenuItemService menuItemService, ILogger<ReviewController> logger)
+            : base(reviewService)
         {
             _reviewService = reviewService;
             _mapper = mapper;
             _menuItemService = menuItemService;
+            _logger = logger;
         }
 
-
-        // All reviews for the certain MenuItem
+        // Всі відгуки для певного MenuItem
         public async Task<IActionResult> ByMenuItem(int menuItemId)
         {
+            _logger.LogInformation("Отримання відгуків для MenuItemId = {MenuItemId}", menuItemId);
+
             var reviews = await _reviewService.GetByMenuItemIdAsync(menuItemId);
             var dto = _mapper.Map<IEnumerable<ReviewDto>>(reviews);
 
-            ViewBag.MenuItemId = menuItemId; // 👈 передаємо в представлення
+            ViewBag.MenuItemId = menuItemId;
+
+            _logger.LogInformation("Отримано {Count} відгуків для MenuItemId = {MenuItemId}", dto.Count(), menuItemId);
 
             return View("ReviewsByMenuItem", dto);
         }
 
-
-        // All reviews from a specific user
+        // Всі відгуки певного користувача
         public async Task<IActionResult> ByUser(string userId)
         {
+            _logger.LogInformation("Отримання відгуків користувача {UserId}", userId);
+
             var reviews = await _reviewService.GetByUserIdAsync(userId);
             var dto = _mapper.Map<IEnumerable<ReviewDto>>(reviews);
+
+            _logger.LogInformation("Отримано {Count} відгуків користувача {UserId}", dto.Count(), userId);
+
             return View("ReviewsByUser", dto);
         }
 
         [HttpGet("Create")]
         public async Task<IActionResult> Create(int? menuItemId)
         {
+            _logger.LogInformation("Початок створення відгуку. MenuItemId = {MenuItemId}", menuItemId);
+
             var menuItems = await _menuItemService.GetFilteredAsync(new MenuItemFilterModel());
 
             ViewBag.MenuItems = menuItems.Select(mi => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem
@@ -76,8 +82,9 @@ namespace CozyCafe.Web.Areas.User.Controllers
         {
             if (!ModelState.IsValid)
             {
-                var menuItems = await _menuItemService.GetFilteredAsync(new MenuItemFilterModel());
+                _logger.LogWarning("Невірна модель при створенні відгуку для MenuItemId = {MenuItemId}", dto.MenuItemId);
 
+                var menuItems = await _menuItemService.GetFilteredAsync(new MenuItemFilterModel());
                 ViewBag.MenuItems = menuItems.Select(mi => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem
                 {
                     Value = mi.Id.ToString(),
@@ -89,14 +96,15 @@ namespace CozyCafe.Web.Areas.User.Controllers
             }
 
             var review = _mapper.Map<Review>(dto);
-
             var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
             if (string.IsNullOrEmpty(userId))
             {
+                _logger.LogWarning("Не вдалося визначити користувача при створенні відгуку");
+
                 ModelState.AddModelError("", "Не вдалося визначити користувача.");
 
                 var menuItems = await _menuItemService.GetFilteredAsync(new MenuItemFilterModel());
-
                 ViewBag.MenuItems = menuItems.Select(mi => new Microsoft.AspNetCore.Mvc.Rendering.SelectListItem
                 {
                     Value = mi.Id.ToString(),
@@ -112,16 +120,20 @@ namespace CozyCafe.Web.Areas.User.Controllers
 
             await _reviewService.AddAsync(review);
 
+            _logger.LogInformation("Користувач {UserId} створив відгук для MenuItemId = {MenuItemId}", userId, dto.MenuItemId);
+
             return RedirectToAction("ByMenuItem", new { menuItemId = dto.MenuItemId });
         }
 
-        [AllowAnonymous] // Якщо хочеш, щоб навіть неавторизовані бачили відгуки
+        [AllowAnonymous]
         public async Task<IActionResult> All()
         {
+            _logger.LogInformation("Отримання всіх відгуків (доступно анонімно)");
+
             var reviews = await _reviewService.GetAllAsync();
             var dto = _mapper.Map<IEnumerable<ReviewDto>>(reviews);
-            return View("AllReviews", dto); // або "Index" — залежно від назви твого View
-        }
 
+            return View("AllReviews", dto);
+        }
     }
 }

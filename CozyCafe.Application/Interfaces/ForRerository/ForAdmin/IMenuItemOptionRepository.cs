@@ -11,5 +11,6 @@ namespace CozyCafe.Application.Interfaces.ForRerository.ForAdmin
     public interface IMenuItemOptionRepository: IRepository<MenuItemOption>
     {
         Task<IEnumerable<MenuItemOption>> GetByGroupIdAsync(int groupId);
+        Task<IEnumerable<MenuItemOption>> GetByIdsAsync(IEnumerable<int> ids);
     }
 }

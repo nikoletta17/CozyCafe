@@ -32,6 +32,7 @@ namespace CozyCafe.Infrastructure.Data
         public DbSet<MenuItemOptionGroup> MenuItemOptionGroups { get; set; }
         public DbSet<MenuItemOption> MenuItemOptions { get; set; }
         public DbSet<OrderItemOption> OrderItemOptions { get; set; }
+        public DbSet<CartItemOption> CartItemOptions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -43,6 +44,7 @@ namespace CozyCafe.Infrastructure.Data
             ConfigureOrder(builder);
             ConfigureMenuItem(builder);
             ConfigureCartItem(builder);
+            ConfigureCartItemOptions(builder);
             ConfigureOrderItem(builder);
             ConfigureMenuItemOptionGroup(builder);
             ConfigureMenuItemOption(builder);
@@ -388,8 +390,40 @@ namespace CozyCafe.Infrastructure.Data
             builder.Entity<MenuItem>().HasData(appetizers.ToArray());
             builder.Entity<MenuItem>().HasData(drinks.ToArray());
 
+            // Група опцій
+            builder.Entity<MenuItemOptionGroup>().HasData(
+     new MenuItemOptionGroup
+     {
+         Id = 1001,                // Унікальний Id, > 604 (вже є опції до 604)
+         Name = "Додаткові добавки",
+         MenuItemId = 407          // Гороховий суп
+     }
+ );
 
-
+            // Опції
+            builder.Entity<MenuItemOption>().HasData(
+      new MenuItemOption
+      {
+          Id = 1101,
+          Name = "Сметана",
+          ExtraPrice = 10.00m,
+          OptionGroupId = 1001
+      },
+      new MenuItemOption
+      {
+          Id = 1102,
+          Name = "Круті сухарики",
+          ExtraPrice = 15.00m,
+          OptionGroupId = 1001
+      },
+      new MenuItemOption
+      {
+          Id = 1103,
+          Name = "Зелень",
+          ExtraPrice = 5.00m,
+          OptionGroupId = 1001
+      }
+  );
 
             builder.Entity<MenuItemOptionGroup>().HasData(
     new MenuItemOptionGroup
@@ -468,6 +502,21 @@ namespace CozyCafe.Infrastructure.Data
                 .HasOne(m => m.Category)
                 .WithMany(c => c.MenuItems)
                 .HasForeignKey(m => m.CategoryId)
+                .OnDelete(DeleteBehavior.Restrict);
+        }
+
+        private void ConfigureCartItemOptions(ModelBuilder builder)
+        {
+            builder.Entity<CartItemOption>()
+                .HasOne(cio => cio.CartItem)
+                .WithMany(ci => ci.SelectedOptions)
+                .HasForeignKey(cio => cio.CartItemId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<CartItemOption>()
+                .HasOne(cio => cio.MenuItemOption)
+                .WithMany() // MenuItemOption уже имеет коллекции для OrderItemOption, но для Cart не нужно обратной навигации
+                .HasForeignKey(cio => cio.MenuItemOptionId)
                 .OnDelete(DeleteBehavior.Restrict);
         }
 

@@ -23,26 +23,37 @@
 
         <p><strong>Категорія:</strong> @Model.CategoryName</p>
         <p><strong>Ціна:</strong> @Model.Price.ToString("C")</p>
-
         @if (optionGroups.Any())
         {
             <h4>Інгредієнти / Опції</h4>
-            @foreach (var group in optionGroups)
-            {
-                <h5>@group.Name</h5>
-                <ul>
-                    @foreach (var option in group.Options)
-                    {
-                        <li>
-                            @option.Name
-                            @if (option.ExtraPrice.HasValue)
-                            {
-                                <span>(+@option.ExtraPrice.Value.ToString("C"))</span>
-                            }
-                        </li>
-                    }
-                </ul>
-            }
+
+            <form asp-action="AddOrUpdateItem" asp-controller="Cart" asp-area="User" method="post">
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="menuItemId" value="@Model.Id" />
+                <input type="hidden" name="quantity" value="1" />
+
+                @foreach (var group in optionGroups)
+                {
+                    <h5>@group.Name</h5>
+                    <ul>
+                        @foreach (var option in group.Options)
+                        {
+                            <li>
+                                <label>
+                                    <input type="checkbox" name="selectedOptionIds" value="@option.Id" />
+                                    @option.Name
+                                    @if (option.ExtraPrice.HasValue)
+                                    {
+                                        <span>(+@option.ExtraPrice.Value.ToString("C"))</span>
+                                    }
+                                </label>
+                            </li>
+                        }
+                    </ul>
+                }
+
+                <button type="submit" class="btn btn-primary mt-3">Додати в кошик</button>
+            </form>
         }
 
         <a href="@Url.Action("Index")" class="btn btn-secondary mt-3">← Назад до меню</a>

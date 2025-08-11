@@ -1,37 +1,35 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CozyCafe.Application.Interfaces.ForRerository.ForAdmin;
+﻿using CozyCafe.Application.Interfaces.ForRerository.ForAdmin;
 using CozyCafe.Application.Interfaces.ForServices.ForAdmin;
+using CozyCafe.Application.Interfaces.Logging;
 using CozyCafe.Models.DTO.Admin;
 
-namespace CozyCafe.Application.Services.ForAdmin
+public class DashboardService : IDashboardService
 {
-    public class DashboardService : IDashboardService
+    private readonly IDashboardRepository _dashboardRepository;
+    private readonly ILoggerService _logger;
+
+    public DashboardService(IDashboardRepository dashboardRepository, ILoggerService logger)
     {
-        private readonly IDashboardRepository _dashboardRepository;
+        _dashboardRepository = dashboardRepository;
+        _logger = logger;
+    }
 
-        public DashboardService(IDashboardRepository dashboardRepository)
+    public async Task<DashboardStatsDto> GetStatsAsync()
+    {
+        _logger.LogInfo("Отримання статистики для адмінської панелі.");
+        var totalOrders = await _dashboardRepository.GetTotalOrdersAsync();
+        var totalRevenue = await _dashboardRepository.GetTotalRevenueAsync();
+        var totalUsers = await _dashboardRepository.GetTotalUsersAsync();
+        var topMenuItemsEnumerable = await _dashboardRepository.GetTopMenuItemsAsync(5);
+
+        _logger.LogInfo($"Статистика: замовлень={totalOrders}, дохід={totalRevenue}, користувачів={totalUsers}.");
+
+        return new DashboardStatsDto
         {
-            _dashboardRepository = dashboardRepository;
-        }
-
-        public async Task<DashboardStatsDto> GetStatsAsync()
-        {
-            var totalOrders = await _dashboardRepository.GetTotalOrdersAsync();
-            var totalRevenue = await _dashboardRepository.GetTotalRevenueAsync();
-            var totalUsers = await _dashboardRepository.GetTotalUsersAsync();
-            var topMenuItemsEnumerable = await _dashboardRepository.GetTopMenuItemsAsync(5);
-
-            return new DashboardStatsDto
-            {
-                TotalOrders = totalOrders,
-                TotalRevenue = totalRevenue,
-                TotalUsers = totalUsers,
-                TopMenuItems = topMenuItemsEnumerable.ToList() // Перетворення в List
-            };
-        }
+            TotalOrders = totalOrders,
+            TotalRevenue = totalRevenue,
+            TotalUsers = totalUsers,
+            TopMenuItems = topMenuItemsEnumerable.ToList()
+        };
     }
 }

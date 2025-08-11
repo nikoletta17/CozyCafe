@@ -3,6 +3,7 @@ using CozyCafe.Models.DTO.Admin;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Logging;
 
 namespace CozyCafe.Controllers
 {
@@ -12,18 +13,25 @@ namespace CozyCafe.Controllers
     public class AdminOrderController : Controller
     {
         private readonly IAdminOrderService _adminOrderService;
+        private readonly ILogger<AdminOrderController> _logger;
 
-        public AdminOrderController(IAdminOrderService adminOrderService)
+        public AdminOrderController(IAdminOrderService adminOrderService, ILogger<AdminOrderController> logger)
         {
             _adminOrderService = adminOrderService;
+            _logger = logger;
         }
 
         // GET: AdminOrder/Details/5
         public async Task<IActionResult> Details(int id)
         {
+            _logger.LogInformation("Отримання деталей замовлення з Id={OrderId}", id);
+
             var order = await _adminOrderService.GetOrderByIdAsync(id);
             if (order == null)
+            {
+                _logger.LogWarning("Замовлення з Id={OrderId} не знайдено", id);
                 return NotFound();
+            }
 
             // Підготувати список статусів для селекта
             var statuses = new List<SelectListItem>
@@ -42,6 +50,7 @@ namespace CozyCafe.Controllers
 
             ViewBag.StatusList = statuses;
 
+            _logger.LogInformation("Деталі замовлення з Id={OrderId} успішно отримані", id);
             return View(order);
         }
 
@@ -50,8 +59,11 @@ namespace CozyCafe.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> UpdateStatus(UpdateOrderStatusDto dto)
         {
+            _logger.LogInformation("Запит на оновлення статусу замовлення Id={OrderId} на статус {NewStatus}", dto.OrderId, dto.NewStatus);
+
             if (!ModelState.IsValid)
             {
+                _logger.LogWarning("Невірні дані для оновлення статусу замовлення Id={OrderId}", dto.OrderId);
                 TempData["Error"] = "Невірні дані для оновлення статусу.";
                 return RedirectToAction(nameof(Details), new { id = dto.OrderId });
             }
@@ -61,15 +73,18 @@ namespace CozyCafe.Controllers
                 var success = await _adminOrderService.UpdateOrderStatusAsync(dto);
                 if (!success)
                 {
+                    _logger.LogWarning("Не вдалося оновити статус замовлення Id={OrderId}", dto.OrderId);
                     TempData["Error"] = "Не вдалося оновити статус замовлення.";
                 }
                 else
                 {
+                    _logger.LogInformation("Статус замовлення Id={OrderId} успішно оновлено на {NewStatus}", dto.OrderId, dto.NewStatus);
                     TempData["Success"] = "Статус замовлення успішно оновлено.";
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                _logger.LogError(ex, "Помилка при оновленні статусу замовлення Id={OrderId}", dto.OrderId);
                 TempData["Error"] = "Сталася помилка при оновленні статусу.";
             }
 

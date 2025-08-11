@@ -1,22 +1,6 @@
-using CozyCafe.Application.Interfaces.Generic_Interfaces;
-using CozyCafe.Application.Services.Generic_Service;
-using CozyCafe.Infrastructure.Data;
-using CozyCafe.Infrastructure.Repositories.Generic_Repository;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
-using CozyCafe.Application.Mapping;
-using CozyCafe.Models.Domain.ForUser;
-using CozyCafe.Application.Services.ForAdmin;
-using CozyCafe.Application.Services.ForUser;
-using CozyCafe.Application.Interfaces.ForRerository.ForUser;
-using CozyCafe.Application.Interfaces.ForRerository.ForAdmin;
-using CozyCafe.Application.Interfaces.ForServices.ForUser;
-using CozyCafe.Application.Interfaces.ForServices.ForAdmin;
-using CozyCafe.Infrastructure.Repositories.ForAdmin;
-using CozyCafe.Infrastructure.Repositories.ForUser;
-using CozyCafe.Application.Initialization;
 using CozyCafe.Application.Interfaces.Logging;
 using CozyCafe.Infrastructure.Services.Logging;
+using CozyCafe.Web.Middleware;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -56,7 +40,6 @@ builder.Services.AddScoped<IDashboardService, DashboardService>();
 builder.Services.AddScoped<IAdminOrderService, AdminOrderService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ILoggerService, LoggerService>();
-
 #endregion
 
 // AutoMapper
@@ -90,6 +73,13 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
 })
 .AddRoles<IdentityRole>()
 .AddEntityFrameworkStores<ApplicationDbContext>();
+
+// Ось сюди вставляємо налаштування кукі
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/User/Account/Login";          // Твій кастомний шлях логіну
+    options.AccessDeniedPath = "/User/Account/AccessDenied"; // (опціонально) сторінка "Доступ заборонено"
+});
 #endregion
 
 // Додаємо MVC контролери з Views
@@ -106,6 +96,8 @@ var logger = new LoggerConfiguration()
 builder.Host.UseSerilog(logger); // використвуємо Serilog
 
 var app = builder.Build();
+
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 // Міграції або обробка помилок
 if (app.Environment.IsDevelopment())

@@ -1,125 +1,177 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using CozyCafe.Application.Interfaces.ForRerository.ForUser;
+﻿using CozyCafe.Application.Interfaces.ForRerository.ForUser;
 using CozyCafe.Application.Interfaces.ForServices.ForUser;
 using CozyCafe.Application.Services.Generic_Service;
 using CozyCafe.Models.Domain.Common;
+using Microsoft.Extensions.Logging;
 using static CozyCafe.Models.Domain.Common.Order;
 
-namespace CozyCafe.Application.Services.ForUser
+public class OrderService : Service<Order>, IOrderService
 {
-    public class OrderService : Service<Order>, IOrderService
+    private readonly IOrderRepository _orderRepository;
+    private readonly ILogger<OrderService> _logger;
+
+    public OrderService(IOrderRepository orderRepository, ILogger<OrderService> logger)
+        : base(orderRepository)
     {
-        private readonly IOrderRepository _orderRepository;
+        _orderRepository = orderRepository;
+        _logger = logger;
+    }
 
-        public OrderService(IOrderRepository orderRepository)
-            : base(orderRepository)
+    public async Task<IEnumerable<Order>> GetByUserIdAsync(string userId)
+    {
+        _logger.LogInformation("Отримання замовлень користувача {UserId}", userId);
+        var orders = await _orderRepository.GetByUserIdAsync(userId);
+        _logger.LogInformation("Знайдено {Count} замовлень для користувача {UserId}", orders.Count(), userId);
+        return orders;
+    }
+
+    public async Task<Order?> GetFullOrderAsync(int orderId)
+    {
+        _logger.LogInformation("Отримання повного замовлення за Id={OrderId}", orderId);
+        var order = await _orderRepository.GetFullOrderAsync(orderId);
+        if (order == null)
+            _logger.LogWarning("Замовлення Id={OrderId} не знайдено", orderId);
+        return order;
+    }
+
+    public async Task AddOrderItemAsync(int orderId, OrderItem item)
+    {
+        _logger.LogInformation("Додавання позиції до замовлення Id={OrderId}", orderId);
+
+        var order = await _orderRepository.GetFullOrderAsync(orderId);
+        if (order == null)
         {
-            _orderRepository = orderRepository;
+            _logger.LogError("Замовлення Id={OrderId} не знайдено", orderId);
+            throw new Exception("Order not found");
         }
 
-        public async Task<IEnumerable<Order>> GetByUserIdAsync(string userId)
+        order.Items.Add(item);
+        RecalculateTotal(order);
+
+        _orderRepository.Update(order);
+        await _orderRepository.SaveChangesAsync();
+
+        _logger.LogInformation("Позицію додано і підсумок перераховано для замовлення Id={OrderId}", orderId);
+    }
+
+    public async Task RemoveOrderItemAsync(int orderId, int orderItemId)
+    {
+        _logger.LogInformation("Видалення позиції {OrderItemId} із замовлення {OrderId}", orderItemId, orderId);
+
+        var order = await _orderRepository.GetFullOrderAsync(orderId);
+        if (order == null)
         {
-            return await _orderRepository.GetByUserIdAsync(userId);
+            _logger.LogWarning("Замовлення Id={OrderId} не знайдено", orderId);
+            return;
         }
 
-        public async Task<Order?> GetFullOrderAsync(int orderId)
+        var item = order.Items.FirstOrDefault(i => i.Id == orderItemId);
+        if (item != null)
         {
-            return await _orderRepository.GetFullOrderAsync(orderId);
-        }
-
-        public async Task AddOrderItemAsync(int orderId, OrderItem item)
-        {
-            var order = await _orderRepository.GetFullOrderAsync(orderId);
-            if (order == null)
-                throw new Exception("Order not found");
-
-            order.Items.Add(item);
+            order.Items.Remove(item);
             RecalculateTotal(order);
 
             _orderRepository.Update(order);
             await _orderRepository.SaveChangesAsync();
+
+            _logger.LogInformation("Позицію {OrderItemId} видалено з замовлення {OrderId}", orderItemId, orderId);
+        }
+        else
+        {
+            _logger.LogWarning("Позиція {OrderItemId} не знайдена у замовленні {OrderId}", orderItemId, orderId);
+        }
+    }
+
+    public async Task AddOptionToOrderItemAsync(int orderId, int orderItemId, OrderItemOption option)
+    {
+        _logger.LogInformation("Додавання опції до позиції {OrderItemId} замовлення {OrderId}", orderItemId, orderId);
+
+        var order = await _orderRepository.GetFullOrderAsync(orderId);
+        if (order == null)
+        {
+            _logger.LogError("Замовлення Id={OrderId} не знайдено", orderId);
+            throw new Exception("Order not found");
         }
 
-        public async Task RemoveOrderItemAsync(int orderId, int orderItemId)
+        var orderItem = order.Items.FirstOrDefault(i => i.Id == orderItemId);
+        if (orderItem == null)
         {
-            var order = await _orderRepository.GetFullOrderAsync(orderId);
-            if (order == null) return;
-
-            var item = order.Items.FirstOrDefault(i => i.Id == orderItemId);
-            if (item != null)
-            {
-                order.Items.Remove(item);
-                RecalculateTotal(order);
-
-                _orderRepository.Update(order);
-                await _orderRepository.SaveChangesAsync();
-            }
+            _logger.LogError("Позиція {OrderItemId} не знайдена у замовленні {OrderId}", orderItemId, orderId);
+            throw new Exception("Order item not found");
         }
 
-        public async Task AddOptionToOrderItemAsync(int orderId, int orderItemId, OrderItemOption option)
+        orderItem.SelectedOptions.Add(option);
+
+        _orderRepository.Update(order);
+        await _orderRepository.SaveChangesAsync();
+
+        _logger.LogInformation("Опцію додано до позиції {OrderItemId} замовлення {OrderId}", orderItemId, orderId);
+    }
+
+    public async Task RemoveOrderItemOptionAsync(int orderId, int orderItemId, int optionId)
+    {
+        _logger.LogInformation("Видалення опції {OptionId} із позиції {OrderItemId} замовлення {OrderId}", optionId, orderItemId, orderId);
+
+        var order = await _orderRepository.GetFullOrderAsync(orderId);
+        if (order == null)
         {
-            var order = await _orderRepository.GetFullOrderAsync(orderId);
-            if (order == null)
-                throw new Exception("Order not found");
+            _logger.LogWarning("Замовлення Id={OrderId} не знайдено", orderId);
+            return;
+        }
 
-            var orderItem = order.Items.FirstOrDefault(i => i.Id == orderItemId);
-            if (orderItem == null)
-                throw new Exception("Order item not found");
+        var orderItem = order.Items.FirstOrDefault(i => i.Id == orderItemId);
+        if (orderItem == null)
+        {
+            _logger.LogWarning("Позиція {OrderItemId} не знайдена у замовленні {OrderId}", orderItemId, orderId);
+            return;
+        }
 
-            orderItem.SelectedOptions.Add(option);
-            // Можна додати зміну ціни опції в ціну item — якщо вона щось коштує
+        var option = orderItem.SelectedOptions.FirstOrDefault(o => o.Id == optionId);
+        if (option != null)
+        {
+            orderItem.SelectedOptions.Remove(option);
 
             _orderRepository.Update(order);
             await _orderRepository.SaveChangesAsync();
-        }
 
-        public async Task RemoveOrderItemOptionAsync(int orderId, int orderItemId, int optionId)
+            _logger.LogInformation("Опцію {OptionId} видалено з позиції {OrderItemId} замовлення {OrderId}", optionId, orderItemId, orderId);
+        }
+        else
         {
-            var order = await _orderRepository.GetFullOrderAsync(orderId);
-            if (order == null) return;
-
-            var orderItem = order.Items.FirstOrDefault(i => i.Id == orderItemId);
-            if (orderItem == null) return;
-
-            var option = orderItem.SelectedOptions.FirstOrDefault(o => o.Id == optionId);
-            if (option != null)
-            {
-                orderItem.SelectedOptions.Remove(option);
-                // Якщо опція має вартість, треба відняти її від item.Price або Total
-
-                _orderRepository.Update(order);
-                await _orderRepository.SaveChangesAsync();
-            }
+            _logger.LogWarning("Опція {OptionId} не знайдена у позиції {OrderItemId} замовлення {OrderId}", optionId, orderItemId, orderId);
         }
+    }
 
-        public async Task UpdateOrderStatusAsync(int orderId, string newStatus)
+    public async Task UpdateOrderStatusAsync(int orderId, string newStatus)
+    {
+        _logger.LogInformation("Оновлення статусу замовлення {OrderId} на {NewStatus}", orderId, newStatus);
+
+        var order = await _orderRepository.GetByIdAsync(orderId);
+        if (order == null)
         {
-            var order = await _orderRepository.GetByIdAsync(orderId);
-            if (order == null)
-                throw new Exception("Order not found");
-
-            if (Enum.TryParse<OrderStatus>(newStatus, true, out var status))
-            {
-                order.Status = status;
-            }
-            else
-            {
-                throw new ArgumentException("Invalid status value.");
-            }
-
-            _orderRepository.Update(order);
-            await _orderRepository.SaveChangesAsync();
+            _logger.LogError("Замовлення Id={OrderId} не знайдено", orderId);
+            throw new Exception("Order not found");
         }
 
-        /// <summary>
-        /// Допоміжний метод для перерахунку Total
-        /// </summary>
-        private void RecalculateTotal(Order order)
+        if (Enum.TryParse<OrderStatus>(newStatus, true, out var status))
         {
-            order.Total = order.Items.Sum(i => i.Price);
+            order.Status = status;
         }
+        else
+        {
+            _logger.LogError("Невірний статус {NewStatus} для замовлення {OrderId}", newStatus, orderId);
+            throw new ArgumentException("Invalid status value.");
+        }
+
+        _orderRepository.Update(order);
+        await _orderRepository.SaveChangesAsync();
+
+        _logger.LogInformation("Статус замовлення {OrderId} успішно оновлено на {NewStatus}", orderId, newStatus);
+    }
+
+    private void RecalculateTotal(Order order)
+    {
+        order.Total = order.Items.Sum(i => i.Price);
+        _logger.LogInformation("Перерахунок загальної суми замовлення Id={OrderId}, новий Total={Total}", order.Id, order.Total);
     }
 }

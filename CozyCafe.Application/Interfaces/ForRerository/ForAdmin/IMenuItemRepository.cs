@@ -10,7 +10,7 @@ namespace CozyCafe.Application.Interfaces.ForRerository.ForAdmin
     {
         Task<IEnumerable<MenuItem>> GetFilteredAsync(MenuItemFilterModel filter);
         Task<MenuItem?> GetByIdWithCategoryAsync(int id);
-
+     
     }
 }
 

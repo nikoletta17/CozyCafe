@@ -1,28 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CozyCafe.Application.Interfaces.ForRerository.ForAdmin;
+﻿using CozyCafe.Application.Interfaces.ForRerository.ForAdmin;
 using CozyCafe.Application.Interfaces.ForServices.ForAdmin;
-using CozyCafe.Application.Interfaces.Generic_Interfaces;
+using CozyCafe.Application.Interfaces.Logging;
 using CozyCafe.Application.Services.Generic_Service;
 using CozyCafe.Models.Domain.Admin;
-using CozyCafe.Models.DTO;
 
-namespace CozyCafe.Application.Services.ForAdmin
+public class CategoryService : Service<Category>, ICategoryService
 {
-    public class CategoryService: Service<Category>, ICategoryService
-    {
-        private readonly ICategoryRepository _categoryRepository;
-        public CategoryService(ICategoryRepository categoryRepository): base(categoryRepository) 
-        {
-          _categoryRepository = categoryRepository;   
-        }
+    private readonly ICategoryRepository _categoryRepository;
+    private readonly ILoggerService _logger;
 
-        public async Task<IEnumerable<Category>> GetByParentCategoryIdAsync(int? parentCategoryId)
-        {
-            return await _categoryRepository.GetByParentCategoryIdAsync(parentCategoryId);
-        }
+    public CategoryService(ICategoryRepository categoryRepository, ILoggerService logger)
+        : base(categoryRepository)
+    {
+        _categoryRepository = categoryRepository;
+        _logger = logger;
+    }
+
+    public async Task<IEnumerable<Category>> GetByParentCategoryIdAsync(int? parentCategoryId)
+    {
+        _logger.LogInfo($"Отримання категорій з parentCategoryId={parentCategoryId?.ToString() ?? "NULL"}.");
+        var result = await _categoryRepository.GetByParentCategoryIdAsync(parentCategoryId);
+        _logger.LogInfo($"Знайдено {result.Count()} категорій.");
+        return result;
     }
 }

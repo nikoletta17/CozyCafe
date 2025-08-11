@@ -24,5 +24,13 @@ namespace CozyCafe.Infrastructure.Repositories.ForAdmin
                  .Where(o => o.OptionGroupId == groupId)
                 .ToListAsync();
         }
+
+        public async Task<IEnumerable<MenuItemOption>> GetByIdsAsync(IEnumerable<int> ids)
+        {
+            return await _context.MenuItemOptions
+                .Include(o => o.OptionGroup)
+                .Where(o => ids.Contains(o.Id))
+                .ToListAsync();
+        }
     }
 }

@@ -1,36 +1,42 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using CozyCafe.Application.Interfaces.ForRerository.ForAdmin;
+﻿using CozyCafe.Application.Interfaces.ForRerository.ForAdmin;
 using CozyCafe.Application.Interfaces.ForServices.ForAdmin;
 using CozyCafe.Models.Domain.Common;
 using CozyCafe.Models.DTO.Admin;
+using Microsoft.Extensions.Logging;
 
-namespace CozyCafe.Application.Services.ForAdmin
+public class OrderStatusService : IOrderStatusService
 {
-    public class OrderStatusService : IOrderStatusService
+    private readonly IOrderStatusRepository _orderStatusRepository;
+    private readonly ILogger<OrderStatusService> _logger;
+
+    public OrderStatusService(IOrderStatusRepository orderStatusRepository,
+                              ILogger<OrderStatusService> logger)
     {
-        private readonly IOrderStatusRepository _orderStatusRepository;
+        _orderStatusRepository = orderStatusRepository;
+        _logger = logger;
+    }
 
-        public OrderStatusService(IOrderStatusRepository orderStatusRepository)
+    public async Task<bool> UpdateOrderStatusAsync(UpdateOrderStatusDto dto)
+    {
+        _logger.LogInformation("Updating order status. OrderId={OrderId}, NewStatus={NewStatus}", dto.OrderId, dto.NewStatus);
+
+        var order = await _orderStatusRepository.GetOrderByIdAsync(dto.OrderId);
+        if (order == null)
         {
-            _orderStatusRepository = orderStatusRepository;
+            _logger.LogWarning("Order with Id={OrderId} not found", dto.OrderId);
+            return false;
         }
 
-        public async Task<bool> UpdateOrderStatusAsync(UpdateOrderStatusDto dto)
+        if (!Enum.TryParse<Order.OrderStatus>(dto.NewStatus, true, out var newStatus))
         {
-            var order = await _orderStatusRepository.GetOrderByIdAsync(dto.OrderId);
-            if (order == null) return false;
-
-            if (!Enum.TryParse<Order.OrderStatus>(dto.NewStatus, true, out var newStatus))
-                return false;
-
-            order.Status = newStatus;
-            await _orderStatusRepository.SaveChangesAsync();
-
-            return true;
+            _logger.LogWarning("Invalid status '{Status}' provided for OrderId={OrderId}", dto.NewStatus, dto.OrderId);
+            return false;
         }
+
+        order.Status = newStatus;
+        await _orderStatusRepository.SaveChangesAsync();
+
+        _logger.LogInformation("Order status updated successfully for OrderId={OrderId}", dto.OrderId);
+        return true;
     }
 }

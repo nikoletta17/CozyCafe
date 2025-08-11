@@ -25,9 +25,9 @@ namespace CozyCafe.Infrastructure.Repositories.ForAdmin
 
         public async Task<IEnumerable<MenuItemOptionGroup>> GetByMenuItemIdAsync(int menuItemId)
         {
-            return await _dbSet
-                .Include(g => g.Options)
+            return await _context.MenuItemOptionGroups
                 .Where(g => g.MenuItemId == menuItemId)
+                .Include(g => g.Options) // щоб одразу тягнуло опції
                 .ToListAsync();
         }
     }

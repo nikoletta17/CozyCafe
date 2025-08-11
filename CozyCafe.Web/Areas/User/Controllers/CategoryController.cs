@@ -1,11 +1,8 @@
-﻿using System.Runtime.CompilerServices;
-using AutoMapper;
-using CozyCafe.Application.Interfaces.ForServices.ForAdmin;
+﻿using AutoMapper;
 using CozyCafe.Models.Domain.Admin;
-using CozyCafe.Models.DTO.Admin;
 using CozyCafe.Web.Areas.User.Controllers.Generic_Controller;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+
 
 namespace CozyCafe.Web.Areas.User.Controllers
 {
@@ -15,24 +12,26 @@ namespace CozyCafe.Web.Areas.User.Controllers
     {
         private readonly ICategoryService _categoryService;
         private readonly IMapper _mapper;
-        public CategoryController(ICategoryService categoryService, IMapper mapper): base(categoryService)
+        private readonly ILogger<CategoryController> _logger;
+
+        public CategoryController(ICategoryService categoryService, IMapper mapper, ILogger<CategoryController> logger)
+            : base(categoryService)
         {
             _categoryService = categoryService;
-            _mapper = mapper;   
+            _mapper = mapper;
+            _logger = logger;
         }
 
         public async Task<IActionResult> ByParentCategory(int? parentCategoryId)
         {
-            // Отримуємо всі категорії з вказаним ParentCategoryId (може бути null для кореневих категорій)
-            var categories = await _categoryService.GetByParentCategoryIdAsync(parentCategoryId);
+            _logger.LogInformation("Отримання категорій з ParentCategoryId = {ParentCategoryId}", parentCategoryId);
 
-            // Мапимо отримані доменні моделі у DTO для передачі у View
+            var categories = await _categoryService.GetByParentCategoryIdAsync(parentCategoryId);
             var dtos = _mapper.Map<IEnumerable<CategoryDto>>(categories);
 
-            // Повертаємо View "Index", передаючи у нього список категорій у вигляді DTO
+            _logger.LogInformation("Отримано {Count} категорій", dtos.Count());
+
             return View("Index", dtos);
         }
-
-
     }
 }

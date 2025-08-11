@@ -18,5 +18,7 @@ namespace CozyCafe.Models.Domain.ForUser
         [Required]
         [Range(1, 100)]
         public int Quantity { get; set; }
+        public ICollection<CartItemOption> SelectedOptions { get; set; } = new List<CartItemOption>();
     }
 }
+

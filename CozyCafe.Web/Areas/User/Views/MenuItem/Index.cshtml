@@ -227,14 +227,22 @@
 }
 
 <div class="filter-buttons">
-    <a asp-controller="MenuItem" asp-action="Index" class="@(Model.Filter.CategoryId == null ? "active" : "")">Всі категорії</a>
-    @foreach (var cat in ((SelectList)ViewBag.Categories).Where(c => !hiddenCategories.Contains(c.Text)))
+    <a asp-controller="MenuItem" asp-action="Index"
+       class="@(Model.Filter.CategoryId == null ? "active" : "")">
+        Всі категорії
+    </a>
+    @foreach (var cat in (SelectList)ViewBag.Categories)
     {
         var catIdStr = cat.Value;
         var isActive = catIdStr == (Model.Filter.CategoryId?.ToString() ?? "") ? "active" : "";
-        <a asp-controller="MenuItem" asp-action="Index" asp-route-CategoryId="@catIdStr" class="@isActive">@cat.Text</a>
+        <a asp-controller="MenuItem" asp-action="Index"
+           asp-route-CategoryId="@catIdStr"
+           class="@isActive">
+            @cat.Text
+        </a>
     }
 </div>
+
 
 
 <!-- Форма фільтрації -->

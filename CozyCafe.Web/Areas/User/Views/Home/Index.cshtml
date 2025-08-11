@@ -143,7 +143,7 @@
 
 <div class="filter-buttons">
     <a asp-area="User" asp-controller="MenuItem" asp-action="Index">Всі категорії</a>
-    @foreach (var category in Model.Where(c => !hiddenCategories.Contains(c.Name)))
+    @foreach (var category in Model)
     {
         <a asp-area="User" asp-controller="MenuItem" asp-action="Index" asp-route-CategoryId="@category.Id">
             @category.Name

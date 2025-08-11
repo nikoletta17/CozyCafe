@@ -15,16 +15,23 @@ namespace CozyCafe.Infrastructure.Repositories.ForUser
     public class CartRepository: Repository<Cart>, ICartRepository
     {
         public CartRepository(ApplicationDbContext context) : base(context) { }
-        
 
+        public IQueryable<Cart> Query()
+        {
+            return _context.Carts.AsQueryable();
+        }
         public async Task<Cart?> GetByUserIdAsync(string userId)
         {
             return await _dbSet
                 .Include(c => c.User)
                 .Include(c => c.Items)
                     .ThenInclude(i => i.MenuItem)
+                .Include(c => c.Items)
+                    .ThenInclude(i => i.SelectedOptions)
+                        .ThenInclude(o => o.MenuItemOption)
                 .FirstOrDefaultAsync(c => c.UserId == userId);
         }
+
 
     }
 

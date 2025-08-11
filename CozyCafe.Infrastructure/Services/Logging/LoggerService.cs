@@ -36,5 +36,10 @@ namespace CozyCafe.Infrastructure.Services.Logging
         {
             _logger.LogError(ex, message);
         }
+        public void LogInfo(string userName, string message)
+        {
+            _logger.LogInformation("Користувач: {User} | {Message}", userName, message);
+        }
+
     }
 }
