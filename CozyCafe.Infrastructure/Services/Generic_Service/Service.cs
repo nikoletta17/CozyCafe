@@ -17,23 +17,22 @@ namespace CozyCafe.Application.Services.Generic_Service
             _repository = repository;
         }
 
-        public async Task<IEnumerable<T>> GetAllAsync() => await _repository.GetAllAsync();
+        public virtual async Task<IEnumerable<T>> GetAllAsync() => await _repository.GetAllAsync();
+        public virtual async Task<T?> GetByIdAsync(int id) => await _repository.GetByIdAsync(id);
 
-        public async Task<T?> GetByIdAsync(int id) => await _repository.GetByIdAsync(id);
-
-        public async Task AddAsync(T entity)
+        public virtual async Task AddAsync(T entity)
         {
             await _repository.AddAsync(entity);
             await _repository.SaveChangesAsync();
         }
 
-        public async Task UpdateAsync(T entity)
+        public virtual async Task UpdateAsync(T entity)
         {
             _repository.Update(entity);
             await _repository.SaveChangesAsync();
         }
 
-        public async Task DeleteAsync(int id)
+        public virtual async Task DeleteAsync(int id)
         {
             var entity = await _repository.GetByIdAsync(id);
             if (entity != null)

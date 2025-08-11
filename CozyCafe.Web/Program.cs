@@ -12,6 +12,9 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 
+builder.Services.AddMemoryCache();
+
+
 // Реєстрація репозиторіїв
 #region Repository DI
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
