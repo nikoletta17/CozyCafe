@@ -13,21 +13,105 @@
     };
 }
 
-<h2>Редагування замовлення #@Model.Id</h2>
+<style>
 
-<div class="mb-3">
-    <strong>Дата замовлення:</strong> @Model.OrderedAt.ToLocalTime().ToString("dd MMM yyyy HH:mm")
-</div>
+    body {
+        background-color: #f9f6f1;
+    }
 
-<form asp-action="UpdateStatus" method="post">
-    @Html.AntiForgeryToken()
-    <input type="hidden" name="orderId" value="@Model.Id" />
+    .page-container {
+        padding-top: 4rem; /* зміщуємо вниз */
+        min-height: 100vh;
+        box-sizing: border-box;
+        background-color: #f9f6f1; /* бежевий фон */
+    }
 
-    <div class="mb-3">
-        <label class="form-label">Статус</label>
-        <select name="newStatus" class="form-select" asp-items="statusList"></select>
+    h2, h4 {
+        font-family: 'Playfair Display', serif;
+        color: #4b4a3f;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        text-align: center; /* центрування заголовків */
+    }
+
+    form.update-order-form {
+        max-width: 600px;
+        width: 100%;
+        margin: 3rem auto 0 auto;
+        background-color: #fff;
+        border: 2px solid #c2b280;
+        border-radius: 12px;
+        padding: 1.5rem 2rem;
+        box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+        font-family: 'Playfair Display', serif;
+        color: #4b4a3f;
+    }
+
+        form.update-order-form label {
+            display: block;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            font-size: 1.4rem; /* збільшили */
+            text-align: center; /* по центру */
+            font-family: 'Playfair Display', serif;
+            color: #4b4a3f;
+        }
+
+
+        form.update-order-form select.form-select {
+            width: 100%;
+            padding: 0.4rem 0.6rem;
+            border: 2px solid #c2b280;
+            border-radius: 8px;
+            font-size: 1rem;
+            color: #4b4a3f;
+            margin-bottom: 1.2rem;
+            font-family: 'Playfair Display', serif;
+            transition: border-color 0.3s ease;
+        }
+
+            form.update-order-form select.form-select:focus {
+                border-color: #4b4a3f;
+                outline: none;
+            }
+
+        form.update-order-form button {
+            display: block;
+            margin: 0 auto;
+            background-color: #4b4a3f;
+            border: 2px solid #c2b280;
+            color: #c2b280;
+            padding: 0.5rem 1.2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-family: 'Playfair Display', serif;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+            form.update-order-form button:hover {
+                background-color: #c2b280;
+                color: #4b4a3f;
+            }
+
+</style>
+
+<div class="page-container">
+    <h2>Редагування замовлення #@Model.Id</h2>
+
+    <div class="order-date mb-3" style="text-align:center;">
+        <strong>Дата замовлення:</strong> @Model.OrderedAt.ToLocalTime().ToString("dd MMM yyyy HH:mm")
     </div>
 
-    <button type="submit" class="btn btn-primary">Зберегти</button>
-</form>
+    <form asp-action="UpdateStatus" method="post" class="update-order-form">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="orderId" value="@Model.Id" />
 
+        <div class="mb-3">
+            <label class="form-label">Статус</label>
+            <select name="newStatus" class="form-select" asp-items="statusList"></select>
+        </div>
+
+        <button type="submit">Зберегти</button>
+    </form>
+</div>

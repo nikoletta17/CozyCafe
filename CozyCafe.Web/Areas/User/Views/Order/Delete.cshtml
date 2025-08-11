@@ -4,25 +4,132 @@
     ViewData["Title"] = $"Видалити замовлення #{Model.Id}";
 }
 
-<h2>Видалити замовлення №@Model.Id?</h2>
+<style>
+    .page-container {
+        padding-top: 4rem;
+        min-height: 100vh;
+        box-sizing: border-box;
+        background-color: #f9f6f1;
+        font-family: 'Playfair Display', serif;
+        color: #4b4a3f;
+    }
 
-<div>
-    <p>Ви дійсно хочете видалити це замовлення?</p>
-    <dl class="row">
-        <dt class="col-sm-3">Дата замовлення:</dt>
-        <dd class="col-sm-9">@Model.OrderedAt.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</dd>
+    h2 {
+        text-align: center;
+        font-weight: 700;
+        font-size: 2.5rem;
+        margin-bottom: 1.5rem;
+    }
 
-        <dt class="col-sm-3">Статус:</dt>
-        <dd class="col-sm-9">@Model.Status</dd>
+    .details-container {
+        max-width: 600px;
+        background-color: #fff;
+        border: 2px solid #c2b280;
+        border-radius: 12px;
+        padding: 1.5rem 2rem;
+        margin: 0 auto 2rem auto;
+        box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+        color: #3b3a30; /* темний колір */
+        text-align: center; /* по центру */
+    }
 
-        <dt class="col-sm-3">Сума:</dt>
-        <dd class="col-sm-9">@Model.Total.ToString("C")</dd>
-    </dl>
+
+
+    dl.row {
+        display: flex;
+        flex-wrap: wrap;
+        margin-bottom: 0;
+    }
+
+    dt.col-sm-3 {
+        flex: 0 0 30%;
+        font-weight: 700;
+        padding: 0.3rem 0;
+    }
+
+    dd.col-sm-9 {
+        flex: 0 0 70%;
+        margin: 0;
+        padding: 0.3rem 0;
+    }
+
+    form {
+        max-width: 600px;
+        margin: 0 auto;
+        text-align: center;
+    }
+
+        form button, form a.btn {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            padding: 0.5rem 1.5rem;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+            form button.btn-danger {
+                background-color: #8B0000; /* насичений червоний фон */
+                border-color: #8B0000;
+                color: #fff; /* білий текст */
+                margin-right: 1rem;
+                font-family: 'Playfair Display', serif;
+                font-weight: 700;
+                padding: 0.5rem 1.5rem;
+                border-radius: 8px;
+                font-size: 1.1rem;
+                cursor: pointer;
+                transition: background-color 0.3s ease, color 0.3s ease;
+                text-decoration: none;
+                display: inline-block;
+            }
+
+                form button.btn-danger:hover {
+                    background-color: #c22; /* світліший червоний при наведенні */
+                    border-color: #c22;
+                    color: #fff;
+                }
+
+
+        form a.btn-secondary {
+            background-color: #4b4a3f;
+            border-color: #c2b280;
+            color: #c2b280;
+        }
+
+            form a.btn-secondary:hover {
+                background-color: #c2b280;
+                color: #4b4a3f;
+                border-color: #4b4a3f;
+            }
+
+</style>
+
+<div class="page-container">
+    <h2>Видалити замовлення №@Model.Id?</h2>
+
+    <div class="details-container">
+        <p>Ви дійсно хочете видалити це замовлення?</p>
+        <dl class="row">
+            <dt class="col-sm-3">Дата замовлення:</dt>
+            <dd class="col-sm-9">@Model.OrderedAt.ToLocalTime().ToString("dd.MM.yyyy HH:mm")</dd>
+
+            <dt class="col-sm-3">Статус:</dt>
+            <dd class="col-sm-9">@Model.Status</dd>
+
+            <dt class="col-sm-3">Сума:</dt>
+            <dd class="col-sm-9">@Model.Total.ToString("C")</dd>
+        </dl>
+    </div>
+
+    <form asp-action="Delete" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" asp-for="Id" />
+        <button type="submit" class="btn btn-danger">Видалити</button>
+        <a asp-action="Index" class="btn btn-secondary">Скасувати</a>
+    </form>
 </div>
-
-<form asp-action="Delete" method="post">
-    @Html.AntiForgeryToken()
-    <input type="hidden" asp-for="Id" />
-    <button type="submit" class="btn btn-danger">Видалити</button>
-    <a asp-action="Index" class="btn btn-secondary ms-2">Скасувати</a>
-</form>

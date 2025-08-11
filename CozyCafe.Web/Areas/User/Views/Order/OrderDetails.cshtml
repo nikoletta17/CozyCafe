@@ -6,26 +6,206 @@
     string FormatPrice(decimal price) => string.Format("{0:N2} ₴", price);
 }
 
-<h2 class="mb-4" style="font-family: 'Playfair Display', serif; color: #4B3B2B;">
-    Деталі замовлення #@Model.Id
-</h2>
+<style>
 
-<div class="mb-3 text-muted">
+    body {
+        background-color: #f9f6f1;
+    }
+
+    h2, h4 {
+        font-family: 'Playfair Display', serif;
+        color: #4b4a3f;
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+
+    .order-info {
+        font-family: 'Playfair Display', serif;
+        color: #3b3a30;
+        margin-bottom: 2rem;
+        line-height: 1.4;
+        font-size: 1.1rem;
+    }
+
+    hr {
+        border: none;
+        border-top: 2px solid #c2b280;
+        margin: 2rem 0;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        font-family: 'Playfair Display', serif;
+        color: #4b4a3f;
+        background-color: #fff;
+        border: 2px solid #c2b280;
+        border-radius: 12px;
+        box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+        font-size: 1rem;
+    }
+
+    thead tr {
+        background-color: #4b4a3f;
+        color: #c2b280;
+    }
+
+    th, td {
+        padding: 0.75rem 1rem;
+        border: 1.5px solid #c2b280;
+        text-align: left;
+        vertical-align: middle;
+    }
+
+        td.actions {
+            text-align: center;
+            white-space: nowrap;
+        }
+
+    tbody tr:hover {
+        background-color: #f0e9d2;
+        transition: background-color 0.3s ease;
+    }
+
+    /* Кнопки */
+    .cozy-btn {
+        font-family: 'Playfair Display', serif;
+        padding: 0.3rem 0.8rem;
+        background-color: #4b4a3f;
+        border: 2px solid #c2b280;
+        color: #c2b280 !important;
+        text-decoration: none;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        font-size: 0.85rem;
+        display: inline-block;
+        margin: 0;
+    }
+
+        .cozy-btn:hover,
+        .btn-danger:hover {
+            background-color: #c2b280;
+            color: #4b4a3f !important;
+        }
+
+    .btn-danger {
+        background-color: #8B0000;
+        border-color: #8B0000;
+        color: #fff !important;
+        padding: 0.3rem 0.8rem;
+        border-radius: 8px;
+        font-family: 'Playfair Display', serif;
+        font-size: 0.85rem;
+        cursor: pointer;
+        border: 2px solid #8B0000;
+        transition: all 0.3s ease;
+    }
+
+    /* Форма додавання позиції */
+    form.add-item-form {
+        max-width: 900px;
+        background-color: #fff;
+        border: 2px solid #c2b280;
+        border-radius: 12px;
+        padding: 1.5rem 2rem;
+        box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+        font-family: 'Playfair Display', serif;
+        margin-bottom: 3rem;
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        align-items: center;
+    }
+
+        form.add-item-form select,
+        form.add-item-form input[type=number] {
+            padding: 0.4rem 0.6rem;
+            border: 2px solid #c2b280;
+            border-radius: 8px;
+            font-family: 'Playfair Display', serif;
+            font-size: 1rem;
+            color: #4b4a3f;
+            min-width: 180px;
+        }
+
+        form.add-item-form button {
+            background-color: #4b4a3f;
+            border: 2px solid #c2b280;
+            color: #c2b280;
+            padding: 0.4rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Playfair Display', serif;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+            form.add-item-form button:hover {
+                background-color: #c2b280;
+                color: #4b4a3f;
+            }
+
+    /* Форма оновлення статусу */
+    form.update-status-form {
+        max-width: 350px;
+        background-color: #fff;
+        border: 2px solid #c2b280;
+        border-radius: 12px;
+        padding: 1.5rem 2rem;
+        box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+        font-family: 'Playfair Display', serif;
+    }
+
+        form.update-status-form select {
+            width: 100%;
+            padding: 0.4rem 0.6rem;
+            border: 2px solid #c2b280;
+            border-radius: 8px;
+            font-family: 'Playfair Display', serif;
+            font-size: 1rem;
+            color: #4b4a3f;
+            margin-bottom: 1rem;
+        }
+
+        form.update-status-form button {
+            background-color: #4b4a3f;
+            border: 2px solid #c2b280;
+            color: #c2b280;
+            padding: 0.4rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Playfair Display', serif;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+
+            form.update-status-form button:hover {
+                background-color: #c2b280;
+                color: #4b4a3f;
+            }
+</style>
+
+<h2>Деталі замовлення #@Model.Id</h2>
+
+<div class="order-info">
     <strong>Дата замовлення:</strong> @Model.OrderedAt.ToLocalTime().ToString("dd MMM yyyy HH:mm")<br />
     <strong>Статус:</strong> @Model.Status<br />
     <strong>Загальна сума:</strong> @FormatPrice(Model.Total)
 </div>
 
-<hr class="mb-4" />
+<hr />
 
-<h4 style="font-family: 'Playfair Display', serif; color: #4B3B2B;">Позиції замовлення</h4>
-<table class="table table-bordered" style="background-color:#f9f5f1;">
+<h4>Позиції замовлення</h4>
+
+<table>
     <thead>
         <tr>
             <th>Назва</th>
             <th>Кількість</th>
             <th>Ціна</th>
-            <th>Дія</th>
+            <th class="actions">Дія</th>
         </tr>
     </thead>
     <tbody>
@@ -35,12 +215,12 @@
                 <td>@item.MenuItemName</td>
                 <td>@item.Quantity</td>
                 <td>@FormatPrice(item.Price)</td>
-                <td>
+                <td class="actions">
                     <form asp-action="RemoveItem" method="post" style="display:inline;">
                         @Html.AntiForgeryToken()
                         <input type="hidden" name="orderId" value="@Model.Id" />
                         <input type="hidden" name="orderItemId" value="@item.Id" />
-                        <button type="submit" class="btn btn-sm btn-danger">Видалити</button>
+                        <button type="submit" class="btn-danger">Видалити</button>
                     </form>
                 </td>
             </tr>
@@ -50,35 +230,29 @@
 
 <hr />
 
-<h4 style="font-family: 'Playfair Display', serif; color: #4B3B2B;">Додати позицію</h4>
-<form asp-action="AddItem" method="post" class="row g-3 align-items-center mb-4">
+<h4>Додати позицію</h4>
+<form asp-action="AddItem" method="post" class="add-item-form">
     @Html.AntiForgeryToken()
     <input type="hidden" name="orderId" value="@Model.Id" />
-    <div class="col-auto">
-        <select name="MenuItemId" class="form-select" required>
-            <option value="" selected disabled>Оберіть страву</option>
-            @foreach (var menu in ViewBag.MenuItems as SelectList)
-            {
-                <option value="@menu.Value">@menu.Text</option>
-            }
-        </select>
-    </div>
-    <div class="col-auto">
-        <input type="number" name="Quantity" min="1" max="100" value="1" class="form-control" required />
-    </div>
-    <div class="col-auto">
-        <button type="submit" class="btn btn-primary">Додати</button>
-    </div>
+    <select name="MenuItemId" required>
+        <option value="" selected disabled>Оберіть страву</option>
+        @foreach (var menu in ViewBag.MenuItems as SelectList)
+        {
+            <option value="@menu.Value">@menu.Text</option>
+        }
+    </select>
+    <input type="number" name="Quantity" min="1" max="100" value="1" required />
+    <button type="submit">Додати</button>
 </form>
 
 @if (User.IsInRole("Admin"))
 {
     <hr />
-    <h4 style="font-family: 'Playfair Display', serif; color: #4B3B2B;">Оновити статус замовлення</h4>
-    <form asp-action="UpdateStatus" method="post" class="mb-5" style="max-width: 350px;">
+    <h4>Оновити статус замовлення</h4>
+    <form asp-action="UpdateStatus" method="post" class="update-status-form">
         @Html.AntiForgeryToken()
         <input type="hidden" name="orderId" value="@Model.Id" />
-        <select name="newStatus" class="form-select mb-3" required>
+        <select name="newStatus" required>
             <option value="" disabled selected>Оберіть статус</option>
             <option value="Pending">Очікується</option>
             <option value="Confirmed">Підтверджено</option>
@@ -86,6 +260,6 @@
             <option value="Completed">Виконано</option>
             <option value="Cancelled">Скасовано</option>
         </select>
-        <button type="submit" class="btn btn-secondary">Оновити статус</button>
+        <button type="submit">Оновити статус</button>
     </form>
 }

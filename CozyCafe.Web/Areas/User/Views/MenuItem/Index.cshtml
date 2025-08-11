@@ -190,6 +190,46 @@
         margin-top: 1rem;
     }
 
+    .pagination {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+        margin-bottom: 3rem;
+        margin-top: 2rem;
+    }
+
+        .pagination a,
+        .pagination span {
+            padding: 0.8rem 1.5rem;
+            border: 2px solid #4b4a3f;
+            background-color: transparent;
+            color: #4b4a3f;
+            font-weight: 600;
+            border-radius: 30px;
+            text-decoration: none;
+            transition: 0.3s ease;
+            cursor: pointer;
+            user-select: none;
+        }
+
+            .pagination a:hover {
+                background-color: #4b4a3f;
+                color: #fff;
+            }
+
+        .pagination .active {
+            background-color: #4b4a3f;
+            color: #fff;
+            cursor: default;
+        }
+
+        .pagination .disabled {
+            border-color: #a09888;
+            color: #a09888;
+            cursor: default;
+        }
+
     @@media (max-width: 768px) {
         form.filter-form {
             flex-direction: column;
@@ -246,33 +286,38 @@
 
 
 <!-- Форма фільтрації -->
-<form method="get" asp-controller="MenuItem" asp-action="Index" class="filter-form">
-    <input type="text" name="SearchTerm" value="@Model.Filter.SearchTerm" placeholder="Пошук за назвою" />
-    <select name="CategoryId" class="form-select">
+<form method="get" asp-action="Index" class="filter-form">
+    <input type="text" name="SearchTerm" value="@Model.Filter.SearchTerm" placeholder="Пошук..." />
+
+    <select name="CategoryId">
         <option value="">Всі категорії</option>
-        @foreach (var cat in (SelectList)ViewBag.Categories)
+        @foreach (var category in ViewBag.Categories as SelectList)
         {
-            <option value="@cat.Value" selected="@(cat.Value == (Model.Filter.CategoryId?.ToString() ?? "") ? "selected" : null)">
-                @cat.Text
+            var isSelected = category.Value == Model.Filter.CategoryId?.ToString();
+            <option value="@category.Value" selected="@(isSelected ? "selected" : null)">
+                @category.Text
             </option>
         }
     </select>
 
-    <div style="display:flex; align-items:center; gap:6px;">
-        <label for="MinPrice" style="font-weight:600; color:#4b4a3f;">Мін. ціна</label>
-        <input type="number" name="MinPrice" step="0.01" value="@(Model.Filter.MinPrice ?? 0)" placeholder="0" />
-    </div>
+    <input type="number" name="MinPrice" step="0.01" value="@(Model.Filter.MinPrice?.ToString() ?? "")" placeholder="Мін. ціна" />
+    <input type="number" name="MaxPrice" step="0.01" value="@(Model.Filter.MaxPrice?.ToString() ?? "")" placeholder="Макс. ціна" />
 
-    <div style="display:flex; align-items:center; gap:6px;">
-        <label for="MaxPrice" style="font-weight:600; color:#4b4a3f;">Макс. ціна</label>
-        <input type="number" name="MaxPrice" step="0.01" value="@(Model.Filter.MaxPrice ?? 0)" placeholder="0" />
-    </div>
+    <select name="SortBy">
+        @foreach (var option in ViewBag.SortOptions as List<SelectListItem>)
+        {
+            <option value="@option.Value" selected="@(option.Selected ? "selected" : null)">
+                @option.Text
+            </option>
+        }
+    </select>
 
-
-    @Html.DropDownList("SortBy", (IEnumerable<SelectListItem>)ViewBag.SortOptions, "Сортувати за", new { @class = "form-select" })
+    <input type="hidden" name="Page" value="1" />
+    <input type="hidden" name="PageSize" value="@Model.Filter.PageSize" />
 
     <button type="submit">Фільтрувати</button>
 </form>
+
 
 <!-- Карточки товарів -->
 <div class="cards-row">
@@ -337,3 +382,70 @@
         </div>
     }
 </div>
+
+@if (Model.Filter.TotalPages > 1)
+{
+    <div class="pagination" aria-label="Pagination Navigation">
+        @* Попередня сторінка *@
+        @if (Model.Filter.Page > 1)
+        {
+            <a asp-area="User" asp-controller="MenuItem" asp-action="Index"
+               asp-route-Page="@(Model.Filter.Page - 1)"
+               asp-route-PageSize="@Model.Filter.PageSize"
+               asp-route-CategoryId="@(Model.Filter.CategoryId ?? 0)"
+               asp-route-SearchTerm="@Model.Filter.SearchTerm"
+               asp-route-MinPrice="@(Model.Filter.MinPrice ?? 0)"
+               asp-route-MaxPrice="@(Model.Filter.MaxPrice ?? 0)"
+               asp-route-SortBy="@Model.Filter.SortBy">
+                ← Попередня
+            </a>
+        }
+        else
+        {
+            <span class="disabled">← Попередня</span>
+        }
+
+        @for (int i = 1; i <= Model.Filter.TotalPages; i++)
+        {
+            if (i == Model.Filter.Page)
+            {
+                <span class="active">@i</span>
+            }
+            else
+            {
+                <a asp-area="User" asp-controller="MenuItem" asp-action="Index"
+                   asp-route-Page="@i"
+                   asp-route-PageSize="@Model.Filter.PageSize"
+                   asp-route-CategoryId="@(Model.Filter.CategoryId ?? 0)"
+                   asp-route-SearchTerm="@Model.Filter.SearchTerm"
+                   asp-route-MinPrice="@(Model.Filter.MinPrice ?? 0)"
+                   asp-route-MaxPrice="@(Model.Filter.MaxPrice ?? 0)"
+                   asp-route-SortBy="@Model.Filter.SortBy">
+                    @i
+                </a>
+            }
+        }
+
+        @* Наступна сторінка *@
+        @if (Model.Filter.Page < Model.Filter.TotalPages)
+        {
+            <a asp-area="User" asp-controller="MenuItem" asp-action="Index"
+               asp-route-Page="@(Model.Filter.Page + 1)"
+               asp-route-PageSize="@Model.Filter.PageSize"
+               asp-route-CategoryId="@(Model.Filter.CategoryId ?? 0)"
+               asp-route-SearchTerm="@Model.Filter.SearchTerm"
+               asp-route-MinPrice="@(Model.Filter.MinPrice ?? 0)"
+               asp-route-MaxPrice="@(Model.Filter.MaxPrice ?? 0)"
+               asp-route-SortBy="@Model.Filter.SortBy">
+                Наступна →
+            </a>
+        }
+        else
+        {
+            <span class="disabled">Наступна →</span>
+        }
+    </div>
+}
+
+
+

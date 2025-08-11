@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace CozyCafe.Web.Areas.User.Controllers
 {
     [Area("User")]
-    [Route("User/[controller]/[action]")]
+    [Route("User/[controller]")]
     public class MenuItemController : Controller
     {
         private readonly IMenuItemService _menuItemService;
@@ -25,56 +25,86 @@ namespace CozyCafe.Web.Areas.User.Controllers
             _logger = logger;
         }
 
-        [HttpGet]
+        [HttpGet("")]
         public async Task<IActionResult> Index(MenuItemFilterModel filter)
         {
             _logger.LogInformation("Запит меню з фільтром: {@Filter}", filter);
 
-            if (!string.IsNullOrEmpty(filter.CategoryName))
+            // Захист пагінації
+            filter.Page = filter.Page < 1 ? 1 : filter.Page;
+            filter.PageSize = filter.PageSize <= 0 ? 8 : filter.PageSize;
+
+            // Якщо користувач передав CategoryName — переведемо у CategoryId
+            if (!string.IsNullOrWhiteSpace(filter.CategoryName))
             {
                 var categories = await _categoryService.GetAllAsync();
                 var category = categories.FirstOrDefault(c => c.Name == filter.CategoryName);
                 if (category != null)
                 {
                     filter.CategoryId = category.Id;
-                    _logger.LogInformation("CategoryName \"{CategoryName}\" конвертовано у CategoryId {CategoryId}", filter.CategoryName, category.Id);
+                    _logger.LogInformation("CategoryName \"{CategoryName}\" -> CategoryId {CategoryId}", filter.CategoryName, category.Id);
                 }
             }
 
-            if (filter.CategoryId.HasValue && filter.CategoryId.Value == 0)
+            // Нормалізація CategoryId та цін
+            if (filter.CategoryId.HasValue && filter.CategoryId.Value <= 0)
                 filter.CategoryId = null;
 
-            if (filter.MinPrice.HasValue && filter.MinPrice == 0)
+            if (!filter.MinPrice.HasValue || filter.MinPrice <= 0)
                 filter.MinPrice = null;
 
-            if (filter.MaxPrice.HasValue && filter.MaxPrice == 0)
+            if (!filter.MaxPrice.HasValue || filter.MaxPrice <= 0)
                 filter.MaxPrice = null;
 
+            // Отримуємо вже відфільтрований набір (з сервісу)
             var items = await _menuItemService.GetFilteredAsync(filter);
-            var allCategories = await _categoryService.GetAllAsync();
 
+            // Лог для відлагодження — перевірити чи SortBy доходить
+            _logger.LogInformation("Requested SortBy = {SortBy}", filter.SortBy);
+
+            // Приведемо до list щоб можна було застосувати OrderBy без залежності від реалізації сервісу
+            var itemsList = items.ToList();
+
+            // Застосуємо сортування на рівні контролера (тимчасове швидке рішення)
+            itemsList = (filter.SortBy ?? string.Empty).ToLower() switch
+            {
+                "price_asc" => itemsList.OrderBy(i => i.Price).ToList(),
+                "price_desc" => itemsList.OrderByDescending(i => i.Price).ToList(),
+                "name" => itemsList.OrderBy(i => i.Name).ToList(),
+                _ => itemsList // дефолтне сортування — як є
+            };
+
+            // Пагінація
+            int totalItems = itemsList.Count;
+            filter.TotalPages = (int)Math.Ceiling(totalItems / (double)filter.PageSize);
+
+            var pagedItems = itemsList
+                .Skip((filter.Page - 1) * filter.PageSize)
+                .Take(filter.PageSize)
+                .AsEnumerable();
+
+            // Підготовка ViewBag
+            var allCategories = await _categoryService.GetAllAsync();
             ViewBag.Categories = new SelectList(allCategories, "Id", "Name", filter.CategoryId);
 
             var sortOptions = new List<SelectListItem>
-            {
-                new SelectListItem { Value = "", Text = "За замовчуванням" },
-                new SelectListItem { Value = "name", Text = "Назва" },
-                new SelectListItem { Value = "price_asc", Text = "Ціна ↑" },
-                new SelectListItem { Value = "price_desc", Text = "Ціна ↓" },
-            };
-
+    {
+        new SelectListItem { Value = "", Text = "За замовчуванням" },
+        new SelectListItem { Value = "name", Text = "Назва" },
+        new SelectListItem { Value = "price_asc", Text = "Ціна ↑" },
+        new SelectListItem { Value = "price_desc", Text = "Ціна ↓" },
+    };
             foreach (var option in sortOptions)
-            {
-                option.Selected = option.Value == filter.SortBy;
-            }
+                option.Selected = option.Value == (filter.SortBy ?? "");
 
             ViewBag.SortOptions = sortOptions;
 
-            _logger.LogInformation("Підготовлено {Count} товарів для відображення з фільтром {@Filter}", items.Count(), filter);
+            _logger.LogInformation("Підготовлено {Count} товарів для відображення з фільтром {@Filter}", pagedItems.Count(), filter);
 
-            // Повертаємо кортеж: список товарів і фільтр (для збереження стану форми)
-            return View((items, filter));
+            return View((pagedItems, filter));
         }
+
+
 
         [HttpGet("{id}")]
         public async Task<IActionResult> Details(int id)

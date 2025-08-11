@@ -265,7 +265,7 @@ namespace CozyCafe.Web.Areas.User.Controllers
                 _logger.LogWarning($"{userName}: Помилка оновлення статусу замовлення #{orderId}: {ex.Message}");
             }
 
-            return RedirectToAction("Details", new { id = orderId });
+            return RedirectToAction("Index", "Order", new { area = "User" });
         }
 
         [HttpPost]

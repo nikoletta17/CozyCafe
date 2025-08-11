@@ -265,13 +265,25 @@ else
         </tbody>
     </table>
 
-    <div class="total-price">Всього: @FormatPrice(Model.Total)</div>
+    <div style="width: 100%; display: flex; flex-direction: column; align-items: flex-end;">
+        <div class="total-price" style="display: inline-block;">
+            Всього: @FormatPrice(Model.Total)
+        </div>
 
-
-    <div style="text-align: right; margin-top: 0.5rem;">
-        <a href="@Url.Action("Create", "Order", new { area = "User" })" class="btn-clear-cart" style="display: inline-block; text-align: center;">
-            Замовити
-        </a>
+        <div style="display: flex; justify-content: flex-end; gap: 20px; margin-top: 0.5rem; align-items: center;">
+            <a href="@Url.Action("Index", "MenuItem", new { area = "User" })"
+               class="btn-clear-cart"
+               style="padding: 0.5rem 1rem; margin: 0;">
+                Додати до замовлення
+            </a>
+            <a href="@Url.Action("Create", "Order", new { area = "User" })"
+               class="btn-clear-cart"
+               style="padding: 0.5rem 1rem; margin: 0;">
+                Замовити
+            </a>
+        </div>
     </div>
+
+
 
 }

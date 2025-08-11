@@ -4,17 +4,91 @@
     var optionGroups = (List<CozyCafe.Models.DTO.Admin.MenuItemOptionGroupDto>)ViewBag.OptionGroups;
 }
 
-<h2>@Model.Name</h2>
+<style>
+    body {
+        font-family: 'Playfair Display', serif;
+        background-color: #f9f6f1;
+        color: #3b3a30;
+    }
 
-<div class="row">
+    h2, h4 {
+        margin-top: 1.5rem;
+        margin-bottom: 1.5rem;
+        font-family: 'Playfair Display', serif;
+        color: #4b4a3f;
+        text-align: center; /* по центру */
+        
+    }
+
+    h2, h4, h5 {
+        font-family: 'Playfair Display', serif;
+        color: #4b4a3f;
+    }
+
+    .cozy-section {
+        background-color: #fff;
+        border: 2px solid #c2b280;
+        border-radius: 12px;
+        padding: 1.5rem;
+        box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+        margin-bottom: 2rem;
+    }
+
+    .dish-image {
+        border-radius: 12px;
+        border: 2px solid #c2b280;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        max-height: 350px;
+        object-fit: cover;
+        width: 100%;
+    }
+
+    .cozy-btn {
+        font-family: 'Playfair Display', serif;
+        padding: 0.5rem 1.2rem;
+        background-color: #4b4a3f;
+        border: 2px solid #c2b280;
+        color: #c2b280 !important;
+        text-decoration: none;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        margin-right: 0.5rem;
+        cursor: pointer;
+        display: inline-block;
+    }
+
+    .cozy-btn:hover {
+        background-color: #c2b280;
+        color: #4b4a3f !important;
+    }
+
+    ul.option-list {
+        list-style: none;
+        padding-left: 0;
+    }
+
+    ul.option-list li {
+        margin-bottom: 0.5rem;
+    }
+
+    label {
+        cursor: pointer;
+    }
+
+
+</style>
+
+<h2 class="mb-4">@Model.Name</h2>
+
+<div class="row cozy-section">
     <div class="col-md-5">
         @if (!string.IsNullOrEmpty(Model.ImageUrl))
         {
-            <img src="@Model.ImageUrl" alt="@Model.Name" class="img-fluid rounded shadow-sm" />
+            <img src="@Model.ImageUrl" alt="@Model.Name" class="dish-image" />
         }
         else
         {
-            <img src="~/images/default-dish.jpg" alt="Фото відсутнє" class="img-fluid rounded shadow-sm" />
+            <img src="~/images/default-dish.jpg" alt="Фото відсутнє" class="dish-image" />
         }
     </div>
     <div class="col-md-7">
@@ -23,6 +97,7 @@
 
         <p><strong>Категорія:</strong> @Model.CategoryName</p>
         <p><strong>Ціна:</strong> @Model.Price.ToString("C")</p>
+
         @if (optionGroups.Any())
         {
             <h4>Інгредієнти / Опції</h4>
@@ -35,7 +110,7 @@
                 @foreach (var group in optionGroups)
                 {
                     <h5>@group.Name</h5>
-                    <ul>
+                    <ul class="option-list">
                         @foreach (var option in group.Options)
                         {
                             <li>
@@ -52,10 +127,10 @@
                     </ul>
                 }
 
-                <button type="submit" class="btn btn-primary mt-3">Додати в кошик</button>
+                <button type="submit" class="cozy-btn mt-3">Додати в кошик</button>
             </form>
         }
 
-        <a href="@Url.Action("Index")" class="btn btn-secondary mt-3">← Назад до меню</a>
+        <a href="@Url.Action("Index")" class="cozy-btn mt-3">← Назад до меню</a>
     </div>
 </div>
