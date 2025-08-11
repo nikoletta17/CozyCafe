@@ -12,7 +12,37 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 
+//Кешування
 builder.Services.AddMemoryCache();
+
+//Cookies
+#region Cookies
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    // Кука доступна лише по HTTP (не через JS)
+    options.Cookie.HttpOnly = true;
+
+    // Кука передається тільки по HTTPS (для продакшену)
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+
+    // Захист від CSRF: кука не відправляється на сторонні сайти
+    options.Cookie.SameSite = SameSiteMode.Lax;
+
+    // Ім'я куки (можеш змінити, щоб було унікальним)
+    options.Cookie.Name = "CozyCafeAuthCookie";
+
+    // Термін життя куки для "Запомнить меня" — 14 днів
+    options.ExpireTimeSpan = TimeSpan.FromDays(14);
+
+    // Оновлюємо термін дії куки при активності користувача
+    options.SlidingExpiration = true;
+
+    // Шляхи для перенаправлення (підкоригуй під свої)
+    options.LoginPath = "/User/Account/Login";
+    options.LogoutPath = "/User/Account/Logout";
+
+});
+#endregion
 
 
 // Реєстрація репозиторіїв
