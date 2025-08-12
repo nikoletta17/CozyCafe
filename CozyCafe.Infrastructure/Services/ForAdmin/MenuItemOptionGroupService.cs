@@ -1,4 +1,5 @@
-﻿using CozyCafe.Application.Interfaces.ForRerository.ForAdmin;
+﻿using CozyCafe.Application.Exceptions;
+using CozyCafe.Application.Interfaces.ForRerository.ForAdmin;
 using CozyCafe.Application.Interfaces.ForServices.ForAdmin;
 using CozyCafe.Application.Interfaces.Logging;
 using CozyCafe.Application.Services.Generic_Service;
@@ -32,6 +33,12 @@ public class MenuItemOptionGroupService : Service<MenuItemOptionGroup>, IMenuIte
             _logger.LogInfo("[CACHE MISS] Отримання всіх груп опцій меню з опціями.");
             groups = await _menuItemOptionGroupRepository.GetAllWithOptionsAsync();
 
+            if (!groups.Any())
+            {
+                _logger.LogWarning("Групи опцій меню не знайдено.");
+                throw new NotFoundException("Menu item option groups", "all");
+            }
+
             _cache.Set(AllGroupsCacheKey, groups, TimeSpan.FromMinutes(10));
             _logger.LogInfo($"[CACHE SET] Збережено {groups.Count()} груп опцій у кеш.");
         }
@@ -50,6 +57,12 @@ public class MenuItemOptionGroupService : Service<MenuItemOptionGroup>, IMenuIte
         {
             _logger.LogInfo($"[CACHE MISS] Отримання груп опцій для меню Id={menuItemId}.");
             groups = await _menuItemOptionGroupRepository.GetByMenuItemIdAsync(menuItemId);
+
+            if (!groups.Any())
+            {
+                _logger.LogWarning($"Групи опцій для MenuItem Id={menuItemId} не знайдено.");
+                throw new NotFoundException("Menu item option groups", menuItemId);
+            }
 
             _cache.Set(cacheKey, groups, TimeSpan.FromMinutes(10));
             _logger.LogInfo($"[CACHE SET] Збережено {groups.Count()} груп опцій для меню Id={menuItemId} у кеш.");

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using CozyCafe.Application.Exceptions;
 using CozyCafe.Application.Interfaces.ForRerository.ForAdmin;
 using CozyCafe.Application.Interfaces.ForServices.ForAdmin;
 using CozyCafe.Application.Interfaces.Logging;
@@ -26,14 +27,14 @@ public class AdminOrderService : IAdminOrderService
         return _mapper.Map<List<AdminOrderDto>>(orders);
     }
 
-    public async Task<AdminOrderDto?> GetOrderByIdAsync(int id)
+    public async Task<AdminOrderDto> GetOrderByIdAsync(int id)
     {
         _logger.LogInfo($"Отримання замовлення з ID={id} (адмін).");
         var order = await _orderRepository.GetByIdWithDetailsAsync(id);
         if (order == null)
         {
             _logger.LogWarning($"Замовлення з ID={id} не знайдено.");
-            return null;
+            throw new OrderItemNotFoundException(id); // тепер піде в middleware
         }
         return _mapper.Map<AdminOrderDto>(order);
     }
@@ -41,22 +42,24 @@ public class AdminOrderService : IAdminOrderService
     public async Task<bool> UpdateOrderStatusAsync(UpdateOrderStatusDto dto)
     {
         _logger.LogInfo($"Оновлення статусу замовлення ID={dto.OrderId} на '{dto.NewStatus}'.");
+
         var order = await _orderRepository.GetByIdAsync(dto.OrderId);
         if (order == null)
         {
             _logger.LogWarning($"Замовлення ID={dto.OrderId} не знайдено.");
-            return false;
+            throw new OrderItemNotFoundException(dto.OrderId);
         }
 
         if (!Enum.TryParse<Order.OrderStatus>(dto.NewStatus, true, out var newStatus))
         {
             _logger.LogWarning($"Невідомий статус '{dto.NewStatus}' для замовлення ID={dto.OrderId}.");
-            return false;
+            throw new InvalidOrderStatusException(order.Status.ToString(), dto.NewStatus);
         }
 
         order.Status = newStatus;
         _orderRepository.Update(order);
         await _orderRepository.SaveChangesAsync();
+
         _logger.LogInfo($"Статус замовлення ID={dto.OrderId} успішно змінено на '{dto.NewStatus}'.");
         return true;
     }

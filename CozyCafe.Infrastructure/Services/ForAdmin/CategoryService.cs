@@ -1,4 +1,5 @@
-﻿using CozyCafe.Application.Interfaces.ForRerository.ForAdmin;
+﻿using CozyCafe.Application.Exceptions;
+using CozyCafe.Application.Interfaces.ForRerository.ForAdmin;
 using CozyCafe.Application.Interfaces.ForServices.ForAdmin;
 using CozyCafe.Application.Interfaces.Logging;
 using CozyCafe.Application.Services.Generic_Service;
@@ -11,7 +12,6 @@ public class CategoryService : Service<Category>, ICategoryService
     private readonly ILoggerService _logger;
     private readonly IMemoryCache _cache;
 
-    // Ключі кешу для списку і для пошуку по ParentCategoryId
     private const string AllCategoriesCacheKey = "AllCategories";
     private const string ParentCategoriesCacheKeyPrefix = "Categories_Parent_";
 
@@ -34,6 +34,12 @@ public class CategoryService : Service<Category>, ICategoryService
         {
             _logger.LogInfo($"[CACHE MISS] Отримання категорій з parentCategoryId={parentCategoryId?.ToString() ?? "NULL"}.");
             categories = await _categoryRepository.GetByParentCategoryIdAsync(parentCategoryId);
+
+            if (!categories.Any())
+            {
+                _logger.LogWarning($"Категорії з parentCategoryId={parentCategoryId} не знайдено.");
+                throw new NotFoundException("Category", parentCategoryId ?? 0);
+            }
 
             _cache.Set(cacheKey, categories, TimeSpan.FromMinutes(10));
             _logger.LogInfo($"[CACHE SET] Збережено {categories.Count()} категорій у кеш з ключем {cacheKey}.");
@@ -68,7 +74,5 @@ public class CategoryService : Service<Category>, ICategoryService
     {
         _logger.LogInfo("[CACHE CLEAR] Очищення кешу категорій.");
         _cache.Remove(AllCategoriesCacheKey);
-        // Видаляємо всі кеші по ParentCategoryId
-        // (Тут можна розширити, якщо тримаєш список ключів)
     }
 }

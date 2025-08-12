@@ -1,10 +1,10 @@
-﻿using CozyCafe.Application.Interfaces.ForRerository.ForAdmin;
+﻿using CozyCafe.Application.Exceptions;
+using CozyCafe.Application.Interfaces.ForRerository.ForAdmin;
 using CozyCafe.Application.Interfaces.ForServices.ForAdmin;
 using CozyCafe.Application.Services.Generic_Service;
 using CozyCafe.Models.Domain.Admin;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
-
 
 public class MenuItemOptionService : Service<MenuItemOption>, IMenuItemOptionService
 {
@@ -34,6 +34,13 @@ public class MenuItemOptionService : Service<MenuItemOption>, IMenuItemOptionSer
         {
             _logger.LogInformation($"[CACHE MISS] Отримання опцій групи Id={groupId}");
             options = await _menuItemOptionRepository.GetByGroupIdAsync(groupId);
+
+            if (!options.Any())
+            {
+                _logger.LogWarning($"Опцій для групи Id={groupId} не знайдено.");
+                throw new NotFoundException("Menu item options group", groupId);
+            }
+
             _cache.Set(cacheKey, options, TimeSpan.FromMinutes(10));
             _logger.LogInformation($"[CACHE SET] Збережено {options.Count()} опцій групи Id={groupId} у кеш.");
         }
@@ -53,6 +60,13 @@ public class MenuItemOptionService : Service<MenuItemOption>, IMenuItemOptionSer
         {
             _logger.LogInformation($"[CACHE MISS] Отримання опцій за IDs: {idsKeyPart}");
             options = await _menuItemOptionRepository.GetByIdsAsync(ids);
+
+            if (!options.Any())
+            {
+                _logger.LogWarning($"Опцій з IDs {idsKeyPart} не знайдено.");
+                throw new NotFoundException("Menu item options", idsKeyPart);
+            }
+
             _cache.Set(cacheKey, options, TimeSpan.FromMinutes(10));
             _logger.LogInformation($"[CACHE SET] Збережено {options.Count()} опцій за IDs у кеш.");
         }

@@ -51,7 +51,7 @@ namespace CozyCafe.Application.Exceptions
 
     public class MenuItemNotFoundException : NotFoundException
     {
-        public MenuItemNotFoundException(Guid id)
+        public MenuItemNotFoundException(int id)
             : base("Menu item", id) { }
     }
 
@@ -71,7 +71,7 @@ namespace CozyCafe.Application.Exceptions
 
     public class OrderItemNotFoundException : NotFoundException
     {
-        public OrderItemNotFoundException(Guid id)
+        public OrderItemNotFoundException(int id)
             : base("Order item", id) { }
     }
 

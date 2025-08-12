@@ -1,4 +1,5 @@
-﻿using CozyCafe.Application.Interfaces.ForRerository.ForUser;
+﻿using CozyCafe.Application.Exceptions;
+using CozyCafe.Application.Interfaces.ForRerository.ForUser;
 using CozyCafe.Application.Interfaces.ForServices.ForUser;
 using CozyCafe.Application.Services.Generic_Service;
 using CozyCafe.Models.Domain.ForUser;
@@ -29,7 +30,10 @@ namespace CozyCafe.Application.Services.ForUser
             var cart = await _cartRepository.GetByUserIdAsync(userId);
 
             if (cart == null)
+            {
                 _logger.LogWarning("Кошик користувача {UserId} не знайдено", userId);
+                throw new NotFoundException("Cart", userId);
+            }
 
             return cart;
         }
@@ -39,6 +43,12 @@ namespace CozyCafe.Application.Services.ForUser
             _logger.LogInformation(
                 "Додавання/оновлення товару {MenuItemId} (кількість {Quantity}) у кошику користувача {UserId} з опціями: {Options}",
                 menuItemId, quantity, userId, string.Join(",", selectedOptionIds));
+
+            if (quantity <= 0)
+            {
+                _logger.LogWarning("Спроба додати товар з некоректною кількістю {Quantity} користувачу {UserId}", quantity, userId);
+                throw new ValidationException("Quantity must be greater than zero", new { Quantity = quantity });
+            }
 
             var cart = await _cartRepository.GetByUserIdAsync(userId);
 
@@ -84,6 +94,7 @@ namespace CozyCafe.Application.Services.ForUser
             await _cartRepository.SaveChangesAsync();
             _logger.LogInformation("Кошик користувача {UserId} успішно оновлено", userId);
         }
+
 
         public async Task AddOrUpdateCartItemAsync(string userId, CartItem newItem)
         {
@@ -134,10 +145,10 @@ namespace CozyCafe.Application.Services.ForUser
                         .ThenInclude(o => o.MenuItemOption)
                 .FirstOrDefaultAsync(c => c.UserId == userId);
 
-            if (cart == null)
+            if (cart == null || !cart.Items.Any())
             {
-                _logger.LogWarning("Кошик користувача {UserId} не знайдено", userId);
-                return new CartDto { Items = new List<CartItemDto>(), Total = 0m };
+                _logger.LogWarning("Кошик користувача {UserId} порожній або не існує", userId);
+                throw new CartEmptyException();
             }
 
             var cartDto = new CartDto
@@ -168,6 +179,7 @@ namespace CozyCafe.Application.Services.ForUser
             return cartDto;
         }
 
+
         public async Task UpdateItemQuantityAsync(string userId, int menuItemId, int quantity)
         {
             _logger.LogInformation(
@@ -178,27 +190,30 @@ namespace CozyCafe.Application.Services.ForUser
             if (cart == null)
             {
                 _logger.LogWarning("Кошик користувача {UserId} не знайдено для оновлення товару", userId);
-                return;
+                throw new NotFoundException("Cart", userId);
             }
 
             var item = cart.Items.FirstOrDefault(i => i.MenuItemId == menuItemId);
-            if (item != null)
+            if (item == null)
             {
-                if (quantity <= 0)
-                {
-                    _logger.LogInformation("Видаляю товар {MenuItemId} з кошика користувача {UserId}", menuItemId, userId);
-                    cart.Items.Remove(item);
-                }
-                else
-                {
-                    _logger.LogInformation("Оновлюю кількість товару {MenuItemId} до {Quantity} для користувача {UserId}",
-                        menuItemId, quantity, userId);
-                    item.Quantity = quantity;
-                }
-
-                await _cartRepository.SaveChangesAsync();
-                _logger.LogInformation("Кошик користувача {UserId} оновлено", userId);
+                _logger.LogWarning("Товар {MenuItemId} не знайдено у кошику користувача {UserId}", menuItemId, userId);
+                throw new MenuItemNotFoundException(menuItemId);
             }
+
+            if (quantity <= 0)
+            {
+                _logger.LogInformation("Видаляю товар {MenuItemId} з кошика користувача {UserId}", menuItemId, userId);
+                cart.Items.Remove(item);
+            }
+            else
+            {
+                _logger.LogInformation("Оновлюю кількість товару {MenuItemId} до {Quantity} для користувача {UserId}",
+                    menuItemId, quantity, userId);
+                item.Quantity = quantity;
+            }
+
+            await _cartRepository.SaveChangesAsync();
+            _logger.LogInformation("Кошик користувача {UserId} оновлено", userId);
         }
 
         public async Task RemoveCartItemAsync(string userId, int menuItemId)
@@ -209,17 +224,21 @@ namespace CozyCafe.Application.Services.ForUser
             if (cart == null)
             {
                 _logger.LogWarning("Кошик користувача {UserId} не знайдено для видалення товару", userId);
-                return;
+                throw new NotFoundException("Cart", userId);
             }
 
             var item = cart.Items.FirstOrDefault(i => i.MenuItemId == menuItemId);
-            if (item != null)
+            if (item == null)
             {
-                cart.Items.Remove(item);
-                await _cartRepository.SaveChangesAsync();
-                _logger.LogInformation("Товар {MenuItemId} видалено з кошика користувача {UserId}", menuItemId, userId);
+                _logger.LogWarning("Товар {MenuItemId} не знайдено у кошику користувача {UserId}", menuItemId, userId);
+                throw new MenuItemNotFoundException(menuItemId);
             }
+
+            cart.Items.Remove(item);
+            await _cartRepository.SaveChangesAsync();
+            _logger.LogInformation("Товар {MenuItemId} видалено з кошика користувача {UserId}", menuItemId, userId);
         }
+
 
         public async Task ClearCartAsync(string userId)
         {

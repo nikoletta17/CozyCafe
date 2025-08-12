@@ -1,4 +1,5 @@
-﻿using CozyCafe.Application.Interfaces.ForRerository.ForAdmin;
+﻿using CozyCafe.Application.Exceptions;
+using CozyCafe.Application.Interfaces.ForRerository.ForAdmin;
 using CozyCafe.Application.Interfaces.ForServices.ForAdmin;
 using CozyCafe.Models.Domain.Common;
 using CozyCafe.Models.DTO.Admin;
@@ -24,13 +25,13 @@ public class OrderStatusService : IOrderStatusService
         if (order == null)
         {
             _logger.LogWarning("Order with Id={OrderId} not found", dto.OrderId);
-            return false;
+            throw new OrderItemNotFoundException(dto.OrderId);
         }
 
         if (!Enum.TryParse<Order.OrderStatus>(dto.NewStatus, true, out var newStatus))
         {
             _logger.LogWarning("Invalid status '{Status}' provided for OrderId={OrderId}", dto.NewStatus, dto.OrderId);
-            return false;
+            throw new InvalidOrderStatusException(order.Status.ToString(), dto.NewStatus);
         }
 
         order.Status = newStatus;

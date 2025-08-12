@@ -1,4 +1,5 @@
-﻿using CozyCafe.Application.Interfaces.ForRerository.ForUser;
+﻿using CozyCafe.Application.Exceptions;
+using CozyCafe.Application.Interfaces.ForRerository.ForUser;
 using CozyCafe.Application.Interfaces.ForServices.ForUser;
 using CozyCafe.Application.Services.Generic_Service;
 using CozyCafe.Models.Domain.Common;
@@ -21,16 +22,28 @@ public class OrderService : Service<Order>, IOrderService
     {
         _logger.LogInformation("Отримання замовлень користувача {UserId}", userId);
         var orders = await _orderRepository.GetByUserIdAsync(userId);
+
+        if (!orders.Any())
+        {
+            _logger.LogWarning("Замовлень для користувача {UserId} не знайдено", userId);
+            throw new NotFoundException("Orders for user", userId);
+        }
+
         _logger.LogInformation("Знайдено {Count} замовлень для користувача {UserId}", orders.Count(), userId);
         return orders;
     }
 
-    public async Task<Order?> GetFullOrderAsync(int orderId)
+    public async Task<Order> GetFullOrderAsync(int orderId)
     {
         _logger.LogInformation("Отримання повного замовлення за Id={OrderId}", orderId);
         var order = await _orderRepository.GetFullOrderAsync(orderId);
+
         if (order == null)
+        {
             _logger.LogWarning("Замовлення Id={OrderId} не знайдено", orderId);
+            throw new NotFoundException("Order", orderId);
+        }
+
         return order;
     }
 
@@ -42,7 +55,7 @@ public class OrderService : Service<Order>, IOrderService
         if (order == null)
         {
             _logger.LogError("Замовлення Id={OrderId} не знайдено", orderId);
-            throw new Exception("Order not found");
+            throw new NotFoundException("Order", orderId);
         }
 
         order.Items.Add(item);
@@ -62,24 +75,23 @@ public class OrderService : Service<Order>, IOrderService
         if (order == null)
         {
             _logger.LogWarning("Замовлення Id={OrderId} не знайдено", orderId);
-            return;
+            throw new NotFoundException("Order", orderId);
         }
 
         var item = order.Items.FirstOrDefault(i => i.Id == orderItemId);
-        if (item != null)
-        {
-            order.Items.Remove(item);
-            RecalculateTotal(order);
-
-            _orderRepository.Update(order);
-            await _orderRepository.SaveChangesAsync();
-
-            _logger.LogInformation("Позицію {OrderItemId} видалено з замовлення {OrderId}", orderItemId, orderId);
-        }
-        else
+        if (item == null)
         {
             _logger.LogWarning("Позиція {OrderItemId} не знайдена у замовленні {OrderId}", orderItemId, orderId);
+            throw new OrderItemNotFoundException(orderItemId);
         }
+
+        order.Items.Remove(item);
+        RecalculateTotal(order);
+
+        _orderRepository.Update(order);
+        await _orderRepository.SaveChangesAsync();
+
+        _logger.LogInformation("Позицію {OrderItemId} видалено з замовлення {OrderId}", orderItemId, orderId);
     }
 
     public async Task AddOptionToOrderItemAsync(int orderId, int orderItemId, OrderItemOption option)
@@ -90,14 +102,14 @@ public class OrderService : Service<Order>, IOrderService
         if (order == null)
         {
             _logger.LogError("Замовлення Id={OrderId} не знайдено", orderId);
-            throw new Exception("Order not found");
+            throw new NotFoundException("Order", orderId);
         }
 
         var orderItem = order.Items.FirstOrDefault(i => i.Id == orderItemId);
         if (orderItem == null)
         {
             _logger.LogError("Позиція {OrderItemId} не знайдена у замовленні {OrderId}", orderItemId, orderId);
-            throw new Exception("Order item not found");
+            throw new OrderItemNotFoundException(orderItemId);
         }
 
         orderItem.SelectedOptions.Add(option);
@@ -116,30 +128,29 @@ public class OrderService : Service<Order>, IOrderService
         if (order == null)
         {
             _logger.LogWarning("Замовлення Id={OrderId} не знайдено", orderId);
-            return;
+            throw new NotFoundException("Order", orderId);
         }
 
         var orderItem = order.Items.FirstOrDefault(i => i.Id == orderItemId);
         if (orderItem == null)
         {
             _logger.LogWarning("Позиція {OrderItemId} не знайдена у замовленні {OrderId}", orderItemId, orderId);
-            return;
+            throw new OrderItemNotFoundException(orderItemId);
         }
 
         var option = orderItem.SelectedOptions.FirstOrDefault(o => o.Id == optionId);
-        if (option != null)
-        {
-            orderItem.SelectedOptions.Remove(option);
-
-            _orderRepository.Update(order);
-            await _orderRepository.SaveChangesAsync();
-
-            _logger.LogInformation("Опцію {OptionId} видалено з позиції {OrderItemId} замовлення {OrderId}", optionId, orderItemId, orderId);
-        }
-        else
+        if (option == null)
         {
             _logger.LogWarning("Опція {OptionId} не знайдена у позиції {OrderItemId} замовлення {OrderId}", optionId, orderItemId, orderId);
+            throw new NotFoundException("Order item option", optionId);
         }
+
+        orderItem.SelectedOptions.Remove(option);
+
+        _orderRepository.Update(order);
+        await _orderRepository.SaveChangesAsync();
+
+        _logger.LogInformation("Опцію {OptionId} видалено з позиції {OrderItemId} замовлення {OrderId}", optionId, orderItemId, orderId);
     }
 
     public async Task UpdateOrderStatusAsync(int orderId, string newStatus)
@@ -150,17 +161,24 @@ public class OrderService : Service<Order>, IOrderService
         if (order == null)
         {
             _logger.LogError("Замовлення Id={OrderId} не знайдено", orderId);
-            throw new Exception("Order not found");
+            throw new NotFoundException("Order", orderId);
         }
 
         if (Enum.TryParse<OrderStatus>(newStatus, true, out var status))
         {
+            // Приклад перевірки допустимості зміни статусу
+            if (order.Status == OrderStatus.Completed && status != OrderStatus.Completed)
+            {
+                _logger.LogError("Спроба змінити статус з {Current} на {Attempted} для замовлення {OrderId}", order.Status, status, orderId);
+                throw new InvalidOrderStatusException(order.Status.ToString(), status.ToString());
+            }
+
             order.Status = status;
         }
         else
         {
             _logger.LogError("Невірний статус {NewStatus} для замовлення {OrderId}", newStatus, orderId);
-            throw new ArgumentException("Invalid status value.");
+            throw new InvalidOrderStatusException(order.Status.ToString(), newStatus);
         }
 
         _orderRepository.Update(order);

@@ -1,4 +1,5 @@
-﻿using CozyCafe.Application.Interfaces.ForRerository.ForAdmin;
+﻿using CozyCafe.Application.Exceptions;
+using CozyCafe.Application.Interfaces.ForRerository.ForAdmin;
 using CozyCafe.Application.Interfaces.ForServices.ForAdmin;
 using CozyCafe.Application.Interfaces.Logging;
 using CozyCafe.Models.DTO.Admin;
@@ -17,10 +18,17 @@ public class DashboardService : IDashboardService
     public async Task<DashboardStatsDto> GetStatsAsync()
     {
         _logger.LogInfo("Отримання статистики для адмінської панелі.");
+
         var totalOrders = await _dashboardRepository.GetTotalOrdersAsync();
         var totalRevenue = await _dashboardRepository.GetTotalRevenueAsync();
         var totalUsers = await _dashboardRepository.GetTotalUsersAsync();
         var topMenuItemsEnumerable = await _dashboardRepository.GetTopMenuItemsAsync(5);
+
+        if (totalOrders == 0 && totalUsers == 0 && totalRevenue == 0)
+        {
+            _logger.LogWarning("Дані для адмінської панелі не знайдені.");
+            throw new NotFoundException("Dashboard statistics", "all");
+        }
 
         _logger.LogInfo($"Статистика: замовлень={totalOrders}, дохід={totalRevenue}, користувачів={totalUsers}.");
 

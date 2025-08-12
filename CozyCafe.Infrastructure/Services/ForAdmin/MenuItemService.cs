@@ -1,4 +1,5 @@
-﻿using CozyCafe.Application.Interfaces.ForRerository.ForAdmin;
+﻿using CozyCafe.Application.Exceptions;
+using CozyCafe.Application.Interfaces.ForRerository.ForAdmin;
 using CozyCafe.Application.Interfaces.ForServices.ForAdmin;
 using CozyCafe.Application.Interfaces.Logging;
 using CozyCafe.Application.Services.Generic_Service;
@@ -12,7 +13,6 @@ public class MenuItemService : Service<MenuItem>, IMenuItemService
     private readonly ILoggerService _logger;
     private readonly IMemoryCache _cache;
 
-    // Ключі для кешу
     private const string MenuItemCacheKeyPrefix = "MenuItem_";
     private const string FilteredMenuCacheKeyPrefix = "MenuItems_Filter_";
 
@@ -35,6 +35,12 @@ public class MenuItemService : Service<MenuItem>, IMenuItemService
             _logger.LogInfo($"[CACHE MISS] Фільтрація MenuItems з ключем {cacheKey}");
             var items = await _menuItemRepository.GetFilteredAsync(filterModel);
 
+            if (!items.Any())
+            {
+                _logger.LogWarning("Жодного елемента меню не знайдено за вказаним фільтром.");
+                throw new NotFoundException("Menu items", cacheKey);
+            }
+
             cachedItems = items.Select(mi => new MenuItemDto
             {
                 Id = mi.Id,
@@ -56,7 +62,7 @@ public class MenuItemService : Service<MenuItem>, IMenuItemService
         return cachedItems;
     }
 
-    public async Task<MenuItemDto?> GetByIdAsync(int id)
+    public async Task<MenuItemDto> GetByIdAsync(int id)
     {
         string cacheKey = $"{MenuItemCacheKeyPrefix}{id}";
 
@@ -68,7 +74,7 @@ public class MenuItemService : Service<MenuItem>, IMenuItemService
             if (item == null)
             {
                 _logger.LogWarning($"MenuItem Id={id} не знайдено");
-                return null;
+                throw new MenuItemNotFoundException(id);
             }
 
             cachedItem = new MenuItemDto
@@ -113,6 +119,5 @@ public class MenuItemService : Service<MenuItem>, IMenuItemService
     private void ClearCache()
     {
         _logger.LogInfo("[CACHE CLEAR] Очищення кешу MenuItems.");
-        // Тут можна видаляти всі ключі з префіксом, якщо тримаєш список ключів
     }
 }
