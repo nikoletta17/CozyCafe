@@ -1,0 +1,27 @@
+﻿@model CozyCafe.Web.Models.ErrorViewModel
+
+@{
+    Layout = "_Layout";
+    var statusCode = ViewBag.StatusCode as int? ?? 500;
+    var errorMessage = ViewBag.ErrorMessage as string;
+}
+
+<div style="text-align:center; padding: 50px;">
+    <h1>Помилка @statusCode</h1>
+
+    @if (!string.IsNullOrEmpty(errorMessage))
+    {
+        <p>@errorMessage</p>
+    }
+    else
+    {
+        <p>Вибачте, щось пішло не так.</p>
+    }
+
+    @if (Model.ShowRequestId)
+    {
+        <p>Request ID: <code>@Model.RequestId</code></p>
+    }
+
+    <a href="/" class="btn btn-primary">Повернутися на головну</a>
+</div>

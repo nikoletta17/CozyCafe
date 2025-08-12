@@ -1,4 +1,4 @@
-using CozyCafe.Application.Interfaces.Logging;
+п»їusing CozyCafe.Application.Interfaces.Logging;
 using CozyCafe.Infrastructure.Services.Logging;
 using CozyCafe.Web.Middleware;
 using Serilog;
@@ -8,44 +8,43 @@ var builder = WebApplication.CreateBuilder(args);
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
     ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
-// Додаємо DbContext із SQL Server
+// Р”РѕРґР°С”РјРѕ DbContext С–Р· SQL Server
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
 
-//Кешування
+//РљРµС€СѓРІР°РЅРЅСЏ
 builder.Services.AddMemoryCache();
 
 //Cookies
 #region Cookies
 builder.Services.ConfigureApplicationCookie(options =>
 {
-    // Кука доступна лише по HTTP (не через JS)
+    // РљСѓРєР° РґРѕСЃС‚СѓРїРЅР° Р»РёС€Рµ РїРѕ HTTP (РЅРµ С‡РµСЂРµР· JS)
     options.Cookie.HttpOnly = true;
 
-    // Кука передається тільки по HTTPS (для продакшену)
+    // РљСѓРєР° РїРµСЂРµРґР°С”С‚СЊСЃСЏ С‚С–Р»СЊРєРё РїРѕ HTTPS (РґР»СЏ РїСЂРѕРґР°РєС€РµРЅСѓ)
     options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
 
-    // Захист від CSRF: кука не відправляється на сторонні сайти
+    // Р—Р°С…РёСЃС‚ РІС–Рґ CSRF: РєСѓРєР° РЅРµ РІС–РґРїСЂР°РІР»СЏС”С‚СЊСЃСЏ РЅР° СЃС‚РѕСЂРѕРЅРЅС– СЃР°Р№С‚Рё
     options.Cookie.SameSite = SameSiteMode.Lax;
 
-    // Ім'я куки (можеш змінити, щоб було унікальним)
+    // Р†Рј'СЏ РєСѓРєРё (РјРѕР¶РµС€ Р·РјС–РЅРёС‚Рё, С‰РѕР± Р±СѓР»Рѕ СѓРЅС–РєР°Р»СЊРЅРёРј)
     options.Cookie.Name = "CozyCafeAuthCookie";
 
-    // Термін життя куки для "Запомнить меня" — 14 днів
+    // РўРµСЂРјС–РЅ Р¶РёС‚С‚СЏ РєСѓРєРё РґР»СЏ "Р—Р°РїРѕРјРЅРёС‚СЊ РјРµРЅСЏ" вЂ” 14 РґРЅС–РІ
     options.ExpireTimeSpan = TimeSpan.FromDays(14);
 
-    // Оновлюємо термін дії куки при активності користувача
+    // РћРЅРѕРІР»СЋС”РјРѕ С‚РµСЂРјС–РЅ РґС–С— РєСѓРєРё РїСЂРё Р°РєС‚РёРІРЅРѕСЃС‚С– РєРѕСЂРёСЃС‚СѓРІР°С‡Р°
     options.SlidingExpiration = true;
 
-    // Шляхи для перенаправлення (підкоригуй під свої)
+    // РЁР»СЏС…Рё РґР»СЏ РїРµСЂРµРЅР°РїСЂР°РІР»РµРЅРЅСЏ (РїС–РґРєРѕСЂРёРіСѓР№ РїС–Рґ СЃРІРѕС—)
     options.LoginPath = "/User/Account/Login";
     options.LogoutPath = "/User/Account/Logout";
 
 });
 #endregion
 
-
-// Реєстрація репозиторіїв
+// Р РµС”СЃС‚СЂР°С†С–СЏ СЂРµРїРѕР·РёС‚РѕСЂС–С—РІ
 #region Repository DI
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 builder.Services.AddScoped<ICartRepository, CartRepository>();
@@ -59,7 +58,7 @@ builder.Services.AddScoped<IAdminOrderRepository, AdminOrderRepository>();
 builder.Services.AddScoped<IDashboardRepository, DashboardRepository>();
 #endregion
 
-// Реєстрація сервісів
+// Р РµС”СЃС‚СЂР°С†С–СЏ СЃРµСЂРІС–СЃС–РІ
 #region Service DI
 builder.Services.AddScoped(typeof(IService<>), typeof(Service<>));
 builder.Services.AddScoped<ICartService, CartService>();
@@ -78,10 +77,10 @@ builder.Services.AddScoped<ILoggerService, LoggerService>();
 // AutoMapper
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
-// Exception filter для девелоперів
+// Exception filter РґР»СЏ РґРµРІРµР»РѕРїРµСЂС–РІ
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-// Сесії
+// РЎРµСЃС–С—
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(30);
@@ -89,6 +88,7 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
+//РќР°Р»Р°С€С‚СѓРІР°РЅРЅСЏ С–РґРµРЅС‚РёС„С–РєР°С†С–С— С‚Р° СЂРѕР»РµР№
 #region Identity and Roles Configuration
 builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
 {
@@ -107,68 +107,89 @@ builder.Services.AddDefaultIdentity<ApplicationUser>(options =>
 .AddRoles<IdentityRole>()
 .AddEntityFrameworkStores<ApplicationDbContext>();
 
-// Ось сюди вставляємо налаштування кукі
+// РћСЃСЊ СЃСЋРґРё РІСЃС‚Р°РІР»СЏС”РјРѕ РЅР°Р»Р°С€С‚СѓРІР°РЅРЅСЏ РєСѓРєС–
 builder.Services.ConfigureApplicationCookie(options =>
 {
-    options.LoginPath = "/User/Account/Login";          // Твій кастомний шлях логіну
-    options.AccessDeniedPath = "/User/Account/AccessDenied"; // (опціонально) сторінка "Доступ заборонено"
+    options.LoginPath = "/User/Account/Login";          // РўРІС–Р№ РєР°СЃС‚РѕРјРЅРёР№ С€Р»СЏС… Р»РѕРіС–РЅСѓ
+    options.AccessDeniedPath = "/User/Account/AccessDenied"; // (РѕРїС†С–РѕРЅР°Р»СЊРЅРѕ) СЃС‚РѕСЂС–РЅРєР° "Р”РѕСЃС‚СѓРї Р·Р°Р±РѕСЂРѕРЅРµРЅРѕ"
 });
-#endregion
+#endregion Identity and Roles Configuration
 
-// Додаємо MVC контролери з Views
+// Р”РѕРґР°С”РјРѕ MVC РєРѕРЅС‚СЂРѕР»РµСЂРё Р· Views
 builder.Services.AddControllersWithViews();
 
-// Логування в консоль
+// Р›РѕРіСѓРІР°РЅРЅСЏ РІ РєРѕРЅСЃРѕР»СЊ
 //builder.Logging.ClearProviders();
 //builder.Logging.AddConsole();
 var logger = new LoggerConfiguration()
     .WriteTo.Console()
-    .WriteTo.File("Logs/log-.txt", rollingInterval: RollingInterval.Day) // лог у файл по днях
+    .WriteTo.File("Logs/log-.txt", rollingInterval: RollingInterval.Day) // Р»РѕРі Сѓ С„Р°Р№Р» РїРѕ РґРЅСЏС…
     .CreateLogger();
 
-builder.Host.UseSerilog(logger); // використвуємо Serilog
+builder.Host.UseSerilog(logger); // РІРёРєРѕСЂРёСЃС‚РІСѓС”РјРѕ Serilog
 
 var app = builder.Build();
 
-app.UseMiddleware<ExceptionHandlingMiddleware>();
-
-// Міграції або обробка помилок
+// 1пёЏвѓЈ РћР±СЂР°Р±РѕС‚РєР° РѕС€РёР±РѕРє (РїРµСЂРІС‹Рј РґРµР»РѕРј)
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
 }
 else
 {
-    app.UseExceptionHandler("/Home/Error");
+    // Р”Р»СЏ РІСЃРµС… РЅРµРѕР±СЂР°Р±РѕС‚Р°РЅРЅС‹С… РёСЃРєР»СЋС‡РµРЅРёР№ (500)
+    app.UseExceptionHandler("/Error");
+
+    // Р”Р»СЏ РІСЃРµС… РєРѕРґРѕРІ РѕС€РёР±РѕРє (404, 403, 401 Рё С‚.Рґ.)
+    app.UseStatusCodePagesWithReExecute("/Error/{0}");
+
     app.UseHsts();
 }
 
-// Middleware
+// 2пёЏвѓЈ РџРµСЂРµС…РІР°С‚ РІСЃРµС… РѕС€РёР±РѕРє (400+)
+app.Use(async (context, next) =>
+{
+    await next();
+
+    if (context.Response.StatusCode >= 400 && !context.Response.HasStarted)
+    {
+        var statusCode = context.Response.StatusCode;
+        context.Request.Path = $"/Error/{statusCode}";
+        await next();
+    }
+});
+
+
+// 3пёЏвѓЈ HTTPS Рё СЃС‚Р°С‚РёРєР°
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
+// 4пёЏвѓЈ РњР°СЂС€СЂСѓС‚РёР·Р°С†РёСЏ
 app.UseRouting();
 
+// 5пёЏвѓЈ РЎРµСЃСЃРёРё
 app.UseSession();
 
-app.UseAuthentication();  // додаємо аутентифікацію
-app.UseAuthorization();   // додаємо авторизацію
+// 6пёЏвѓЈ РђСѓС‚РµРЅС‚РёС„РёРєР°С†РёСЏ Рё Р°РІС‚РѕСЂРёР·Р°С†РёСЏ
+app.UseAuthentication();
+app.UseAuthorization();
 
-// Маршрут для Areas (має бути ПЕРЕД дефолтним маршрутом)
+// 7пёЏвѓЈ РњР°СЂС€СЂСѓС‚С‹ Areas
 app.MapControllerRoute(
     name: "areas",
-    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
+);
 
+// 8пёЏвѓЈ РћСЃРЅРѕРІРЅРѕР№ РјР°СЂС€СЂСѓС‚
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Home}/{action=Index}/{id?}"
+);
 
-
-
-// Маршрути Razor Pages (для Identity UI)
+// 9пёЏвѓЈ Razor Pages (Identity UI)
 app.MapRazorPages();
 
-// Ініціалізація ролей
+// рџ”џ РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ СЂРѕР»РµР№
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;

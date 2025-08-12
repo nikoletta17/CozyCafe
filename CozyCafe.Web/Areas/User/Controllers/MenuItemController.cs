@@ -42,7 +42,7 @@ namespace CozyCafe.Web.Areas.User.Controllers
                 if (category != null)
                 {
                     filter.CategoryId = category.Id;
-                    _logger.LogInformation("CategoryName \"{CategoryName}\" -> CategoryId {CategoryId}", filter.CategoryName, category.Id);
+                    _logger.LogInformation("CategoryName \"{CategoryName}\" : CategoryId {CategoryId}", filter.CategoryName, category.Id);
                 }
             }
 
@@ -88,12 +88,12 @@ namespace CozyCafe.Web.Areas.User.Controllers
             ViewBag.Categories = new SelectList(allCategories, "Id", "Name", filter.CategoryId);
 
             var sortOptions = new List<SelectListItem>
-    {
-        new SelectListItem { Value = "", Text = "За замовчуванням" },
-        new SelectListItem { Value = "name", Text = "Назва" },
-        new SelectListItem { Value = "price_asc", Text = "Ціна ↑" },
-        new SelectListItem { Value = "price_desc", Text = "Ціна ↓" },
-    };
+            {
+                new SelectListItem { Value = "", Text = "За замовчуванням" },
+                new SelectListItem { Value = "name", Text = "Назва" },
+                new SelectListItem { Value = "price_asc", Text = "Ціна ↑" },
+                new SelectListItem { Value = "price_desc", Text = "Ціна ↓" },
+            };
             foreach (var option in sortOptions)
                 option.Selected = option.Value == (filter.SortBy ?? "");
 
@@ -103,7 +103,6 @@ namespace CozyCafe.Web.Areas.User.Controllers
 
             return View((pagedItems, filter));
         }
-
 
 
         [HttpGet("{id}")]
