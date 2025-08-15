@@ -7,19 +7,19 @@ namespace CozyCafe.Web.Controllers
     {
         public IActionResult Throw500()
         {
-            throw new Exception("Тестовая ошибка 500");
+            throw new Exception("Тестова помилка 500");
         }
 
         [Authorize]
         public IActionResult Unauthorized401()
         {
-            return Content("Если ты это видишь, значит авторизация прошла.");
+            return Content("Авторизація пройшла успішно.");
         }
 
         [Authorize(Roles = "Admin")]
         public IActionResult Forbidden403()
         {
-            return Content("Если ты это видишь, значит у тебя есть роль Admin.");
+            return Content("Вам присвоєно роль Адміністратора");
         }
 
         public IActionResult NotFound404()

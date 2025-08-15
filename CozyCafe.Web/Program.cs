@@ -1,6 +1,7 @@
 ﻿using CozyCafe.Application.Interfaces.Logging;
 using CozyCafe.Infrastructure.Services.Logging;
 using CozyCafe.Web.Middleware;
+using System.Globalization;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -11,6 +12,13 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 // Додаємо DbContext із SQL Server
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlServer(connectionString));
+
+//Currency
+#region Currency
+var cultureInfo = new CultureInfo("uk-UA");
+CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
+#endregion Currency
 
 //Кешування
 builder.Services.AddMemoryCache();

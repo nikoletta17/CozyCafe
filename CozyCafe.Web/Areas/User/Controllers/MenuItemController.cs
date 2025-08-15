@@ -1,5 +1,6 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using CozyCafe.Models.Domain.Admin;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 
 namespace CozyCafe.Web.Areas.User.Controllers
@@ -104,7 +105,6 @@ namespace CozyCafe.Web.Areas.User.Controllers
             return View((pagedItems, filter));
         }
 
-
         [HttpGet("{id}")]
         public async Task<IActionResult> Details(int id)
         {
@@ -117,17 +117,20 @@ namespace CozyCafe.Web.Areas.User.Controllers
                 return NotFound();
             }
 
-            var groups = await _optionGroupService.GetByMenuItemIdAsync(id);
+            // Якщо сервіс поверне null — підміняємо на порожній список
+            var groups = await _optionGroupService.GetByMenuItemIdAsync(id)
+                         ?? new List<MenuItemOptionGroup>();
+
             var optionGroupDtos = groups.Select(g => new MenuItemOptionGroupDto
             {
                 Id = g.Id,
                 Name = g.Name,
-                Options = g.Options.Select(o => new MenuItemOptionDto
+                Options = g.Options?.Select(o => new MenuItemOptionDto
                 {
                     Id = o.Id,
                     Name = o.Name,
                     ExtraPrice = o.ExtraPrice
-                }).ToList()
+                }).ToList() ?? new List<MenuItemOptionDto>() // Якщо немає опцій — повертаємо пустий список
             }).ToList();
 
             ViewBag.OptionGroups = optionGroupDtos;

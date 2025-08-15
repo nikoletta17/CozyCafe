@@ -58,10 +58,11 @@ public class MenuItemOptionGroupService : Service<MenuItemOptionGroup>, IMenuIte
             _logger.LogInfo($"[CACHE MISS] Отримання груп опцій для меню Id={menuItemId}.");
             groups = await _menuItemOptionGroupRepository.GetByMenuItemIdAsync(menuItemId);
 
+            // Якщо немає жодної групи — просто лог і пустий список, без винятку
             if (!groups.Any())
             {
-                _logger.LogWarning($"Групи опцій для MenuItem Id={menuItemId} не знайдено.");
-                throw new NotFoundException("Menu item option groups", menuItemId);
+                _logger.LogInfo($"Для MenuItem Id={menuItemId} немає груп опцій. Повертаємо пустий список.");
+                groups = Enumerable.Empty<MenuItemOptionGroup>();
             }
 
             _cache.Set(cacheKey, groups, TimeSpan.FromMinutes(10));

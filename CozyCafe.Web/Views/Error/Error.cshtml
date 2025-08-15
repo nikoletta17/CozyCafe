@@ -1,21 +1,80 @@
 ﻿@model CozyCafe.Web.Models.ErrorViewModel
-
 @{
     Layout = "_Layout";
     var statusCode = ViewBag.StatusCode as int? ?? 500;
     var errorMessage = ViewBag.ErrorMessage as string;
+    ViewData["Title"] = $"Помилка {statusCode} - CozyCafe";
 }
 
-<div style="text-align:center; padding: 50px;">
-    <h1>Помилка @statusCode</h1>
+<style>
+    body {
+        font-family: 'Playfair Display', serif;
+        background-color: #f9f6f1;
+        color: #3b3a30;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+    }
 
+    .error-container {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 20px;
+    }
+
+    h1 {
+        font-size: 4rem;
+        margin-bottom: 1rem;
+        font-weight: 700;
+        color: #c23b3b;
+        text-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+    }
+
+    p {
+        font-size: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    code {
+        background-color: #e0d8c0;
+        padding: 0.3rem 0.6rem;
+        border-radius: 5px;
+        font-size: 1.2rem;
+    }
+
+    .btn-primary {
+        display: inline-block;
+        padding: 0.8rem 2rem;
+        font-size: 1.2rem;
+        font-weight: 600;
+        background-color: #4b4a3f;
+        border: 2px solid #c2b280;
+        color: #c2b280;
+        text-decoration: none;
+        border-radius: 30px;
+        transition: 0.3s ease;
+    }
+
+        .btn-primary:hover {
+            background-color: #c2b280;
+            color: #4b4a3f;
+        }
+</style>
+
+<div class="error-container">
+    <h1>Помилка @statusCode</h1>
     @if (!string.IsNullOrEmpty(errorMessage))
     {
         <p>@errorMessage</p>
     }
     else
     {
-        <p>Вибачте, щось пішло не так.</p>
+        <p>Сторінка не знайдена.</p>
     }
 
     @if (Model.ShowRequestId)
@@ -23,5 +82,5 @@
         <p>Request ID: <code>@Model.RequestId</code></p>
     }
 
-    <a href="/" class="btn btn-primary">Повернутися на головну</a>
+    <a href="/" class="btn-primary">Повернутися на головну</a>
 </div>
