@@ -38,8 +38,12 @@ public class MenuItemService : Service<MenuItem>, IMenuItemService
             if (!items.Any())
             {
                 _logger.LogWarning("Жодного елемента меню не знайдено за вказаним фільтром.");
-                throw new NotFoundException("Menu items", cacheKey);
+
+                cachedItems = new List<MenuItemDto>(); 
+                _cache.Set(cacheKey, cachedItems, TimeSpan.FromMinutes(10));
+                return cachedItems;
             }
+
 
             cachedItems = items.Select(mi => new MenuItemDto
             {

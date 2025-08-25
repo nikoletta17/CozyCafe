@@ -147,8 +147,13 @@ namespace CozyCafe.Application.Services.ForUser
 
             if (cart == null || !cart.Items.Any())
             {
-                _logger.LogWarning("Кошик користувача {UserId} порожній або не існує", userId);
-                throw new CartEmptyException();
+                _logger.LogInformation("Кошик користувача {UserId} порожній", userId);
+
+                return new CartDto
+                {
+                    Items = new List<CartItemDto>(),
+                    Total = 0
+                };
             }
 
             var cartDto = new CartDto
