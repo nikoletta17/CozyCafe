@@ -4,6 +4,15 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace CozyCafe.Application.Initialization
 {
+    /// <summary>
+    /// (UA) Клас для початкової ініціалізації бази даних. 
+    /// Використовується для створення базових ролей (Admin, User) та 
+    /// додавання адміністратора за замовчуванням.
+    /// 
+    /// (EN) Class for database initialization. 
+    /// Used to create default roles (Admin, User) and 
+    /// add a default administrator account.
+    /// </summary>
     public class DbInitializer
     {
         public static async Task SeedRolesAsync(IServiceProvider serviceProvider)

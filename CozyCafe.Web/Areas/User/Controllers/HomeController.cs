@@ -11,6 +11,20 @@ using CozyCafe.Application.Interfaces.Logging;
 
 namespace CozyCafe.Web.Areas.User.Controllers
 {
+    /// <summary>
+    /// (UA) Головний контролер користувацької частини.
+    /// - Index(): Показує всі категорії на головній сторінці.
+    /// - Privacy(): Показує сторінку політики конфіденційності.
+    /// - Error(): Відображає сторінку помилок із RequestId.
+    /// - Використовує ILoggerService та ICategoryService для логування та отримання даних.
+    /// 
+    /// (EN) Main controller for the User area.
+    /// - Index(): Displays all categories on the home page.
+    /// - Privacy(): Shows privacy policy page.
+    /// - Error(): Displays error page with RequestId.
+    /// - Uses ILoggerService and ICategoryService for logging and data retrieval.
+    /// </summary>
+
     [Area("User")]
     [Route("User/[controller]/[action]")]
     public class HomeController : Controller

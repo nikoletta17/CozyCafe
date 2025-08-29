@@ -4,6 +4,22 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace CozyCafe.Web.Areas.User.Controllers
 {
+    /// <summary>
+    /// (UA) Контролер для управління акаунтом користувача в зоні User.
+    /// - Доступ до певних дій обмежено атрибутами [AllowAnonymous] або [Authorize].
+    /// - Register(): GET/POST – реєстрація користувача, присвоєння ролі, автоматичний вхід та перенаправлення за роллю.
+    /// - Login(): GET/POST – авторизація користувача, обробка помилок валідації та невдалих спроб входу.
+    /// - Logout(): POST – вихід користувача з системи та логування.
+    /// - Використовує UserManager, SignInManager та ILogger для логування і управління ролями.
+    /// 
+    /// (EN) Controller for managing user accounts in the User area.
+    /// - Access to actions is controlled via [AllowAnonymous] or [Authorize] attributes.
+    /// - Register(): GET/POST – user registration, role assignment, automatic sign-in, and role-based redirection.
+    /// - Login(): GET/POST – user login, handles validation errors and failed login attempts.
+    /// - Logout(): POST – user sign-out with logging.
+    /// - Uses UserManager, SignInManager, and ILogger for role management and logging.
+    /// </summary>
+
     [Area("User")]
     [Route("User/[controller]/[action]")]
     public class AccountController : Controller

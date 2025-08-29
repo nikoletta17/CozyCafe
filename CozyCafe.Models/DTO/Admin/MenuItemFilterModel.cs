@@ -14,9 +14,9 @@ namespace CozyCafe.Models.DTO.Admin
         public decimal? MinPrice { get; set; }
         public decimal? MaxPrice { get; set; }
         public string? SortBy { get; set; }
-        public int Page { get; set; } = 1;           // поточна сторінка
-        public int PageSize { get; set; } = 8;       // кылькысть елементів на сторінку
-        public int TotalPages { get; set; }           // загальна кількість сторінок
+        public int Page { get; set; } = 1;           
+        public int PageSize { get; set; } = 8;       
+        public int TotalPages { get; set; }           
 
     }
 

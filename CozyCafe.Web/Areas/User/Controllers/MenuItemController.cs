@@ -5,6 +5,20 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace CozyCafe.Web.Areas.User.Controllers
 {
+    /// <summary>
+    /// (UA) Контролер для роботи з меню користувацької частини.
+    /// - Index(MenuItemFilterModel filter): Відображає список товарів меню з підтримкою фільтрації (категорії, ціни, сортування) та пагінації.
+    /// - Details(int id): Показує деталі конкретного товару та його груп опцій меню.
+    /// - Використовує IMenuItemService, ICategoryService, IMenuItemOptionGroupService для бізнес-логіки.
+    /// - Логування здійснюється через ILogger для відстеження запитів, помилок та інформаційних повідомлень.
+    /// 
+    /// (EN) Controller for handling user menu items.
+    /// - Index(MenuItemFilterModel filter): Displays menu items with filtering (category, price, sorting) and pagination.
+    /// - Details(int id): Shows details of a specific menu item along with its option groups.
+    /// - Uses IMenuItemService, ICategoryService, IMenuItemOptionGroupService for business logic.
+    /// - Logging via ILogger for requests, errors, and info messages.
+    /// </summary>
+
     [Area("User")]
     [Route("User/[controller]")]
     public class MenuItemController : Controller

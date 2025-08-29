@@ -6,6 +6,23 @@ using CozyCafe.Models.Domain.Admin;
 using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Logging;
 
+/// <summary>
+/// (UA) Сервіс для роботи з опціями меню у адміністративній частині CozyCafe.  
+/// Наслідує базовий сервіс `Service<MenuItemOption>` та додає кешування та логування:  
+/// - Отримання опцій за групою Id з кешем.  
+/// - Отримання опцій за списком Ids з кешем.  
+/// - Очищення кешу при додаванні, оновленні або видаленні опцій.  
+/// - Логування усіх операцій та дій з кешем.  
+/// Використовується для підвищення продуктивності та підтримки актуальності даних.
+///
+/// (EN) Service for managing menu item options in the CozyCafe admin area.  
+/// Inherits the base `Service<MenuItemOption>` and adds caching and logging:  
+/// - Retrieve options by group Id using cache.  
+/// - Retrieve options by a list of Ids using cache.  
+/// - Clear cache when adding, updating, or deleting options.  
+/// - Logs all operations and cache actions.  
+/// Improves performance and ensures data consistency.
+/// </summary>
 public class MenuItemOptionService : Service<MenuItemOption>, IMenuItemOptionService
 {
     private readonly IMenuItemOptionRepository _menuItemOptionRepository;

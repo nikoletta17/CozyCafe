@@ -7,6 +7,16 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CozyCafe.Web.Controllers
 {
+    /// <summary>
+    /// (UA) Контролер для управління опціями меню в адмінській панелі.
+    /// - Наслідує GenericController для базових CRUD-операцій.
+    /// - ByGroup(int groupId): отримує опції меню за конкретною групою, використовує AutoMapper для перетворення у DTO, обробляє помилки і логування.
+    /// 
+    /// (EN) Controller for managing menu item options in the admin panel.
+    /// - Inherits from GenericController for basic CRUD operations.
+    /// - ByGroup(int groupId): retrieves menu options by a specific group, uses AutoMapper to map to DTOs, handles exceptions and logging.
+    /// </summary>
+
     [Authorize(Roles = "Admin")]
     [Area("Admin")]
     [Route("Admin/[controller]/[action]")]

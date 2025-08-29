@@ -4,6 +4,21 @@ using CozyCafe.Models.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Logging;
 
+/// <summary>
+/// (UA) Сервіс для роботи з користувачами CozyCafe.
+/// Основні функції:
+/// - Отримання користувача за Id або Email.
+/// - Оновлення профілю користувача.
+/// - Зміна пароля користувача.
+/// - Видалення акаунту користувача з перевіркою пароля.
+/// 
+/// (EN) Service for managing CozyCafe users.
+/// Main functionalities:
+/// - Retrieve user by Id or email.
+/// - Update user profile.
+/// - Change user password.
+/// - Delete user account with password validation.
+/// </summary>
 public class UserService : IUserService
 {
     private readonly UserManager<ApplicationUser> _userManager;

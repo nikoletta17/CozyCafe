@@ -16,7 +16,7 @@ namespace CozyCafe.Models.DTO.Admin
 
     public class TopMenuItemDto
     {
-        public string Name { get; set; } = null!; // Ім'я меню
-        public int QuantitySold { get; set; }      // Кількість проданих одиниць
+        public string Name { get; set; } = null!; 
+        public int QuantitySold { get; set; }      
     }
 }

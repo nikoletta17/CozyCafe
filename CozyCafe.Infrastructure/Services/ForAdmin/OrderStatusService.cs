@@ -5,6 +5,21 @@ using CozyCafe.Models.Domain.Common;
 using CozyCafe.Models.DTO.Admin;
 using Microsoft.Extensions.Logging;
 
+/// <summary>
+/// (UA) Сервіс для управління статусами замовлень у адміністративній частині CozyCafe.  
+/// Основні функції:  
+/// - Оновлення статусу замовлення за допомогою DTO `UpdateOrderStatusDto`.  
+/// - Логування всіх операцій для контролю змін статусів.  
+/// - Викидає `OrderItemNotFoundException` якщо замовлення не знайдено.  
+/// - Викидає `InvalidOrderStatusException` якщо новий статус некоректний.
+///
+/// (EN) Service for managing order statuses in the CozyCafe admin area.  
+/// Main functionalities:  
+/// - Update order status using `UpdateOrderStatusDto`.  
+/// - Logs all operations to monitor status changes.  
+/// - Throws `OrderItemNotFoundException` if the order is not found.  
+/// - Throws `InvalidOrderStatusException` if the new status is invalid.
+/// </summary>
 public class OrderStatusService : IOrderStatusService
 {
     private readonly IOrderStatusRepository _orderStatusRepository;

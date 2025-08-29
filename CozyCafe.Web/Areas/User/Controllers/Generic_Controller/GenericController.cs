@@ -3,6 +3,14 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CozyCafe.Web.Areas.User.Controllers.Generic_Controller
 {
+    /// <summary>
+    /// (UA) Узагальнений контролер для стандартних CRUD-операцій.  
+    /// Працює з будь-якою сутністю через відповідний сервіс і надає базові методи:  
+    /// Index (список), Details (деталі), Create (створення), Edit (редагування), Delete (видалення).  
+    /// 
+    /// (EN) Generic controller for standard CRUD operations.  
+    /// Works with any entity through the corresponding service and provides basic methods:  
+    /// Index (list), Details, Create, Edit, Delete.
     public class GenericController<T> : Controller where T : class
     {
         protected readonly IService<T> _service;

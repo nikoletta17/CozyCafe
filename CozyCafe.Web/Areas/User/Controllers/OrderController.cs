@@ -8,6 +8,32 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace CozyCafe.Web.Areas.User.Controllers
 {
+    /// <summary>
+    /// (UA) Контролер для керування замовленнями користувача.
+    /// Основні дії:
+    /// - Index(): Відображає всі замовлення (для адміна та перегляду всіх).
+    /// - Details(int id): Показує деталі конкретного замовлення та список товарів із опціями.
+    /// - Create(): GET/POST створення нового замовлення з кошика користувача.
+    /// - Edit(int id), Edit(OrderDto dto): GET/POST редагування замовлення (тільки для Admin).
+    /// - Delete(int id), DeleteConfirmed(int id): GET/POST видалення замовлення (тільки для Admin).
+    /// - MyOrders(): Перегляд замовлень поточного користувача.
+    /// - AddItem(), AddOption(), RemoveItem(): Додавання/видалення товарів та опцій у замовлення.
+    /// - UpdateStatus(): Зміна статусу замовлення (тільки Admin).
+    /// - Логування всіх дій через ILoggerService.
+    ///
+    /// (EN) Controller for managing user orders.
+    /// Key actions:
+    /// - Index(): Shows all orders (admin view).
+    /// - Details(int id): Shows details of a specific order, including items and options.
+    /// - Create(): GET/POST create new order from user's cart.
+    /// - Edit(int id), Edit(OrderDto dto): GET/POST edit order (Admin only).
+    /// - Delete(int id), DeleteConfirmed(int id): GET/POST delete order (Admin only).
+    /// - MyOrders(): Shows orders for current user.
+    /// - AddItem(), AddOption(), RemoveItem(): Add/remove items and options in an order.
+    /// - UpdateStatus(): Change order status (Admin only).
+    /// - All actions are logged using ILoggerService.
+    /// </summary>
+
     [Area("User")]
     [Authorize]
     [Route("User/[controller]/[action]")]

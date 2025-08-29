@@ -6,6 +6,21 @@ using CozyCafe.Application.Services.Generic_Service;
 using CozyCafe.Models.Domain.Admin;
 using Microsoft.Extensions.Caching.Memory;
 
+/// <summary>
+/// (UA) Сервіс для роботи з категоріями у адміністративній частині CozyCafe.  
+/// Наслідує базовий сервіс `Service<Category>` і реалізує додаткову логіку:  
+/// - Отримання категорій за батьківською категорією з використанням кешування (MemoryCache).  
+/// - Автоматичне очищення кешу при додаванні, оновленні або видаленні категорії.  
+/// - Логування усіх операцій та кеш-дій для спрощеного відстеження.  
+/// Використовується для підвищення продуктивності та підтримки актуальності даних.
+/// 
+/// (EN) Service for managing categories in the CozyCafe admin area.  
+/// Inherits the base `Service<Category>` and implements additional logic:  
+/// - Retrieving categories by parent category with caching (MemoryCache).  
+/// - Automatic cache clearing on add, update, or delete operations.  
+/// - Logging of all operations and cache actions for easy tracking.  
+/// Improves performance and ensures data consistency.
+/// </summary>
 public class CategoryService : Service<Category>, ICategoryService
 {
     private readonly ICategoryRepository _categoryRepository;

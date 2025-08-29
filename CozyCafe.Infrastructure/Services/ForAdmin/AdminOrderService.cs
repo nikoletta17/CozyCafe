@@ -7,6 +7,29 @@ using CozyCafe.Models.Domain.Common;
 using CozyCafe.Models.DTO.Admin;
 
 public class AdminOrderService : IAdminOrderService
+
+/// <summary>
+/// (UA) Сервіс для роботи з замовленнями у адміністративній частині CozyCafe.  
+/// Виконує бізнес-логіку для отримання, фільтрації та оновлення замовлень,  
+/// працюючи з репозиторієм і використовуючи AutoMapper для трансформації у DTO.  
+/// Основні функції сервісу:
+/// - Отримання всіх замовлень з деталями.
+/// - Отримання конкретного замовлення за ID.
+/// - Оновлення статусу замовлення з перевіркою допустимих значень.
+/// - Фільтрація замовлень за статусом та пошук за користувачем.
+/// Сервіс також веде централізоване логування всіх операцій через ILoggerService.
+///
+/// (EN) Service for managing orders in the CozyCafe admin area.  
+/// Performs business logic for retrieving, filtering, and updating orders,  
+/// working with the repository and using AutoMapper to map to DTOs.  
+/// Main functionalities of the service:
+/// - Retrieve all orders with details.
+/// - Retrieve a specific order by ID.
+/// - Update order status with validation of allowed values.
+/// - Filter orders by status and search by user.
+/// The service also performs centralized logging of all operations via ILoggerService.
+/// </summary>
+ 
 {
     private readonly IAdminOrderRepository _orderRepository;
     private readonly IMapper _mapper;
@@ -34,7 +57,7 @@ public class AdminOrderService : IAdminOrderService
         if (order == null)
         {
             _logger.LogWarning($"Замовлення з ID={id} не знайдено.");
-            throw new OrderItemNotFoundException(id); // тепер піде в middleware
+            throw new OrderItemNotFoundException(id); 
         }
         return _mapper.Map<AdminOrderDto>(order);
     }

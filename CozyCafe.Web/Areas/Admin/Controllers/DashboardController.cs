@@ -6,6 +6,16 @@ using Microsoft.Extensions.Logging;
 
 namespace CozyCafe.Web.Controllers
 {
+    /// <summary>
+    /// (UA) Контролер для адмінської панелі CozyCafe, який відповідає за відображення статистики.
+    /// - Доступ тільки для користувачів з роллю Admin.
+    /// - Index(): отримує статистичні дані через IDashboardService, обробляє помилки і логування.
+    /// 
+    /// (EN) Controller for CozyCafe admin panel responsible for displaying dashboard statistics.
+    /// - Access restricted to Admin role users.
+    /// - Index(): fetches statistics via IDashboardService, handles exceptions and logging.
+    /// </summary>
+
     [Authorize(Roles = "Admin")]
     [Area("Admin")]
     [Route("Admin/[controller]/[action]")]

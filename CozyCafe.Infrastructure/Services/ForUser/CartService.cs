@@ -11,6 +11,25 @@ using System.Threading.Tasks;
 
 namespace CozyCafe.Application.Services.ForUser
 {
+    /// <summary>
+    /// (UA) Сервіс для роботи з кошиком користувача у CozyCafe.
+    /// Основні функції:
+    /// - Отримання кошика користувача.
+    /// - Додавання або оновлення товарів у кошику з урахуванням обраних опцій.
+    /// - Отримання DTO для відображення кошика з усіма товарами та підрахунком суми.
+    /// - Оновлення кількості товару, видалення товару та очищення кошика.
+    /// - Логування всіх операцій для зручності дебагу та контролю.
+    /// - Використовує базовий `Service<Cart>` для стандартних CRUD-операцій.
+    ///
+    /// (EN) Service for managing the user's cart in CozyCafe.
+    /// Main functionalities:
+    /// - Retrieve user's cart.
+    /// - Add or update cart items, considering selected options.
+    /// - Get DTO for displaying the cart with all items and total sum calculation.
+    /// - Update item quantity, remove an item, and clear the cart.
+    /// - Logs all operations for debugging and monitoring purposes.
+    /// - Inherits from the base `Service<Cart>` for standard CRUD operations.
+    /// </summary>
     public class CartService : Service<Cart>, ICartService
     {
         private readonly ICartRepository _cartRepository;

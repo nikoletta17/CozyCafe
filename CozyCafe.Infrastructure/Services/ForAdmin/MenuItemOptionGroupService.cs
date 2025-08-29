@@ -6,6 +6,23 @@ using CozyCafe.Application.Services.Generic_Service;
 using CozyCafe.Models.Domain.Admin;
 using Microsoft.Extensions.Caching.Memory;
 
+/// <summary>
+/// (UA) Сервіс для роботи з групами опцій меню у адміністративній частині CozyCafe.  
+/// Наслідує базовий сервіс `Service<MenuItemOptionGroup>` та додає кешування і логування:  
+/// - Отримання всіх груп з опціями з кешем (MemoryCache).  
+/// - Отримання груп за конкретним меню Id з кешем.  
+/// - Очищення кешу при додаванні, оновленні або видаленні групи.  
+/// - Логування усіх операцій та дій з кешем.  
+/// Використовується для підвищення продуктивності та підтримки актуальності даних.
+///
+/// (EN) Service for managing menu item option groups in the CozyCafe admin area.  
+/// Inherits the base `Service<MenuItemOptionGroup>` and adds caching and logging:  
+/// - Retrieve all groups with options using cache (MemoryCache).  
+/// - Retrieve groups by specific menu Id using cache.  
+/// - Clear cache when adding, updating, or deleting a group.  
+/// - Logs all operations and cache actions.  
+/// Improves performance and ensures data consistency.
+/// </summary>
 public class MenuItemOptionGroupService : Service<MenuItemOptionGroup>, IMenuItemOptionGroupService
 {
     private readonly IMenuItemOptionGroupRepository _menuItemOptionGroupRepository;

@@ -5,6 +5,19 @@ using CozyCafe.Application.Services.Generic_Service;
 using CozyCafe.Models.Domain.ForUser;
 using Microsoft.Extensions.Logging;
 
+/// <summary>
+/// (UA) Сервіс для роботи з відгуками користувачів у CozyCafe.
+/// Основні функції:
+/// - Отримання відгуків за Id меню.
+/// - Отримання відгуків за Id користувача.
+/// - Викидає NotFoundException, якщо відгуків немає.
+/// 
+/// (EN) Service for managing user reviews in CozyCafe.
+/// Main functionalities:
+/// - Retrieve reviews by menu item Id.
+/// - Retrieve reviews by user Id.
+/// - Throws NotFoundException if no reviews are found.
+/// </summary>
 public class ReviewService : Service<Review>, IReviewService
 {
     private readonly IReviewRepository _reviewRepository;

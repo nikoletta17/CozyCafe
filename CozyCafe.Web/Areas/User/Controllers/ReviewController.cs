@@ -7,6 +7,24 @@ using System.Security.Claims;
 
 namespace CozyCafe.Web.Areas.User.Controllers
 {
+    /// <summary>
+    /// (UA) Контролер для роботи з відгуками.
+    /// - Наслідує GenericController<Review>.
+    /// - ByMenuItem(int menuItemId): Показує відгуки для конкретного товару.
+    /// - ByUser(string userId): Показує відгуки конкретного користувача.
+    /// - Create(): GET/POST – створення нового відгуку; враховує MenuItemId та поточного користувача.
+    /// - All(): GET – показує всі відгуки, доступно анонімно.
+    /// - Використовує IReviewService, IMenuItemService, IMapper та ILogger для бізнес-логіки та логування.
+    /// 
+    /// (EN) Controller for handling reviews.
+    /// - Inherits GenericController<Review>.
+    /// - ByMenuItem(int menuItemId): Displays reviews for a specific menu item.
+    /// - ByUser(string userId): Displays reviews for a specific user.
+    /// - Create(): GET/POST – creates a new review; considers MenuItemId and current user.
+    /// - All(): GET – shows all reviews, anonymously accessible.
+    /// - Uses IReviewService, IMenuItemService, IMapper, and ILogger for business logic and logging.
+    /// </summary>
+
     [Area("User")]
     [Authorize]
     [Route("User/[controller]/[action]")]

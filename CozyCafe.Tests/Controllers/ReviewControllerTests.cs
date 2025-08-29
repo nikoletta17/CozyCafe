@@ -13,6 +13,24 @@ using System.Security.Claims;
 
 namespace CozyCafe.Tests.Controllers
 {
+    /// <summary>
+    /// (UA) Тести для контролера ReviewController у CozyCafe.
+    /// Перевіряють основні дії контролера:
+    /// - ByMenuItem: отримання відгуків для конкретного меню та передача їх у View.
+    /// - ByUser: отримання відгуків конкретного користувача та передача у View.
+    /// - Create (POST): додавання нового відгуку з перевіркою валідності моделі.
+    /// - All: отримання всіх відгуків та передача у View.
+    /// Використовуємо мок-сервіси для IReviewService, IMapper та IMenuItemService, а також перевіряємо коректність ViewResult, RedirectToActionResult та моделі.
+    ///
+    /// (EN) Tests for the ReviewController in CozyCafe.
+    /// Verify main controller actions:
+    /// - ByMenuItem: fetch reviews for a menu item and return them to the View.
+    /// - ByUser: fetch reviews for a specific user and return to the View.
+    /// - Create (POST): add a new review with model validation.
+    /// - All: fetch all reviews and return to the View.
+    /// Uses mocked services for IReviewService, IMapper, and IMenuItemService, and asserts correct ViewResult, RedirectToActionResult, and model.
+    /// </summary>
+
     public class ReviewControllerTests
     {
         private readonly Mock<IReviewService> _reviewServiceMock;

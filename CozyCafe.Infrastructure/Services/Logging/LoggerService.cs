@@ -8,6 +8,23 @@ using Microsoft.Extensions.Logging;
 
 namespace CozyCafe.Infrastructure.Services.Logging
 {
+    /// <summary>
+    /// (UA) Реалізація сервісу логування на основі вбудованого `ILogger`.  
+    /// Дозволяє централізовано вести журнали різних рівнів:  
+    /// - Інформаційні повідомлення (LogInfo)  
+    /// - Попередження (LogWarning)  
+    /// - Помилки (LogError) з можливістю передати виняток  
+    /// - Логування з прив’язкою до користувача  
+    /// Використовується в інфраструктурному шарі для спрощеного доступу до системи логування.  
+    ///
+    /// (EN) Implementation of a logging service based on the built-in `ILogger`.  
+    /// Provides centralized logging across different levels:  
+    /// - Informational messages (LogInfo)  
+    /// - Warnings (LogWarning)  
+    /// - Errors (LogError) with optional exception details  
+    /// - Logging tied to a specific user  
+    /// Used in the infrastructure layer to simplify access to the logging system.
+    /// </summary>
     public class LoggerService : ILoggerService
     {
         private readonly ILogger<LoggerService> _logger;

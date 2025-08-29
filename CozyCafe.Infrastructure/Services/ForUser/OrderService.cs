@@ -6,6 +6,23 @@ using CozyCafe.Models.Domain.Common;
 using Microsoft.Extensions.Logging;
 using static CozyCafe.Models.Domain.Common.Order;
 
+/// <summary>
+/// (UA) Сервіс для роботи із замовленнями користувачів у CozyCafe.
+/// Основні функції:
+/// - Отримання замовлень користувача та повного замовлення з позиціями та опціями.
+/// - Додавання та видалення позицій та опцій у замовленні.
+/// - Оновлення статусу замовлення з перевіркою допустимих станів.
+/// - Перерахунок загальної суми замовлення після змін.
+/// - Логування всіх операцій для відстеження та дебагу.
+/// 
+/// (EN) Service for managing user orders in CozyCafe.
+/// Main functionalities:
+/// - Retrieve user's orders and full order with items and options.
+/// - Add or remove order items and options.
+/// - Update order status with validation of allowed transitions.
+/// - Recalculate the total order price after changes.
+/// - Log all operations for tracking and debugging.
+/// </summary>
 public class OrderService : Service<Order>, IOrderService
 {
     private readonly IOrderRepository _orderRepository;

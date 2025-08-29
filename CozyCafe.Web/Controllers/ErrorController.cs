@@ -4,6 +4,18 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace CozyCafe.Web.Controllers
 {
+    /// <summary>
+    /// (UA) Контролер для обробки помилок у CozyCafe.
+    /// - Метод Error(): обробляє винятки сервера (500 та інші) та передає повідомлення у View.
+    /// - Метод HttpStatusCodeHandler(int statusCode): обробляє інші HTTP-коди помилок (404, 403, 401 тощо) з кастомними повідомленнями.
+    /// Використовує ErrorViewModel для відображення інформації про помилку.
+    /// 
+    /// (EN) Controller for handling errors in CozyCafe.
+    /// - Error(): handles server exceptions (500 etc.) and passes the message to the View.
+    /// - HttpStatusCodeHandler(int statusCode): handles other HTTP error codes (404, 403, 401, etc.) with custom messages.
+    /// Uses ErrorViewModel to display error details.
+    /// </summary>
+
     public class ErrorController : Controller
     {
         // Обработка 500 и других исключений

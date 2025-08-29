@@ -7,6 +7,20 @@ using Microsoft.Extensions.Logging;
 
 namespace CozyCafe.Controllers
 {
+    /// <summary>
+    /// (UA) Контролер для керування замовленнями в адміністративній панелі CozyCafe.
+    /// - Доступ тільки для користувачів з роллю Admin.
+    /// - Details(int id): отримання детальної інформації про замовлення, підготовка списку можливих статусів для редагування.
+    /// - UpdateStatus(UpdateOrderStatusDto dto): оновлення статусу замовлення з перевіркою моделі та логуванням успіху або помилок.
+    /// Використовує TempData для передачі повідомлень про успіх або помилки у View.
+    /// 
+    /// (EN) Controller for managing orders in the CozyCafe admin panel.
+    /// - Access restricted to users with the Admin role.
+    /// - Details(int id): retrieves detailed information about an order and prepares a list of possible statuses for editing.
+    /// - UpdateStatus(UpdateOrderStatusDto dto): updates the order status with model validation and logging of success or errors.
+    /// Uses TempData to pass success or error messages to the View.
+    /// </summary>
+
     [Authorize(Roles = "Admin")]
     [Area("Admin")]
     [Route("Admin/[controller]/[action]")]

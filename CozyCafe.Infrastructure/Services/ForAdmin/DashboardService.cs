@@ -4,6 +4,25 @@ using CozyCafe.Application.Interfaces.ForServices.ForAdmin;
 using CozyCafe.Application.Interfaces.Logging;
 using CozyCafe.Models.DTO.Admin;
 
+/// <summary>
+/// (UA) Сервіс для отримання статистики адміністративної панелі CozyCafe.  
+/// Виконує збір основних показників:  
+/// - Загальна кількість замовлень  
+/// - Загальний дохід  
+/// - Загальна кількість користувачів  
+/// - Топ меню-елементів за популярністю  
+/// Логування операцій забезпечує контроль процесу отримання даних.
+/// У разі відсутності даних викидає NotFoundException.
+/// 
+/// (EN) Service for retrieving statistics for the CozyCafe admin dashboard.  
+/// Collects key metrics:  
+/// - Total orders  
+/// - Total revenue  
+/// - Total users  
+/// - Top menu items by popularity  
+/// Logs operations to monitor the data retrieval process.  
+/// Throws NotFoundException if no data is found.
+/// </summary>
 public class DashboardService : IDashboardService
 {
     private readonly IDashboardRepository _dashboardRepository;

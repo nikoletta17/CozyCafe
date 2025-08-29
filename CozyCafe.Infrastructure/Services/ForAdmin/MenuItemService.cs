@@ -7,6 +7,23 @@ using CozyCafe.Models.Domain.Admin;
 using CozyCafe.Models.DTO.Admin;
 using Microsoft.Extensions.Caching.Memory;
 
+/// <summary>
+/// (UA) Сервіс для роботи з елементами меню у адміністративній частині CozyCafe.  
+/// Наслідує базовий сервіс `Service<MenuItem>` і додає кешування та логування:  
+/// - Отримання елементів меню за фільтром з кешем (MemoryCache).  
+/// - Отримання елемента меню за ID з кешем.  
+/// - Автоматичне очищення кешу при додаванні, оновленні або видаленні елемента.  
+/// - Логування операцій та дій з кешем для контролю процесу.  
+/// Використовується для підвищення продуктивності та підтримки актуальності даних.
+///
+/// (EN) Service for managing menu items in the CozyCafe admin area.  
+/// Inherits the base `Service<MenuItem>` and adds caching and logging:  
+/// - Retrieve menu items by filter using cache (MemoryCache).  
+/// - Retrieve menu item by ID using cache.  
+/// - Automatic cache clearing on add, update, or delete operations.  
+/// - Logs operations and cache actions to monitor the process.  
+/// Improves performance and ensures data consistency.
+/// </summary>
 public class MenuItemService : Service<MenuItem>, IMenuItemService
 {
     private readonly IMenuItemRepository _menuItemRepository;

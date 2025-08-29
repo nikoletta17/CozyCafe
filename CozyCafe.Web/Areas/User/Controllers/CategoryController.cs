@@ -3,9 +3,20 @@ using CozyCafe.Models.Domain.Admin;
 using CozyCafe.Web.Areas.User.Controllers.Generic_Controller;
 using Microsoft.AspNetCore.Mvc;
 
-
 namespace CozyCafe.Web.Areas.User.Controllers
 {
+    /// <summary>
+    /// (UA) Контролер для роботи з категоріями.
+    /// - Наслідує GenericController<Category>.
+    /// - ByParentCategory(int? parentCategoryId): Отримує категорії за батьківською категорією; повертає список CategoryDto.
+    /// - Використовує ICategoryService, IMapper та ILogger для бізнес-логіки та логування.
+    /// 
+    /// (EN) Controller for handling categories.
+    /// - Inherits GenericController<Category>.
+    /// - ByParentCategory(int? parentCategoryId): Retrieves categories by parent category; returns a list of CategoryDto.
+    /// - Uses ICategoryService, IMapper, and ILogger for business logic and logging.
+    /// </summary>
+
     [Area("User")]
     [Route("User/[controller]/[action]")]
     public class CategoryController : GenericController<Category>

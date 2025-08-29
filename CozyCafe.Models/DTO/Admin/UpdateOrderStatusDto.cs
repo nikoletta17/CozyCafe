@@ -13,6 +13,6 @@ namespace CozyCafe.Models.DTO.Admin
         public int OrderId { get; set; }
 
         [Required]
-        public string NewStatus { get; set; } = string.Empty; // приклад: "Confirmed"
+        public string NewStatus { get; set; } = string.Empty; 
     }
 }

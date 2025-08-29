@@ -2,10 +2,21 @@
 using System.Net;
 using System.Text.Json;
 
+
 namespace CozyCafe.Web.Middleware
 {
     public class ExceptionHandlingMiddleware
     {
+        /// <summary>
+        /// (UA) Middleware для централізованої обробки винятків у додатку. 
+        /// Перехоплює всі необроблені помилки, логгує їх та повертає стандартизовану 
+        /// JSON-відповідь з відповідним HTTP-статусом.
+        /// 
+        /// (EN) Middleware for centralized exception handling in the application. 
+        /// Catches all unhandled errors, logs them, and returns a standardized 
+        /// JSON response with the appropriate HTTP status code.
+        /// </summary>
+
         private readonly RequestDelegate _next;
         private readonly ILogger<ExceptionHandlingMiddleware> _logger;
 

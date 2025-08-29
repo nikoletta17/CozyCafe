@@ -16,7 +16,7 @@ namespace CozyCafe.Models.DTO.ForUser
 
     public class OrderItemDto
     {
-        public int Id { get; set; }  // Унікальний ідентифікатор пункту замовлення
+        public int Id { get; set; }
         public int MenuItemId { get; set; }
 
         public required string MenuItemName { get; set; }
@@ -27,7 +27,7 @@ namespace CozyCafe.Models.DTO.ForUser
 
     public class OrderItemOptionDto
     {
-        public int Id { get; set; } // Унікальний ідентифікатор опції
+        public int Id { get; set; } 
         public required string Name { get; set; }
         public decimal? ExtraPrice { get; set; }
     }

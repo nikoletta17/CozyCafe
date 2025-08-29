@@ -6,6 +6,24 @@ using System.Security.Claims;
 
 namespace CozyCafe.Web.Areas.User.Controllers
 {
+    /// <summary>
+    /// (UA) Контролер для керування профілем користувача.
+    /// Основні дії:
+    /// - Edit(): GET/POST редагування профілю (FullName, Email).
+    /// - ChangePassword(): GET/POST зміна пароля користувача.
+    /// - DeleteAccount(): GET/POST видалення акаунту користувача (потрібне підтвердження пароля).
+    /// - Логування всіх дій через ILoggerService.
+    /// - TempData["Success"] використовується для відображення повідомлень про успішні дії.
+    /// 
+    /// (EN) Controller for managing user profile.
+    /// Key actions:
+    /// - Edit(): GET/POST edit profile (FullName, Email).
+    /// - ChangePassword(): GET/POST change user password.
+    /// - DeleteAccount(): GET/POST delete user account (requires password confirmation).
+    /// - All actions are logged using ILoggerService.
+    /// - TempData["Success"] is used to display success messages.
+    /// </summary>
+
     [Area("User")]
     [Authorize]
     [Route("User/[controller]/[action]")]

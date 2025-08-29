@@ -8,6 +8,20 @@ using Xunit;
 
 namespace CozyCafe.Tests.Services
 {
+    /// <summary>
+    /// (UA) Тести для сервісу ReviewService у CozyCafe.
+    /// Перевіряють основні методи сервісу:
+    /// - GetByMenuItemIdAsync: повертає відгуки за Id меню; перевірка випадків, коли відгуки існують та коли їх немає (викидає NotFoundException).
+    /// - GetByUserIdAsync: повертає відгуки користувача за Id; перевірка випадків з наявними відгуками та з відсутніми (викидає NotFoundException).
+    /// Використовуються мок-репозиторії IReviewRepository та логер ILogger для ізоляції тестів.
+    ///
+    /// (EN) Tests for the ReviewService in CozyCafe.
+    /// Verify main service methods:
+    /// - GetByMenuItemIdAsync: returns reviews by menu item ID; checks both cases when reviews exist and when none exist (throws NotFoundException).
+    /// - GetByUserIdAsync: returns reviews by user ID; checks both cases with existing reviews and without (throws NotFoundException).
+    /// Uses mocked IReviewRepository and ILogger to isolate the tests.
+    /// </summary>
+
     public class ReviewServiceTests
     {
         private readonly Mock<IReviewRepository> _reviewRepositoryMock;

@@ -6,6 +6,26 @@ using System.Security.Claims;
 
 namespace CozyCafe.Web.Areas.User.Controllers
 {
+    /// <summary>
+    /// (UA) Контролер для управління кошиком користувача в зоні User.
+    /// - Доступ обмежено авторизованими користувачами ([Authorize]).
+    /// - Index(): Показує поточний кошик користувача; повертає порожній, якщо кошик пустий.
+    /// - AddOrUpdateItem(): POST – додає або оновлює товар у кошику з обраними опціями.
+    /// - UpdateItemQuantity(): POST – змінює кількість конкретного товару.
+    /// - RemoveItem(): POST – видаляє товар з кошика.
+    /// - Clear(): POST – очищає весь кошик користувача.
+    /// - Використовує ICartService, IMenuItemService, IMenuItemOptionService, UserManager та ILogger для бізнес-логіки і логування.
+    /// 
+    /// (EN) Controller for managing the user's cart in the User area.
+    /// - Access restricted to authorized users ([Authorize]).
+    /// - Index(): Displays the current user's cart; returns empty cart if none exists.
+    /// - AddOrUpdateItem(): POST – adds or updates an item in the cart with selected options.
+    /// - UpdateItemQuantity(): POST – updates the quantity of a specific cart item.
+    /// - RemoveItem(): POST – removes an item from the cart.
+    /// - Clear(): POST – clears the entire user's cart.
+    /// - Uses ICartService, IMenuItemService, IMenuItemOptionService, UserManager, and ILogger for business logic and logging.
+    /// </summary>
+
     [Area("User")]
     [Authorize]
     [Route("User/[controller]/[action]")]
