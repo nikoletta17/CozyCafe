@@ -131,30 +131,29 @@ builder.Services.AddControllersWithViews();
 //builder.Logging.AddConsole();
 var logger = new LoggerConfiguration()
     .WriteTo.Console()
-    .WriteTo.File("Logs/log-.txt", rollingInterval: RollingInterval.Day) // лог у файл по днях
+    .WriteTo.File("Logs/log-.txt", rollingInterval: RollingInterval.Day) // лог у файл за днями
     .CreateLogger();
 
-builder.Host.UseSerilog(logger); // використвуємо Serilog
-
+builder.Host.UseSerilog(logger); 
 var app = builder.Build();
 
-// 1️⃣ Обработка ошибок (первым делом)
+// Обробка помилок
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
 }
 else
 {
-    // Для всех необработанных исключений (500)
+    // Для всіх необроблених винятків (500)
     app.UseExceptionHandler("/Error");
 
-    // Для всех кодов ошибок (404, 403, 401 и т.д.)
+    // Для всіх кодів помилок (404, 403, 401 і т.д.)
     app.UseStatusCodePagesWithReExecute("/Error/{0}");
 
     app.UseHsts();
 }
 
-// 2️⃣ Перехват всех ошибок (400+)
+// Перехоплення помилок
 app.Use(async (context, next) =>
 {
     await next();
@@ -168,41 +167,46 @@ app.Use(async (context, next) =>
 });
 
 
-// 3️⃣ HTTPS и статика
+// HTTPS і статистика
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
-// 4️⃣ Маршрутизация
+// Маршрутизація
 app.UseRouting();
 
-// 5️⃣ Сессии
+// Сесії
 app.UseSession();
 
-// 6️⃣ Аутентификация и авторизация
+// Аутентифікація и авторизація
 app.UseAuthentication();
 app.UseAuthorization();
 
-// 7️⃣ Маршруты Areas
+// Маршрути Areas
 app.MapControllerRoute(
     name: "areas",
     pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
 );
 
-// 8️⃣ Основной маршрут
+// Основний маршрут
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}"
 );
 
-// 9️⃣ Razor Pages (Identity UI)
+// Razor Pages (Identity UI)
 app.MapRazorPages();
 
-// 🔟 Инициализация ролей
+// Ініціалізація ролей
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
+    // Seed ролі та адміна
     await DbInitializer.SeedRolesAsync(services);
     await DbInitializer.SeedAdminAsync(services);
+
+    //Seed дані (категорії, страви, опції)
+    var context = services.GetRequiredService<ApplicationDbContext>();
+    context.Database.Migrate(); 
 }
 
 app.Run();
