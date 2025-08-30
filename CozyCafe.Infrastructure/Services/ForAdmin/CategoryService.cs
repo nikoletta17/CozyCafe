@@ -89,5 +89,6 @@ public class CategoryService : Service<Category>, ICategoryService
     {
         _logger.LogInfo("[CACHE CLEAR] Очищення кешу категорій.");
         _cache.Remove(AllCategoriesCacheKey);
+        _cache.Remove("Categories_Parent_NULL");
     }
 }

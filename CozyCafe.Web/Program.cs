@@ -3,6 +3,7 @@ using CozyCafe.Infrastructure.Services.Logging;
 using CozyCafe.Web.Middleware;
 using System.Globalization;
 using Serilog;
+using CozyCafe.Application.Services.ForAdmin;
 
 var builder = WebApplication.CreateBuilder(args);
 
