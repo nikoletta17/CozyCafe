@@ -1,6 +1,90 @@
 ﻿@model CozyCafe.Models.DTO.Admin.MenuItemDto
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
 
+<style>
+    body {
+        font-family: 'Playfair Display', serif;
+        background-color: #f9f6f1;
+        color: #3b3a30;
+        padding: 2rem;
+    }
+
+    h2 {
+        text-align: center;
+        font-size: 2.5rem;
+        color: #4b4a3f;
+        margin-bottom: 2rem;
+        text-shadow: 1px 1px 2px #c2b280;
+    }
+
+    form {
+        max-width: 600px;
+        margin: 0 auto;
+        background-color: #fffaf0;
+        padding: 2rem;
+        border: 2px solid #c2b280;
+        border-radius: 12px;
+        box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        color: #4b4a3f;
+    }
+
+    input.form-control,
+    textarea.form-control,
+    select.form-control {
+        width: 100%;
+        padding: 0.5rem 0.8rem;
+        border: 2px solid #c2b280;
+        border-radius: 8px;
+        font-family: 'Playfair Display', serif;
+        font-size: 1rem;
+        color: #3b3a30;
+        background-color: #fffaf0;
+        transition: all 0.3s ease;
+    }
+
+        input.form-control:focus,
+        textarea.form-control:focus,
+        select.form-control:focus {
+            outline: none;
+            border-color: #4b4a3f;
+            box-shadow: 0 0 5px rgba(75,74,63,0.5);
+        }
+
+    .cozy-btn {
+        font-family: 'Playfair Display', serif;
+        padding: 0.5rem 1.2rem;
+        background-color: #4b4a3f;
+        border: 2px solid #c2b280;
+        color: #c2b280 !important;
+        text-decoration: none;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        margin-right: 0.5rem;
+        cursor: pointer;
+        display: inline-block;
+    }
+
+        .cozy-btn:hover {
+            background-color: #c2b280;
+            color: #4b4a3f !important;
+        }
+
+    .btn-container {
+        text-align: center;
+        margin-top: 2rem;
+    }
+</style>
+
 <h2>Редагувати елемент меню</h2>
 
 <form asp-action="Edit" method="post">
@@ -13,7 +97,7 @@
 
     <div class="form-group">
         <label>Опис</label>
-        <textarea asp-for="Description" class="form-control"></textarea>
+        <textarea asp-for="Description" class="form-control" rows="3"></textarea>
     </div>
 
     <div class="form-group">
@@ -33,6 +117,8 @@
         </select>
     </div>
 
-    <button type="submit" class="btn btn-success">Зберегти</button>
-    <a asp-action="Index" class="btn btn-secondary">Назад</a>
+    <div class="btn-container">
+        <button type="submit" class="cozy-btn">Зберегти</button>
+        <a asp-action="Index" class="cozy-btn">Назад</a>
+    </div>
 </form>

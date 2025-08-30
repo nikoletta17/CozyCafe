@@ -55,9 +55,10 @@ namespace CozyCafe.Application.Mapping
             CreateMap<Review, ReviewDto>()
                 .ForMember(dest => dest.UserFullName, opt => opt.MapFrom(src => src.User.FullName));
 
-            // Discount & Category
-            CreateMap<Category, CategoryDto>();
-           
+            // Category <-> CategoryDto
+            CreateMap<Category, CategoryDto>().ReverseMap();
+
+
             // Orders (Admin)
             CreateMap<Order, AdminOrderDto>()
                 .ForMember(dest => dest.UserFullName, opt => opt.MapFrom(src => src.User.FullName))

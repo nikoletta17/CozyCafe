@@ -1,15 +1,67 @@
 ﻿@model CozyCafe.Models.DTO.Admin.CategoryDto
 
-<h2>Видалити категорію</h2>
+<div class="delete-container">
+    <h2>Видалити категорію</h2>
+    <h3>Ви впевнені, що хочете видалити цю категорію?</h3>
 
-<h3>Ви впевнені, що хочете видалити цю категорію?</h3>
+    <div class="category-name">
+        <h4>@Model.Name</h4>
+    </div>
 
-<div>
-    <h4>@Model.Name</h4>
+    <form asp-action="DeleteConfirmed" method="post" class="delete-form">
+        <input type="hidden" asp-for="Id" />
+        <button type="submit" class="btn btn-delete">Видалити</button>
+        <a href="https://localhost:7226/User/Home/Index" class="btn btn-back">Назад</a>
+    </form>
 </div>
 
-<form asp-action="DeleteConfirmed" method="post">
-    <input type="hidden" asp-for="Id" />
-    <button type="submit" class="btn btn-danger">Видалити</button>
-    <a asp-action="Index" class="btn btn-secondary">Скасувати</a>
-</form>
+<style>
+    .delete-container {
+        text-align: center;
+        margin-top: 3rem;
+        font-family: 'Playfair Display', serif;
+        color: #3b3a30;
+    }
+
+    .category-name {
+        margin: 1.5rem 0;
+        font-size: 1.3rem;
+        font-weight: bold;
+    }
+
+    .delete-form {
+        margin-top: 2rem;
+    }
+
+    .btn-delete {
+        background-color: #cc0000; /* гарний ало-червоний */
+        border: none;
+        color: white;
+        padding: 10px 22px;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: bold;
+        cursor: pointer;
+        margin-right: 1rem;
+        text-decoration: none;
+    }
+
+        .btn-delete:hover {
+            background-color: #cc0000; /* без підсвітки, завжди один колір */
+        }
+
+    .btn-back {
+        background-color: #6c757d;
+        border: none;
+        color: white;
+        padding: 10px 22px;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: bold;
+        text-decoration: none;
+    }
+
+        .btn-back:hover {
+            background-color: #6c757d; /* без підсвітки */
+        }
+</style>

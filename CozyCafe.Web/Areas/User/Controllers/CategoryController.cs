@@ -35,7 +35,7 @@ namespace CozyCafe.Web.Areas.User.Controllers
         }
 
         [AllowAnonymous]
-        public async Task<IActionResult> ByParentCategory(int? parentCategoryId)
+        public async Task<IActionResult> ByParentCategory(int? parentCategoryId = null)
         {
             _logger.LogInformation("Отримання категорій з ParentCategoryId = {ParentCategoryId}", parentCategoryId);
 
@@ -46,6 +46,7 @@ namespace CozyCafe.Web.Areas.User.Controllers
 
             return View("Index", dtos);
         }
+
 
         // --- Лише для Адміністраторів ---
         // --- CREATE ---
@@ -106,13 +107,14 @@ namespace CozyCafe.Web.Areas.User.Controllers
             return View(dto);
         }
 
-        [Authorize(Roles = "Admin")]
-        [HttpPost("Delete/{id}")]
+        [HttpPost]
         [ActionName("DeleteConfirmed")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(CategoryDto dto)
         {
-            await _categoryService.DeleteAsync(id);
+            if (dto == null) return BadRequest();
+
+            await _categoryService.DeleteAsync(dto.Id);
             return RedirectToAction(nameof(ByParentCategory));
         }
 

@@ -4,33 +4,129 @@
     ViewData["Title"] = "Категорії";
 }
 
-<h2>Категорії</h2>
+<div class="page-container">
+    <h2 class="page-title text-center">Категорії</h2>
 
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Назва</th>
-            <th>Батьківська категорія</th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>@item.Name</td>
-                
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning">
-                    Редагувати
-                </a>
-                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger">
-                    Видалити
-                </a>
-            </td>
-        </tr>
-                }
-    </tbody>
-</table>
+    <table class="cozy-table">
+        
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Name</td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="cozy-btn">
+                            Редагувати
+                        </a>
+                        <a asp-action="Delete" asp-route-id="@item.Id" class="delete-btn">
+                            Видалити
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
 
-<a asp-action="Create" class="btn btn-primary">Додати категорію</a>
+    <div class="text-center">
+        <a asp-action="Create" class="cozy-btn create-btn">Додати категорію</a>
+    </div>
+</div>
+
+<style>
+    .page-container {
+        padding: 3rem 2rem;
+        min-height: 80vh;
+        background-color: #f9f6f1;
+        font-family: 'Playfair Display', serif;
+        color: #3b3a30;
+    }
+
+    .page-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #4b4a3f;
+        margin-bottom: 2rem;
+        border-bottom: 3px solid #c2b280;
+        display: inline-block;
+        padding-bottom: 0.3rem;
+        text-align: center; 
+        width: 100%;
+    }
+
+    .text-center {
+        text-align: center;
+    }
+
+    .cozy-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 2rem;
+        background-color: #fff;
+        border: 2px solid #c2b280;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+        .cozy-table th, .cozy-table td {
+            padding: 0.8rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e0dccc;
+            font-size: 1rem;
+        }
+
+        .cozy-table th {
+            background-color: #4b4a3f;
+            color: #c2b280;
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .cozy-table tr:hover {
+            background-color: #f2ede3;
+            transition: background 0.3s ease;
+        }
+
+    .cozy-btn {
+        font-family: 'Playfair Display', serif;
+        padding: 0.4rem 1rem;
+        background-color: #4b4a3f;
+        border: 2px solid #c2b280;
+        color: #c2b280 !important;
+        text-decoration: none;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        font-size: 0.95rem;
+    }
+
+        .cozy-btn:hover {
+            background-color: #c2b280;
+            color: #4b4a3f !important;
+        }
+
+    .create-btn {
+        font-weight: 700;
+        font-size: 1rem;
+        margin-top: 1rem;
+        display: inline-block;
+    }
+
+    .delete-btn {
+        font-family: 'Playfair Display', serif;
+        padding: 0.4rem 1rem;
+        background-color: #cc2e2e; /* ало-червоний */
+        border: 2px solid #a11f1f;
+        color: #fff !important;
+        text-decoration: none;
+        border-radius: 8px;
+        font-size: 0.95rem;
+        cursor: pointer;
+    }
+
+        /* При наведенні нічого не змінюється */
+        .delete-btn:hover {
+            background-color: #cc2e2e;
+            color: #fff !important;
+        }
+</style>

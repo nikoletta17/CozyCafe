@@ -1,20 +1,120 @@
 ﻿@model CozyCafe.Models.DTO.Admin.CategoryDto
 
-<h2>Створити категорію</h2>
+<div class="page-container">
+    <h2 class="page-title">Створити категорію</h2>
 
-<form asp-action="Create" method="post">
-    <div class="form-group">
-        <label asp-for="Name"></label>
-        <input asp-for="Name" class="form-control" />
-        <span asp-validation-for="Name" class="text-danger"></span>
-    </div>
+    <form asp-action="Create" method="post" class="cozy-form">
+        <div class="form-group">
+            <label asp-for="Name" class="form-label"></label>
+            <input asp-for="Name" class="form-control cozy-input" placeholder="Введіть назву категорії" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
 
-    <button type="submit" class="btn btn-primary">Створити</button>
-    <a asp-action="Index" class="btn btn-secondary">Скасувати</a>
-</form>
+        <div class="form-actions">
+            <button type="submit" class="cozy-btn save-btn">Створити</button>
+            <a href="https://localhost:7226/User/Home/Index" class="cozy-btn back-btn">Назад</a>
+        </div>
+    </form>
+</div>
 
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
 }
+
+<style>
+    .page-container {
+        padding: 3rem 2rem;
+        min-height: 80vh;
+        background-color: #f9f6f1;
+        font-family: 'Playfair Display', serif;
+        color: #3b3a30;
+    }
+
+    .page-title {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #4b4a3f;
+        margin-bottom: 2rem;
+        border-bottom: 3px solid #c2b280;
+        display: inline-block;
+        padding-bottom: 0.3rem;
+        text-align: center;
+        width: 100%;
+    }
+
+    .cozy-form {
+        max-width: 500px;
+        margin: 0 auto;
+        background: #fff;
+        padding: 2rem;
+        border-radius: 10px;
+        border: 2px solid #c2b280;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    .form-label {
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        display: block;
+        color: #4b4a3f;
+    }
+
+    .cozy-input {
+        width: 100%;
+        padding: 0.6rem 1rem;
+        border: 2px solid #c2b280;
+        border-radius: 8px;
+        font-family: 'Playfair Display', serif;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+        .cozy-input:focus {
+            border-color: #4b4a3f;
+            outline: none;
+            box-shadow: 0 0 6px rgba(75, 74, 63, 0.4);
+        }
+
+    .form-actions {
+        margin-top: 1.5rem;
+        display: flex;
+        gap: 1rem;
+        justify-content: center;
+    }
+
+    .cozy-btn {
+        font-family: 'Playfair Display', serif;
+        padding: 0.5rem 1.2rem;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        text-align: center;
+    }
+
+    .save-btn {
+        background-color: #4b4a3f;
+        border: 2px solid #c2b280;
+        color: #c2b280 !important;
+    }
+
+        .save-btn:hover {
+            background-color: #c2b280;
+            color: #4b4a3f !important;
+        }
+
+    .back-btn {
+        background-color: #4b4a3f;
+        border: 2px solid #c2b280;
+        color: #c2b280 !important;
+    }
+
+        .back-btn:hover {
+            background-color: #c2b280;
+            color: #4b4a3f !important;
+        }
+</style>
