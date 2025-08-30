@@ -12,7 +12,7 @@ namespace CozyCafe.Infrastructure.Data
     {
         public static void Seed(ModelBuilder builder)
         {
-
+            
             var desserts = new List<MenuItem>
 {
             new MenuItem

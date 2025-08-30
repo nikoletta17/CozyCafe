@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using CozyCafe.Models.Domain.Admin;
 using CozyCafe.Web.Areas.User.Controllers.Generic_Controller;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CozyCafe.Web.Areas.User.Controllers
@@ -33,6 +34,7 @@ namespace CozyCafe.Web.Areas.User.Controllers
             _logger = logger;
         }
 
+        [AllowAnonymous]
         public async Task<IActionResult> ByParentCategory(int? parentCategoryId)
         {
             _logger.LogInformation("Отримання категорій з ParentCategoryId = {ParentCategoryId}", parentCategoryId);
@@ -44,5 +46,75 @@ namespace CozyCafe.Web.Areas.User.Controllers
 
             return View("Index", dtos);
         }
+
+        // --- Лише для Адміністраторів ---
+        // --- CREATE ---
+        [Authorize(Roles = "Admin")]
+        [HttpGet("Create")]
+        public IActionResult Create() => View();
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost("Create")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(CategoryDto dto)
+        {
+            if (ModelState.IsValid)
+            {
+                var category = _mapper.Map<Category>(dto);
+                await _categoryService.AddAsync(category);
+                return RedirectToAction(nameof(ByParentCategory));
+            }
+            return View(dto);
+        }
+
+        // --- EDIT ---
+        [Authorize(Roles = "Admin")]
+        [HttpGet("Edit/{id}")]
+        public async Task<IActionResult> Edit(int id)
+        {
+            var category = await _categoryService.GetByIdAsync(id);
+            if (category == null) return NotFound();
+
+            var dto = _mapper.Map<CategoryDto>(category);
+            return View(dto);
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost("Edit/{id}")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, CategoryDto dto)
+        {
+            if (ModelState.IsValid)
+            {
+                var category = _mapper.Map<Category>(dto);
+                category.Id = id; // гарантія правильного Id
+                await _categoryService.UpdateAsync(category);
+                return RedirectToAction(nameof(ByParentCategory));
+            }
+            return View(dto);
+        }
+
+        // --- DELETE ---
+        [Authorize(Roles = "Admin")]
+        [HttpGet("Delete/{id}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var category = await _categoryService.GetByIdAsync(id);
+            if (category == null) return NotFound();
+
+            var dto = _mapper.Map<CategoryDto>(category);
+            return View(dto);
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost("Delete/{id}")]
+        [ActionName("DeleteConfirmed")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            await _categoryService.DeleteAsync(id);
+            return RedirectToAction(nameof(ByParentCategory));
+        }
+
     }
 }

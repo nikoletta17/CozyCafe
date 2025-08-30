@@ -104,6 +104,8 @@ namespace CozyCafe.Infrastructure.Data
             builder.Entity<Category>()
             .HasIndex(c => c.Name)
             .IsUnique();
+
+            
         }
 
         private void ConfigureCart(ModelBuilder builder)

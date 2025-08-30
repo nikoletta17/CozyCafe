@@ -1,4 +1,5 @@
 ﻿using CozyCafe.Models.Domain.Admin;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
@@ -151,5 +152,6 @@ namespace CozyCafe.Web.Areas.User.Controllers
 
             return View("Details", item);
         }
+
     }
 }
