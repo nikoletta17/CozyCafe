@@ -89,8 +89,6 @@ namespace CozyCafe.Infrastructure.Data
             );
         }
 
-
-
         //Add relationships between entities
         #region Configure Relationships
         private void ConfigureCategory(ModelBuilder builder)

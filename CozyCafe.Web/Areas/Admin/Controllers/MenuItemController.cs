@@ -5,6 +5,29 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace CozyCafe.Web.Areas.Admin.Controllers
 {
+    /// <summary>
+    /// (UA) Контролер для адмінської панелі CozyCafe, який керує елементами меню.
+    /// - Доступ тільки для користувачів з роллю Admin.
+    /// - Index(): отримує та відображає всі елементи меню з можливістю фільтрації.
+    /// - Create() [GET]: формує форму створення нового елемента меню, завантажує список категорій.
+    /// - Create(dto) [POST]: додає новий елемент меню після валідації моделі.
+    /// - Edit(id) [GET]: завантажує дані елемента меню для редагування, формує список категорій.
+    /// - Edit(id, dto) [POST]: оновлює дані елемента меню, зберігаючи попереднє зображення, якщо нове не задано.
+    /// - Delete(id) [GET]: завантажує дані для підтвердження видалення.
+    /// - DeleteConfirmed(id) [POST]: остаточно видаляє елемент меню з бази даних.
+    ///
+    /// (EN) Controller for CozyCafe admin panel managing menu items.
+    /// - Access restricted to Admin role users.
+    /// - Index(): fetches and displays all menu items with optional filtering.
+    /// - Create() [GET]: prepares the form for creating a new menu item, loads category list.
+    /// - Create(dto) [POST]: adds a new menu item after model validation.
+    /// - Edit(id) [GET]: loads menu item data for editing, prepares category list.
+    /// - Edit(id, dto) [POST]: updates menu item data, preserving previous image if a new one is not provided.
+    /// - Delete(id) [GET]: loads data for deletion confirmation.
+    /// - DeleteConfirmed(id) [POST]: permanently deletes a menu item from the database.
+    /// </summary>
+
+
     [Area("Admin")]
     [Authorize(Roles = "Admin")]
     [Route("Admin/[controller]")]

@@ -7,16 +7,27 @@ using Microsoft.AspNetCore.Mvc;
 namespace CozyCafe.Web.Areas.User.Controllers
 {
     /// <summary>
-    /// (UA) Контролер для роботи з категоріями.
-    /// - Наслідує GenericController<Category>.
-    /// - ByParentCategory(int? parentCategoryId): Отримує категорії за батьківською категорією; повертає список CategoryDto.
-    /// - Використовує ICategoryService, IMapper та ILogger для бізнес-логіки та логування.
-    /// 
-    /// (EN) Controller for handling categories.
-    /// - Inherits GenericController<Category>.
-    /// - ByParentCategory(int? parentCategoryId): Retrieves categories by parent category; returns a list of CategoryDto.
-    /// - Uses ICategoryService, IMapper, and ILogger for business logic and logging.
+    /// (UA) Контролер для користувацької зони CozyCafe, який керує категоріями меню.
+    /// - Спадкує базовий GenericController для стандартних CRUD-операцій.
+    /// - ByParentCategory(): отримує список категорій за ParentCategoryId (доступний анонімно).
+    /// - Create() [GET, Admin]: відображає форму створення нової категорії.
+    /// - Create(dto) [POST, Admin]: додає нову категорію після валідації.
+    /// - Edit(id) [GET, Admin]: завантажує дані категорії для редагування.
+    /// - Edit(id, dto) [POST, Admin]: оновлює категорію, зберігаючи правильний Id.
+    /// - Delete(id) [GET, Admin]: завантажує дані для підтвердження видалення.
+    /// - DeleteConfirmed(dto) [POST]: видаляє категорію з бази даних.
+    ///
+    /// (EN) Controller for the CozyCafe user area managing menu categories.
+    /// - Inherits from the base GenericController to handle standard CRUD operations.
+    /// - ByParentCategory(): retrieves a list of categories by ParentCategoryId (available to anonymous users).
+    /// - Create() [GET, Admin]: displays the form for creating a new category.
+    /// - Create(dto) [POST, Admin]: adds a new category after validation.
+    /// - Edit(id) [GET, Admin]: loads category data for editing.
+    /// - Edit(id, dto) [POST, Admin]: updates the category, ensuring the correct Id is preserved.
+    /// - Delete(id) [GET, Admin]: loads data for deletion confirmation.
+    /// - DeleteConfirmed(dto) [POST]: removes the category from the database.
     /// </summary>
+
 
     [Area("User")]
     [Route("User/[controller]/[action]")]
