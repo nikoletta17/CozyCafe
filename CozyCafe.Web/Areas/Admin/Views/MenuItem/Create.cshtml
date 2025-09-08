@@ -85,38 +85,52 @@
     }
 </style>
 
-<h2>Додати новий елемент меню</h2>
+<div class="page-container">
+    <h2 class="page-title">Додати новий елемент меню</h2>
 
-<form asp-action="Create" method="post">
-    <div class="form-group">
-        <label>Назва</label>
-        <input asp-for="Name" class="form-control" />
-    </div>
+    <form asp-action="Create" method="post" class="cozy-form">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
 
-    <div class="form-group">
-        <label>Опис</label>
-        <textarea asp-for="Description" class="form-control" rows="3"></textarea>
-    </div>
+        <div class="form-group">
+            <label asp-for="Name"></label>
+            <input asp-for="Name" class="form-control cozy-input" placeholder="Назва страви" />
+            <span asp-validation-for="Name" class="text-danger"></span>
+        </div>
 
-    <div class="form-group">
-        <label>Ціна</label>
-        <input asp-for="Price" class="form-control" type="number" step="0.01" />
-    </div>
+        <div class="form-group">
+            <label asp-for="Description"></label>
+            <textarea asp-for="Description" class="form-control cozy-input" rows="3"></textarea>
+            <span asp-validation-for="Description" class="text-danger"></span>
+        </div>
 
-    <div class="form-group">
-        <label>URL картинки</label>
-        <input asp-for="ImageUrl" class="form-control" />
-    </div>
+        <div class="form-group">
+            <label asp-for="Price"></label>
+            <input asp-for="Price" class="form-control cozy-input" type="number" step="0.01" />
+            <span asp-validation-for="Price" class="text-danger"></span>
+        </div>
 
-    <div class="form-group">
-        <label>Категорія</label>
-        <select asp-for="CategoryId" asp-items="Model.Categories" class="form-control">
-            <option value="">-- Виберіть категорію --</option>
-        </select>
-    </div>
+        <div class="form-group">
+            <label asp-for="ImageUrl"></label>
+            <input asp-for="ImageUrl" class="form-control cozy-input" placeholder="http://..." />
+            <span asp-validation-for="ImageUrl" class="text-danger"></span>
+        </div>
 
-    <div class="btn-container">
-        <button type="submit" class="cozy-btn">Додати</button>
-        <a asp-action="Index" class="cozy-btn">Назад</a>
-    </div>
-</form>
+        <div class="form-group">
+            <label asp-for="CategoryId"></label>
+            <select asp-for="CategoryId" asp-items="ViewBag.Categories" class="form-control cozy-input">
+                <option value="">-- Виберіть категорію --</option>
+            </select>
+            <span asp-validation-for="CategoryId" class="text-danger"></span>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="cozy-btn save-btn">Зберегти</button>
+            <a asp-action="Index" class="cozy-btn back-btn">Назад</a>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}
+

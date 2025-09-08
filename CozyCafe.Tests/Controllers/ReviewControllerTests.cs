@@ -107,7 +107,7 @@ namespace CozyCafe.Tests.Controllers
             _controller.ModelState.AddModelError("TestError", "Invalid");
 
             _menuItemServiceMock.Setup(s => s.GetFilteredAsync(It.IsAny<MenuItemFilterModel>()))
-                                .ReturnsAsync(new List<MenuItemDto>()); // ✅ Исправлено
+                                .ReturnsAsync(new List<MenuItemDto>()); 
 
             // Act
             var result = await _controller.Create(dto) as ViewResult;

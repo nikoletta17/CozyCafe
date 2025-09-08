@@ -12,11 +12,13 @@ namespace CozyCafe.Web.Areas.Admin.Controllers
     {
         private readonly IMenuItemService _menuItemService;
         private readonly ICategoryService _categoryService;
+        private readonly ILogger<MenuItemController> _logger;
 
-        public MenuItemController(IMenuItemService menuItemService, ICategoryService categoryService)
+        public MenuItemController(IMenuItemService menuItemService, ICategoryService categoryService, ILogger<MenuItemController> logger)
         {
             _menuItemService = menuItemService;
             _categoryService = categoryService;
+            _logger = logger;
         }
 
         [HttpGet("")]
@@ -26,26 +28,15 @@ namespace CozyCafe.Web.Areas.Admin.Controllers
             return View(items);
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet("Create")]
         public async Task<IActionResult> Create()
         {
-            // отримуємо всі категорії верхнього рівня
+            // Передаємо список категорій у View через ViewBag
             var categories = await _categoryService.GetByParentCategoryIdAsync(null);
+            ViewBag.Categories = new SelectList(categories, "Id", "Name");
 
-            var dto = new MenuItemDto
-            {
-                Name = string.Empty,             // required
-                CategoryName = string.Empty,     // required
-                Categories = categories
-                    .Select(c => new SelectListItem
-                    {
-                        Value = c.Id.ToString(),
-                        Text = c.Name
-                    })
-                    .ToList()
-            };
-
-            return View(dto);
+            return View();
         }
 
         [HttpPost("Create")]
@@ -54,19 +45,10 @@ namespace CozyCafe.Web.Areas.Admin.Controllers
         {
             if (!ModelState.IsValid)
             {
-                var categories = await _categoryService.GetByParentCategoryIdAsync(null);
-                dto.Categories = categories
-                    .Select(c => new SelectListItem
-                    {
-                        Value = c.Id.ToString(),
-                        Text = c.Name
-                    })
-                    .ToList();
-
+                _logger.LogWarning("ModelState невалідний");
                 return View(dto);
             }
 
-            // мапування DTO у доменну модель
             var menuItem = new MenuItem
             {
                 Name = dto.Name,
@@ -76,11 +58,14 @@ namespace CozyCafe.Web.Areas.Admin.Controllers
                 CategoryId = dto.CategoryId
             };
 
+            _logger.LogInformation("Спроба додати новий елемент меню: {@MenuItem}", menuItem);
+
             await _menuItemService.AddAsync(menuItem);
+
+            _logger.LogInformation("Елемент меню збережений успішно");
 
             return RedirectToAction("Index");
         }
-
 
 
         [HttpGet("Edit/{id}")]
@@ -108,6 +93,16 @@ namespace CozyCafe.Web.Areas.Admin.Controllers
         {
             if (id != dto.Id) return BadRequest();
 
+            // Підтягуємо старий елемент з БД
+            var existingItem = await _menuItemService.GetByIdAsync(id);
+            if (existingItem == null) return NotFound();
+
+            // Якщо поле ImageUrl порожнє у DTO, залишаємо старе значення
+            if (string.IsNullOrEmpty(dto.ImageUrl))
+            {
+                dto.ImageUrl = existingItem.ImageUrl;
+            }
+
             if (!ModelState.IsValid)
             {
                 var categories = await _categoryService.GetByParentCategoryIdAsync(null);
@@ -123,7 +118,6 @@ namespace CozyCafe.Web.Areas.Admin.Controllers
                 return View(dto);
             }
 
-            // мапування DTO у доменну модель
             var menuItem = new MenuItem
             {
                 Id = dto.Id,
@@ -140,17 +134,16 @@ namespace CozyCafe.Web.Areas.Admin.Controllers
         }
 
 
+
+        // GET: Admin/MenuItem/Delete/id
         [HttpGet("Delete/{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            // отримуємо доменну модель
             var item = await _menuItemService.GetByIdAsync(id);
             if (item == null) return NotFound();
 
-            // отримуємо назву категорії через сервіс
             var category = await _categoryService.GetByIdAsync(item.CategoryId);
 
-            // формуємо DTO для View
             var dto = new MenuItemDto
             {
                 Id = item.Id,
@@ -165,6 +158,18 @@ namespace CozyCafe.Web.Areas.Admin.Controllers
             return View(dto);
         }
 
+        // POST: Admin/MenuItem/Delete/id
+        [HttpPost("Delete/{id}")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id)
+        {
+            var item = await _menuItemService.GetByIdAsync(id);
+            if (item == null) return NotFound();
+
+            await _menuItemService.DeleteAsync(item.Id);
+
+            return RedirectToAction("Index");
+        }
 
     }
 }
